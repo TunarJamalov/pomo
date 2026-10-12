@@ -2,7 +2,7 @@
  * /help - Categorized command reference with a polished embed.
  */
 
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { Colors } = require('../utils/constants');
 const { getOrCreateGuildSettings } = require('../utils/database');
 const { normalizeLanguage, t } = require('../utils/i18n');
@@ -155,7 +155,7 @@ module.exports = {
 
         const row = buildCategoryRow(null, language);
 
-        await interaction.reply({ embeds: [embed], components: [row] });
+        await interaction.reply({ embeds: [embed], components: [row, buildLinksRow(language)] });
     },
 };
 
@@ -205,7 +205,16 @@ async function handleHelpCategory(interaction) {
 
     const row = buildCategoryRow(key, language);
 
-    await interaction.update({ embeds: [embed], components: [row] });
+    await interaction.update({ embeds: [embed], components: [row, buildLinksRow(language)] });
+}
+
+/** Website, support server and the open-source code. */
+function buildLinksRow(language = 'en') {
+    return new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('pomofocus.online').setEmoji('🌐').setURL('https://pomofocus.online'),
+        new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(t(language, 'feedbackSupportButton')).setURL('https://discord.gg/XEubrrkBmB'),
+        new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('GitHub').setEmoji('⭐').setURL('https://github.com/TunarJamalov/pomo'),
+    );
 }
 
 function buildCategoryRow(selectedKey = null, language = 'en') {
@@ -240,3 +249,4 @@ function getCategoryTitle(category, language) {
 
 module.exports.handleHelpCategory = handleHelpCategory;
 module.exports.buildCategoryRow = buildCategoryRow;
+module.exports.buildLinksRow = buildLinksRow;

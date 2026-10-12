@@ -29,3 +29,14 @@ describe('/help menu', () => {
         expect(defaults[0].value).toBe('garden');
     });
 });
+
+describe('/help links', () => {
+    test('links to the website, support server and GitHub', () => {
+        const urls = help.buildLinksRow('en').toJSON().components.map(button => button.url);
+        expect(urls).toEqual([
+            'https://pomofocus.online',
+            'https://discord.gg/XEubrrkBmB',
+            'https://github.com/TunarJamalov/pomo',
+        ]);
+    });
+});

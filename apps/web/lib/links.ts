@@ -25,3 +25,5 @@ export const USER_INSTALL_URL =
 export const TOPGG_URL = "https://top.gg/bot/1443523945599860816";
 
 export const AZEDEV_URL = "https://azedev.com";
+
+export const GITHUB_URL = "https://github.com/TunarJamalov/pomo";

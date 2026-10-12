@@ -5,6 +5,7 @@ import {
   AZEDEV_URL,
   BOT_INVITE_URL,
   DONATION_URL,
+  GITHUB_URL,
   SUPPORT_SERVER_URL,
   TOPGG_URL,
   USER_INSTALL_URL,
@@ -34,6 +35,7 @@ const COLUMNS: Array<{ title: string; links: Array<{ label: string; href: string
     links: [
       { label: "Support server", href: SUPPORT_SERVER_URL, external: true },
       { label: "Top.gg", href: TOPGG_URL, external: true },
+      { label: "GitHub", href: GITHUB_URL, external: true },
       { label: "Boosty", href: DONATION_URL, external: true },
     ],
   },
@@ -102,7 +104,15 @@ export default function Footer() {
           >
             AzeDev
           </a>{" "}
-          project
+          project ·{" "}
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-[var(--site-muted)] transition-colors hover:text-[var(--tomato)]"
+          >
+            Open source
+          </a>
         </p>
         <p>Not affiliated with Discord Inc.</p>
       </div>
