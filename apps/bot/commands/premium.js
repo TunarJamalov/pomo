@@ -5,14 +5,13 @@ const {
     ButtonBuilder,
     ButtonStyle,
 } = require('discord.js');
-const { Colors } = require('../utils/constants');
+const { Colors, SUPPORT_SERVER_URL } = require('../utils/constants');
 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const { db } = require('../utils/database');
 const { isProActive } = require('../utils/premiumManager');
 const { getPremiumStatus } = require('../utils/premiumCheck');
 const { getInteractionLanguage, t } = require('../utils/i18n');
 
-const SUPPORT_SERVER_URL = 'https://discord.gg/XEubrrkBmB';
 const WEBSITE_SUPPORT_URL = 'https://pomofocus.online/support';
 const DONATION_URL = process.env.POMO_DONATION_URL || 'https://boosty.to/pomobot';
 

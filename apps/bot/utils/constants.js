@@ -2,6 +2,8 @@
  * Shared constants for the PomoBot.
  */
 
+const SUPPORT_SERVER_URL = process.env.SUPPORT_SERVER_URL || 'https://discord.gg/XEubrrkBmB';
+
 // Consistent embed color theme
 const Colors = {
     PRIMARY: 0x5865F2,    // Discord Blurple
@@ -635,6 +637,7 @@ const TreeRequirements = {
 };
 
 module.exports = {
+    SUPPORT_SERVER_URL,
     Colors,
     Plants,
     GrowthStages,

@@ -1,4 +1,5 @@
 const help = require('../commands/help');
+const { SUPPORT_SERVER_URL } = require('../utils/constants');
 
 describe('/help menu', () => {
     test('uses valid Unicode emojis for every select option', () => {
@@ -35,7 +36,7 @@ describe('/help links', () => {
         const urls = help.buildLinksRow('en').toJSON().components.map(button => button.url);
         expect(urls).toEqual([
             'https://pomofocus.online',
-            'https://discord.gg/XEubrrkBmB',
+            SUPPORT_SERVER_URL,
             'https://github.com/TunarJamalov/pomo',
         ]);
     });

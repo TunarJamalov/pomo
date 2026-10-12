@@ -6,12 +6,11 @@ const {
     ButtonBuilder,
     ButtonStyle,
 } = require('discord.js');
-const { Colors } = require('../utils/constants');
+const { Colors, SUPPORT_SERVER_URL } = require('../utils/constants');
 const { getInteractionLanguage, t } = require('../utils/i18n');
 const { getBotInviteUrl } = require('../utils/invite');
 const { recordOnboardingEvent } = require('../utils/database');
 
-const SUPPORT_SERVER_URL = 'https://discord.gg/XEubrrkBmB';
 const DASHBOARD_URL = 'https://pomofocus.online/dashboard';
 
 const TOPICS = {

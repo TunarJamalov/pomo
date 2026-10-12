@@ -3,7 +3,7 @@
  */
 
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { Colors } = require('../utils/constants');
+const { Colors, SUPPORT_SERVER_URL } = require('../utils/constants');
 const { getOrCreateGuildSettings } = require('../utils/database');
 const { normalizeLanguage, t } = require('../utils/i18n');
 
@@ -212,7 +212,7 @@ async function handleHelpCategory(interaction) {
 function buildLinksRow(language = 'en') {
     return new ActionRowBuilder().addComponents(
         new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('pomofocus.online').setEmoji('🌐').setURL('https://pomofocus.online'),
-        new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(t(language, 'feedbackSupportButton')).setURL('https://discord.gg/XEubrrkBmB'),
+        new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(t(language, 'feedbackSupportButton')).setURL(SUPPORT_SERVER_URL),
         new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('GitHub').setEmoji('⭐').setURL('https://github.com/TunarJamalov/pomo'),
     );
 }

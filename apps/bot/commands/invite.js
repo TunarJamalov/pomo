@@ -5,12 +5,11 @@ const {
     ButtonBuilder,
     ButtonStyle,
 } = require('discord.js');
-const { Colors } = require('../utils/constants');
+const { Colors, SUPPORT_SERVER_URL } = require('../utils/constants');
 const { getBotInviteUrl, getUserInstallUrl } = require('../utils/invite');
 const { getInteractionLanguage, t } = require('../utils/i18n');
 
 const SETUP_GUIDE_URL = 'https://pomofocus.online/tutorials/getting-started';
-const SUPPORT_SERVER_URL = 'https://discord.gg/XEubrrkBmB';
 
 module.exports = {
     cooldown: 10,

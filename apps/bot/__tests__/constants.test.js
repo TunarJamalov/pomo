@@ -1,7 +1,30 @@
 /**
  * Tests for utils/constants.js — pure math functions.
  */
-const { xpForLevel, waterForMinutes, xpForMinutes, petBuffMultiplier } = require('../utils/constants');
+const {
+    SUPPORT_SERVER_URL,
+    xpForLevel,
+    waterForMinutes,
+    xpForMinutes,
+    petBuffMultiplier,
+} = require('../utils/constants');
+
+describe('SUPPORT_SERVER_URL', () => {
+    test('can be overridden for self-hosted deployments', () => {
+        const original = process.env.SUPPORT_SERVER_URL;
+        process.env.SUPPORT_SERVER_URL = 'https://discord.gg/custom-support';
+
+        try {
+            jest.isolateModules(() => {
+                const { SUPPORT_SERVER_URL: configuredUrl } = require('../utils/constants');
+                expect(configuredUrl).toBe('https://discord.gg/custom-support');
+            });
+        } finally {
+            if (original === undefined) delete process.env.SUPPORT_SERVER_URL;
+            else process.env.SUPPORT_SERVER_URL = original;
+        }
+    });
+});
 
 describe('xpForLevel(level)', () => {
     test('formula: 5*n^2 + 50*n + 100', () => {
