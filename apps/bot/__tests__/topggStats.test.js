@@ -19,9 +19,8 @@ describe('Top.gg stats poster', () => {
         expect(result.skipped).toBe(true);
     });
 
-    test('posts the current server and shard count', async () => {
+    test('posts server, shard and user-install counts to the v1 API', async () => {
         process.env.TOPGG_API_TOKEN = 'api_token';
-        process.env.CLIENT_ID = 'bot_id';
         global.fetch = jest.fn().mockResolvedValue({
             ok: true,
             text: async () => '',
@@ -30,6 +29,7 @@ describe('Top.gg stats poster', () => {
             guilds: { cache: new Map([['1', {}], ['2', {}]]) },
             shard: { count: 1 },
             user: { id: 'bot_id' },
+            application: { fetch: jest.fn().mockResolvedValue({ approximateUserInstallCount: 40 }) },
         };
 
         const result = await postTopggStats(client);
@@ -37,12 +37,26 @@ describe('Top.gg stats poster', () => {
 
         expect(result.serverCount).toBe(2);
         expect(global.fetch).toHaveBeenCalledWith(
-            'https://top.gg/api/bots/bot_id/stats',
+            'https://top.gg/api/v1/projects/@me/metrics',
             expect.objectContaining({
-                method: 'POST',
-                headers: expect.objectContaining({ Authorization: 'api_token' }),
+                method: 'PATCH',
+                headers: expect.objectContaining({ Authorization: 'Bearer api_token' }),
             }),
         );
-        expect(JSON.parse(options.body)).toEqual({ server_count: 2, shard_count: 1 });
+        expect(JSON.parse(options.body)).toEqual({ server_count: 2, shard_count: 1, user_install_count: 40 });
+    });
+
+    test('still posts when the user-install count is unavailable', async () => {
+        process.env.TOPGG_API_TOKEN = 'Bearer api_token';
+        global.fetch = jest.fn().mockResolvedValue({ ok: true, text: async () => '' });
+        const client = {
+            guilds: { cache: new Map([['1', {}]]) },
+            application: { fetch: jest.fn().mockRejectedValue(new Error('offline')) },
+        };
+
+        await postTopggStats(client);
+        const [, options] = global.fetch.mock.calls[0];
+        expect(options.headers.Authorization).toBe('Bearer api_token');
+        expect(JSON.parse(options.body)).toEqual({ server_count: 1, shard_count: 1 });
     });
 });
