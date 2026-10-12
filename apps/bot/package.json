@@ -1,0 +1,42 @@
+{
+  "name": "pomobot",
+  "version": "1.0.0",
+  "description": "Pomodoro + Garden Discord Bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "node deploy-commands.js",
+    "backup": "node ../../scripts/backup-pomodata.js",
+    "restore": "node ../../scripts/restore-pomodata.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "AGPL-3.0-only",
+  "type": "commonjs",
+  "dependencies": {
+    "@discordjs/opus": "^0.10.0",
+    "@napi-rs/canvas": "^0.1.95",
+    "axios": "^1.20.0",
+    "better-sqlite3": "^13.0.3",
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "node-cron": "^4.2.1",
+    "pm2": "^7.0.1"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0"
+  },
+  "jest": {
+    "globalSetup": "<rootDir>/test-support/globalSetup.js",
+    "globalTeardown": "<rootDir>/test-support/globalTeardown.js",
+    "setupFiles": [
+      "<rootDir>/test-support/isolateDb.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/test-support/"
+    ]
+  }
+}

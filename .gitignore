@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+
+# Secrets (never commit real env files; *.env.example files are tracked)
+.env
+.env.*
+!.env.example
+
+# Databases and backups (user data lives only on the server)
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+*.sqlite
+backups/
+*.db.gz
+*.db.gz.sha256
+pomo_pgdata/
+
+# Bot runtime data (SQLite database, Boosty tokens)
+apps/bot/data/
+apps/data/
+
+# Desktop app build output
+pomo-desktop/node_modules/
+pomo-desktop/dist/
+pomo-desktop/dist-electron/
+pomo-desktop/release/
+
+# Desktop installer is hosted on the server, not in git
+apps/web/public/downloads/*
+!apps/web/public/downloads/.gitkeep
+
+# Logs
+*.log
+
+# One-off scripts and dumps at the repo root (keep real tools in scripts/)
+/patch*.js
+/patch*.py
+/fix_*.js
+/fix_*.py
+/tmp_*.js
+/dump*.txt
+/*.patch

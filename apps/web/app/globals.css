@@ -1,0 +1,242 @@
+@import "tailwindcss";
+
+/* Legacy token names used across the dashboard, Activity and room pages.
+   They now point at the Discord-native palette defined further down, so the
+   whole app shares one look: Discord greys, tomato as the accent, leaf green
+   for success. */
+@theme {
+  --color-blurple: #f0533f;
+  --color-blurple-dark: #c93a28;
+  --color-green-neon: #4fb35f;
+  --color-orange-neon: #e8a53a;
+  --color-purple-neon: #e8a53a;
+  --color-bg-base: #1a1b1e;
+  --color-bg-surface: #232428;
+  --color-bg-elevated: #2b2d31;
+}
+
+@layer base {
+  :root {
+    --bg-base: #1a1b1e;
+    --bg-surface: #232428;
+    --bg-elevated: #2b2d31;
+
+    --text-primary: #f2f3f5;
+    --text-secondary: #b5bac1;
+    --text-muted: #80848e;
+
+    --border: rgba(255, 255, 255, 0.07);
+    --border-hover: rgba(255, 255, 255, 0.13);
+
+    --blurple: #f0533f;
+    --blurple-dark: #c93a28;
+    --blurple-light: #ff7a68;
+    --orange-neon: #e8a53a;
+    --green-neon: #4fb35f;
+    --purple-neon: #e8a53a;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-display-face), var(--font-body), sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  /* Buttons match the public site: Discord's shape, tomato fill */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 justify-center rounded-lg px-5 py-2.5 font-semibold transition-colors duration-150;
+    color: #fff;
+    background: #f0533f;
+  }
+  .btn-primary:hover {
+    background: #c93a28;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 justify-center rounded-lg px-5 py-2.5 font-semibold transition-colors duration-150;
+    color: #fff;
+    background: #4e5058;
+  }
+  .btn-secondary:hover {
+    background: #6d6f78;
+  }
+
+  /* Kept for compatibility: now a plain Discord-style panel, no blur */
+  .glass-panel {
+    background: #232428;
+    border: 1px solid var(--border);
+    @apply rounded-2xl;
+  }
+}
+
+/* Kept for compatibility: solid colour, no gradient text */
+.text-gradient-blurple {
+  color: var(--blurple);
+}
+.text-gradient-orange {
+  color: var(--orange-neon);
+}
+
+/* ── Public site: Discord-native study desk ─────────────────────────────
+   Base greys are Discord's own so the site feels like home to its users;
+   tomato (from the logo) is the brand colour, leaf green the second voice,
+   and Discord blurple only appears on Discord UI replicas. The dashboard
+   still uses the classes above. */
+:root {
+  --site-bg: #1a1b1e;
+  --site-surface: #232428;
+  --site-surface-2: #2b2d31;
+  --site-chat: #313338;
+  --site-fg: #f2f3f5;
+  --site-fg-2: #dbdee1;
+  --site-muted: #b5bac1;
+  --site-subtle: #80848e;
+  --site-line: rgba(255, 255, 255, 0.07);
+  --site-line-strong: rgba(255, 255, 255, 0.13);
+  --tomato: #f0533f;
+  --tomato-deep: #c93a28;
+  --tomato-soft: rgba(240, 83, 63, 0.14);
+  --leaf: #4fb35f;
+  --leaf-soft: rgba(79, 179, 95, 0.14);
+  --cream: #ffe3c7;
+  --discord: #5865f2;
+  --status-live: #23a55a;
+  --product-bot: var(--tomato);
+  --product-web: #e8a53a;
+  --product-desktop: #4fb3d9;
+  --product-activity: var(--leaf);
+}
+
+@theme {
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-display-face), var(--font-body), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-code), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer components {
+  .site {
+    background: var(--site-bg);
+    color: var(--site-fg);
+    font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .site-container {
+    @apply mx-auto w-full max-w-[1160px] px-4 sm:px-6;
+  }
+
+  /* Small section label: a tomato tick plus sentence-case text */
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--tomato);
+  }
+  .kicker::before {
+    content: "";
+    width: 14px;
+    height: 3px;
+    border-radius: 2px;
+    background: currentColor;
+  }
+
+  .site-heading {
+    font-family: var(--font-display-face), var(--font-body), sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    color: var(--site-fg);
+  }
+
+  /* Buttons follow Discord's own shape: 8px radius, solid fills */
+  .btn {
+    @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg px-5 text-[15px] font-semibold transition-colors duration-150;
+    white-space: nowrap;
+  }
+  .btn-tomato {
+    background: var(--tomato);
+    color: #fff;
+  }
+  .btn-tomato:hover {
+    background: var(--tomato-deep);
+  }
+  .btn-grey {
+    background: #4e5058;
+    color: #fff;
+  }
+  .btn-grey:hover {
+    background: #6d6f78;
+  }
+  .btn-outline {
+    color: var(--site-fg);
+    border: 1px solid var(--site-line-strong);
+  }
+  .btn-outline:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .panel {
+    background: var(--site-surface);
+    border: 1px solid var(--site-line);
+    @apply rounded-2xl;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    flex-shrink: 0;
+  }
+
+  .slash {
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: 0.9em;
+    color: var(--site-fg);
+    background: var(--site-surface-2);
+    border-radius: 4px;
+    padding: 0.1em 0.4em;
+  }
+}
+
+/* Tutorial pages keep their own markup; these unlayered rules win over the
+   colourful utility classes inside them and match the site type. */
+.docs-prose h1 {
+  font-family: var(--font-display-face), var(--font-body), sans-serif;
+  color: var(--site-fg);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.docs-prose h2,
+.docs-prose h3 {
+  color: var(--site-fg);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.docs-prose strong {
+  color: var(--site-fg-2);
+}
+.docs-prose code {
+  font-family: var(--font-code), ui-monospace, monospace;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site *,
+  .site *::before,
+  .site *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

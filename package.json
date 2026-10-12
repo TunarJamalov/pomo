@@ -1,0 +1,9 @@
+{
+  "name": "pomo-platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "license": "AGPL-3.0-only"
+}

@@ -1,0 +1,37 @@
+import { TeamSessionRepository, TeamSession, TeamMember, CreateTeamSessionData } from './team-session-repository';
+import { TransactionContext } from '../transaction/transaction-manager';
+export declare class PostgresTeamSessionRepository implements TeamSessionRepository {
+    private db;
+    constructor(db: any);
+    private mapSession;
+    createSession(ctx: TransactionContext, data: CreateTeamSessionData): TeamSession;
+    createSessionAsync(ctx: TransactionContext, data: CreateTeamSessionData): Promise<TeamSession>;
+    getSessionById(ctx: TransactionContext, sessionId: number | string): TeamSession | null;
+    getSessionByIdAsync(ctx: TransactionContext, sessionId: string): Promise<TeamSession | null>;
+    getActiveOrWaitingSessionByHost(ctx: TransactionContext, hostId: string): TeamSession | null;
+    getActiveOrWaitingSessionByHostAsync(ctx: TransactionContext, hostId: string): Promise<TeamSession | null>;
+    getActiveOrWaitingSessionByUserId(ctx: TransactionContext, userId: string): TeamSession | null;
+    getActiveOrWaitingSessionByUserIdAsync(ctx: TransactionContext, userId: string): Promise<TeamSession | null>;
+    getActiveSessions(ctx: TransactionContext): TeamSession[];
+    getActiveSessionsAsync(ctx: TransactionContext): Promise<TeamSession[]>;
+    getMembers(ctx: TransactionContext, sessionId: number | string): TeamMember[];
+    getMembersAsync(ctx: TransactionContext, sessionId: string): Promise<TeamMember[]>;
+    addMember(ctx: TransactionContext, sessionId: number | string, userId: string): boolean;
+    addMemberAsync(ctx: TransactionContext, sessionId: string, userId: string): Promise<boolean>;
+    removeMember(ctx: TransactionContext, sessionId: number | string, userId: string): boolean;
+    removeMemberAsync(ctx: TransactionContext, sessionId: string, userId: string): Promise<boolean>;
+    startSession(ctx: TransactionContext, sessionId: number | string): boolean;
+    startSessionAsync(ctx: TransactionContext, sessionId: string): Promise<boolean>;
+    updateSessionStatus(ctx: TransactionContext, sessionId: number | string, status: TeamSession['status']): boolean;
+    updateSessionStatusAsync(ctx: TransactionContext, sessionId: string, status: TeamSession['status']): Promise<boolean>;
+    completeSession(ctx: TransactionContext, sessionId: number | string): boolean;
+    completeSessionAsync(ctx: TransactionContext, sessionId: string): Promise<boolean>;
+    cancelSession(ctx: TransactionContext, sessionId: number | string): boolean;
+    cancelSessionAsync(ctx: TransactionContext, sessionId: string): Promise<boolean>;
+    updateMessageId(ctx: TransactionContext, sessionId: number | string, messageId: string): boolean;
+    updateMessageIdAsync(ctx: TransactionContext, sessionId: string, messageId: string): Promise<boolean>;
+    updateDurationAndEndsAt(ctx: TransactionContext, sessionId: number | string, duration: number, endsAt: string): boolean;
+    updateDurationAndEndsAtAsync(ctx: TransactionContext, sessionId: string, duration: number, endsAt: string): Promise<boolean>;
+    updatePomodoroData(ctx: TransactionContext, sessionId: number | string, data: any): boolean;
+    updatePomodoroDataAsync(ctx: TransactionContext, sessionId: string, data: any): Promise<boolean>;
+}

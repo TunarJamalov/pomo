@@ -1,0 +1,81 @@
+{
+  "name": "pomo-desktop",
+  "version": "1.0.3",
+  "private": true,
+  "description": "Desktop companion app for PomoBot",
+  "author": "Tunar Jamalov",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "dev:electron": "node scripts/dev-electron.cjs",
+    "build": "tsc && vite build",
+    "start": "electron .",
+    "package:dir": "npm run build && electron-builder --dir",
+    "package:win": "npm run build && electron-builder --win nsis",
+    "package:store": "npm run build && electron-builder --win appx"
+  },
+  "dependencies": {
+    "lucide-react": "^0.562.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.27",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "electron": "^39.2.7",
+    "electron-builder": "^26.15.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.0"
+  },
+  "build": {
+    "appId": "online.pomofocus.desktop",
+    "productName": "Pomo Focus",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "electron/main.cjs"
+    },
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "appx": {
+      "identityName": "TunarJamalov.PomoFocus",
+      "publisher": "CN=7C2E844A-EDF5-457F-A6D2-E8EB405DD965",
+      "publisherDisplayName": "Tunar Jamalov",
+      "displayName": "Pomo Focus",
+      "applicationId": "PomoFocus",
+      "backgroundColor": "#101820",
+      "languages": [
+        "en-US"
+      ],
+      "artifactName": "${productName}-Store-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

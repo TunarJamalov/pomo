@@ -1,0 +1,37 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SqliteGardenRepository = void 0;
+class SqliteGardenRepository {
+    db;
+    identityRepo;
+    constructor(db, identityRepo) {
+        this.db = db;
+        this.identityRepo = identityRepo;
+    }
+    async getPlots(userId, ctx) {
+        // Legacy sqlite tables key garden rows by discord id directly.
+        const rows = (ctx?.db || this.db).prepare('SELECT * FROM garden_plots WHERE user_id = ? ORDER BY id').all(userId);
+        return rows.map((r) => ({ ...r, user_id: userId }));
+    }
+    async getPlot(plotId, userId, ctx) {
+        // Legacy sqlite tables key garden rows by discord id directly.
+        const row = (ctx?.db || this.db).prepare('SELECT * FROM garden_plots WHERE id = ? AND user_id = ?').get(Number(plotId), userId);
+        return row ? { ...row, user_id: userId } : null;
+    }
+    async plantSeed(userId, plantType, ctx) {
+        // Legacy sqlite tables key garden rows by discord id directly.
+        (ctx?.db || this.db).prepare("INSERT INTO garden_plots (user_id, plant_type, stage, water_used, planted_at) VALUES (?, ?, 0, 0, datetime('now'))").run(userId, plantType);
+    }
+    async updatePlot(plotId, waterUsed, stage, ctx) {
+        (ctx?.db || this.db).prepare("UPDATE garden_plots SET water_used = ?, stage = ?, last_watered = datetime('now') WHERE id = ?").run(waterUsed, stage, Number(plotId));
+    }
+    async removePlot(plotId, ctx) {
+        const info = (ctx?.db || this.db).prepare('DELETE FROM garden_plots WHERE id = ?').run(Number(plotId));
+        return info.changes > 0;
+    }
+    async logHarvest(userId, plantType, ctx) {
+        // Legacy sqlite tables key harvest rows by discord id directly.
+        (ctx?.db || this.db).prepare('INSERT INTO harvested_items (user_id, plant_type) VALUES (?, ?)').run(userId, plantType);
+    }
+}
+exports.SqliteGardenRepository = SqliteGardenRepository;

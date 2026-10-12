@@ -1,0 +1,37 @@
+{
+  "name": "@pomo/db",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "exit": "^0.1.2",
+    "postgres": "^3.4.9",
+    "resolve.exports": "^2.0.3",
+    "walker": "^1.0.8"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^26.5.1",
+    "better-sqlite3": "^13.0.3",
+    "drizzle-kit": "^0.31.10",
+    "jest": "^29.7.0",
+    "std-env": "^4.2.0",
+    "ts-jest": "^29.4.12",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.1"
+  },
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:check": "tsx src/check.ts",
+    "db:migrate": "drizzle-kit migrate",
+    "test": "vitest run"
+  }
+}
