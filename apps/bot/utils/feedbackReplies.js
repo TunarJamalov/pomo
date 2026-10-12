@@ -8,10 +8,9 @@
 const {
     ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle,
 } = require('discord.js');
-const { Colors } = require('./constants');
+const { Colors, SUPPORT_SERVER_URL } = require('./constants');
 const { t, getUserLanguage, getInteractionLanguage } = require('./i18n');
 
-const SUPPORT_SERVER_URL = 'https://discord.gg/XEubrrkBmB';
 const MAX_LENGTH = 1500;
 const USER_REPLY_COOLDOWN_MS = 60 * 1000;
 const lastUserReplyAt = new Map();

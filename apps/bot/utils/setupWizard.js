@@ -19,7 +19,7 @@ const {
     startVoiceSession,
     isTrackedVoiceChannel,
 } = require('./voiceManager');
-const { Colors } = require('./constants');
+const { Colors, SUPPORT_SERVER_URL } = require('./constants');
 const { errorEmbed } = require('./embeds');
 const { t } = require('./i18n');
 
@@ -218,7 +218,7 @@ function buildSetupNextActionRow() {
         new ButtonBuilder()
             .setLabel('Support Server')
             .setStyle(ButtonStyle.Link)
-            .setURL('https://discord.gg/XEubrrkBmB'),
+            .setURL(SUPPORT_SERVER_URL),
     );
 }
 

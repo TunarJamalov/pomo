@@ -3,6 +3,7 @@ const {
     parseList,
     isSafeHttpUrl,
 } = require('../commands/announce');
+const { SUPPORT_SERVER_URL } = require('../utils/constants');
 
 describe('structured announcements', () => {
     test('turns pipe-separated features into clean bullet items', () => {
@@ -16,7 +17,7 @@ describe('structured announcements', () => {
             message: 'A new update is live.',
             features: 'Advanced analytics | Streak Recovery',
             giveaway: 'Join the support server for a chance to win.',
-            buttonUrl: 'https://discord.gg/XEubrrkBmB',
+            buttonUrl: SUPPORT_SERVER_URL,
             buttonLabel: 'Join Support Server',
             color: 0xFEE75C,
         });
@@ -30,7 +31,7 @@ describe('structured announcements', () => {
         });
         expect(json.fields[1].name).toBe('Pomo Pro Giveaway');
         expect(payload.components[0].components[0].data.url)
-            .toBe('https://discord.gg/XEubrrkBmB');
+            .toBe(SUPPORT_SERVER_URL);
     });
 
     test('accepts only HTTP link buttons', () => {
