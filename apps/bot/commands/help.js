@@ -215,6 +215,7 @@ function buildLinksRow(language = 'en') {
         new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('pomofocus.online').setEmoji('🌐').setURL('https://pomofocus.online'),
         new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(t(language, 'feedbackSupportButton')).setURL(SUPPORT_SERVER_URL),
         new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('GitHub').setEmoji('⭐').setURL('https://github.com/TunarJamalov/pomo'),
+        new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('TikTok').setEmoji('🎬').setURL('https://www.tiktok.com/@pomo.study'),
     );
 }
 

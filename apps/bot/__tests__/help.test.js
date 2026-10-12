@@ -38,6 +38,7 @@ describe('/help links', () => {
             'https://pomofocus.online',
             SUPPORT_SERVER_URL,
             'https://github.com/TunarJamalov/pomo',
+            'https://www.tiktok.com/@pomo.study',
         ]);
     });
 });

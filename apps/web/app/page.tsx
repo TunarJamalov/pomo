@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import DiscordDemo from "@/components/site/DiscordDemo";
 import { Avatar, BotMessage, ChatWindow, Embed } from "@/components/site/DiscordBits";
 import { TimerDial, TimerRuler } from "@/components/site/TimerDial";
-import { BOT_INVITE_URL, SUPPORT_SERVER_URL, TOPGG_URL, USER_INSTALL_URL } from "@/lib/links";
+import { BOT_INVITE_URL, GITHUB_URL, SUPPORT_SERVER_URL, TIKTOK_URL, TOPGG_URL, USER_INSTALL_URL } from "@/lib/links";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -83,7 +83,7 @@ const jsonLd = {
   applicationCategory: "EducationalApplication",
   operatingSystem: "Discord, Web, Windows",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-  sameAs: [SUPPORT_SERVER_URL, TOPGG_URL],
+  sameAs: [SUPPORT_SERVER_URL, TOPGG_URL, GITHUB_URL, TIKTOK_URL],
 };
 
 function FeatureRow({

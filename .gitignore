@@ -45,3 +45,4 @@ apps/web/public/downloads/*
 
 # Rendered TikTok videos
 scripts/ops/reels/out/
+scripts/ops/reels/cards/

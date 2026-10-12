@@ -7,6 +7,7 @@ import {
   DONATION_URL,
   GITHUB_URL,
   SUPPORT_SERVER_URL,
+  TIKTOK_URL,
   TOPGG_URL,
   USER_INSTALL_URL,
 } from "@/lib/links";
@@ -36,6 +37,7 @@ const COLUMNS: Array<{ title: string; links: Array<{ label: string; href: string
       { label: "Support server", href: SUPPORT_SERVER_URL, external: true },
       { label: "Top.gg", href: TOPGG_URL, external: true },
       { label: "GitHub", href: GITHUB_URL, external: true },
+      { label: "TikTok", href: TIKTOK_URL, external: true },
       { label: "Boosty", href: DONATION_URL, external: true },
     ],
   },
