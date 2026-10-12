@@ -42,3 +42,6 @@ apps/web/public/downloads/*
 /tmp_*.js
 /dump*.txt
 /*.patch
+
+# Rendered TikTok videos
+scripts/ops/reels/out/
