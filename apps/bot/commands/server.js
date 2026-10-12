@@ -33,12 +33,20 @@ module.exports = {
                 .addChoices(...SERVER_QUEST_DEFINITIONS.map(quest => ({
                     name: quest.title,
                     value: quest.key,
-                }))))),
+                })))))
+        .addSubcommand(subcommand => subcommand
+            .setName('feature')
+            .setDescription('List this server in the Pomo study server directory (Manage Server)'))
+        .addSubcommand(subcommand => subcommand
+            .setName('unfeature')
+            .setDescription('Remove this server from the Pomo study server directory (Manage Server)')),
 
     async execute(interaction) {
         const subcommand = interaction.options.getSubcommand();
         if (subcommand === 'quests') return handleQuests(interaction);
         if (subcommand === 'claim') return handleClaim(interaction);
+        if (subcommand === 'feature') return require('../utils/featuredServers').handleFeatureCommand(interaction);
+        if (subcommand === 'unfeature') return require('../utils/featuredServers').handleUnfeatureCommand(interaction);
         if (subcommand !== 'progress') return;
 
         const progress = getGuildProgress(interaction.guildId);

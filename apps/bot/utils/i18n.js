@@ -13080,6 +13080,177 @@ Object.assign(Messages.ar, {
     feedbackReplyDeliveredBody: "تم الإرسال! سيرى فريق Pomo ردك.",
 });
 
+Object.assign(Messages['en'], {
+    "featureNeedManageServer": "You need the **Manage Server** permission to do this.",
+    "featureAlreadyListed": "This server is already in the Pomo study server directory. Use `/server unfeature` to remove it.",
+    "featurePending": "This server's listing request is waiting for review. We'll let you know by DM.",
+    "featureModalTitle": "List your server",
+    "featureModalDescription": "What is your server about?",
+    "featureModalInvite": "Permanent invite link (optional)",
+    "featureInviteInvalid": "That isn't a valid invite link for this server.",
+    "featureInviteTemporary": "That invite expires. Please use an invite that never expires.",
+    "featureInviteNoPermission": "Pomo can't create an invite here. Paste a permanent invite link in the form, or give Pomo the **Create Invite** permission.",
+    "featureUnavailable": "Listing requests are not available right now. Please try again later.",
+    "featureSubmitted": "Request sent! The Pomo team will review it, and you'll get a DM when your server is listed. You can remove it any time with `/server unfeature`.",
+    "featureApprovedDm": "🎉 **{server}** is now listed in the Pomo study server directory! You can remove it any time with `/server unfeature`.",
+    "featureRejectedDm": "Thanks for your interest! **{server}** wasn't added to the Pomo study server directory this time.",
+    "featureNotListed": "This server is not in the Pomo study server directory.",
+    "featureRemoved": "This server was removed from the Pomo study server directory."
+});
+Object.assign(Messages['es'], {
+    "featureNeedManageServer": "Necesitas el permiso **Gestionar servidor** para hacer esto.",
+    "featureAlreadyListed": "Este servidor ya está en el directorio de servidores de estudio de Pomo. Usa `/server unfeature` para quitarlo.",
+    "featurePending": "La solicitud de este servidor está esperando revisión. Te avisaremos por DM.",
+    "featureModalTitle": "Añade tu servidor",
+    "featureModalDescription": "¿De qué trata tu servidor?",
+    "featureModalInvite": "Invitación permanente (opcional)",
+    "featureInviteInvalid": "Ese no es un enlace de invitación válido para este servidor.",
+    "featureInviteTemporary": "Esa invitación caduca. Usa una invitación que no caduque nunca.",
+    "featureInviteNoPermission": "Pomo no puede crear una invitación aquí. Pega una invitación permanente en el formulario o dale a Pomo el permiso **Crear invitación**.",
+    "featureUnavailable": "Las solicitudes no están disponibles ahora. Inténtalo más tarde.",
+    "featureSubmitted": "¡Solicitud enviada! El equipo de Pomo la revisará y recibirás un DM cuando tu servidor aparezca. Puedes quitarlo cuando quieras con `/server unfeature`.",
+    "featureApprovedDm": "🎉 ¡**{server}** ya está en el directorio de servidores de estudio de Pomo! Puedes quitarlo cuando quieras con `/server unfeature`.",
+    "featureRejectedDm": "¡Gracias por tu interés! Esta vez **{server}** no se añadió al directorio de servidores de estudio de Pomo.",
+    "featureNotListed": "Este servidor no está en el directorio de servidores de estudio de Pomo.",
+    "featureRemoved": "Este servidor se quitó del directorio de servidores de estudio de Pomo."
+});
+Object.assign(Messages['fr'], {
+    "featureNeedManageServer": "Tu as besoin de la permission **Gérer le serveur** pour faire ça.",
+    "featureAlreadyListed": "Ce serveur est déjà dans l'annuaire des serveurs d'étude Pomo. Utilise `/server unfeature` pour le retirer.",
+    "featurePending": "La demande de ce serveur est en attente de validation. On te préviendra par DM.",
+    "featureModalTitle": "Ajoute ton serveur",
+    "featureModalDescription": "De quoi parle ton serveur ?",
+    "featureModalInvite": "Invitation permanente (facultatif)",
+    "featureInviteInvalid": "Ce n'est pas une invitation valide pour ce serveur.",
+    "featureInviteTemporary": "Cette invitation expire. Utilise une invitation qui n'expire jamais.",
+    "featureInviteNoPermission": "Pomo ne peut pas créer d'invitation ici. Colle une invitation permanente dans le formulaire ou donne à Pomo la permission **Créer une invitation**.",
+    "featureUnavailable": "Les demandes ne sont pas disponibles pour le moment. Réessaie plus tard.",
+    "featureSubmitted": "Demande envoyée ! L'équipe Pomo va la vérifier et tu recevras un DM quand ton serveur sera ajouté. Tu peux le retirer à tout moment avec `/server unfeature`.",
+    "featureApprovedDm": "🎉 **{server}** est maintenant dans l'annuaire des serveurs d'étude Pomo ! Tu peux le retirer à tout moment avec `/server unfeature`.",
+    "featureRejectedDm": "Merci pour ton intérêt ! **{server}** n'a pas été ajouté à l'annuaire des serveurs d'étude Pomo cette fois-ci.",
+    "featureNotListed": "Ce serveur n'est pas dans l'annuaire des serveurs d'étude Pomo.",
+    "featureRemoved": "Ce serveur a été retiré de l'annuaire des serveurs d'étude Pomo."
+});
+Object.assign(Messages['pt-BR'], {
+    "featureNeedManageServer": "Você precisa da permissão **Gerenciar servidor** para fazer isso.",
+    "featureAlreadyListed": "Este servidor já está no diretório de servidores de estudo do Pomo. Use `/server unfeature` para removê-lo.",
+    "featurePending": "O pedido deste servidor está aguardando revisão. Avisaremos você por DM.",
+    "featureModalTitle": "Divulgue seu servidor",
+    "featureModalDescription": "Sobre o que é o seu servidor?",
+    "featureModalInvite": "Convite permanente (opcional)",
+    "featureInviteInvalid": "Esse não é um link de convite válido para este servidor.",
+    "featureInviteTemporary": "Esse convite expira. Use um convite que nunca expire.",
+    "featureInviteNoPermission": "O Pomo não consegue criar um convite aqui. Cole um convite permanente no formulário ou dê ao Pomo a permissão **Criar convite**.",
+    "featureUnavailable": "Os pedidos não estão disponíveis agora. Tente novamente mais tarde.",
+    "featureSubmitted": "Pedido enviado! A equipe do Pomo vai revisar e você receberá uma DM quando seu servidor for listado. Você pode removê-lo quando quiser com `/server unfeature`.",
+    "featureApprovedDm": "🎉 **{server}** agora está no diretório de servidores de estudo do Pomo! Você pode removê-lo quando quiser com `/server unfeature`.",
+    "featureRejectedDm": "Obrigado pelo interesse! Desta vez **{server}** não foi adicionado ao diretório de servidores de estudo do Pomo.",
+    "featureNotListed": "Este servidor não está no diretório de servidores de estudo do Pomo.",
+    "featureRemoved": "Este servidor foi removido do diretório de servidores de estudo do Pomo."
+});
+Object.assign(Messages['ru'], {
+    "featureNeedManageServer": "Для этого нужно право **Управлять сервером**.",
+    "featureAlreadyListed": "Этот сервер уже есть в каталоге учебных серверов Pomo. Чтобы убрать его, используй `/server unfeature`.",
+    "featurePending": "Заявка этого сервера ждёт проверки. Мы сообщим тебе в ЛС.",
+    "featureModalTitle": "Добавь свой сервер",
+    "featureModalDescription": "О чём твой сервер?",
+    "featureModalInvite": "Постоянная ссылка-приглашение (необязательно)",
+    "featureInviteInvalid": "Это недействительное приглашение на этот сервер.",
+    "featureInviteTemporary": "У этого приглашения есть срок действия. Используй бессрочное приглашение.",
+    "featureInviteNoPermission": "Pomo не может создать приглашение здесь. Вставь бессрочное приглашение в форму или дай Pomo право **Создавать приглашения**.",
+    "featureUnavailable": "Заявки сейчас недоступны. Попробуй позже.",
+    "featureSubmitted": "Заявка отправлена! Команда Pomo её проверит, и ты получишь сообщение в ЛС, когда сервер появится в каталоге. Убрать его можно в любой момент через `/server unfeature`.",
+    "featureApprovedDm": "🎉 **{server}** теперь в каталоге учебных серверов Pomo! Убрать его можно в любой момент через `/server unfeature`.",
+    "featureRejectedDm": "Спасибо за интерес! В этот раз **{server}** не добавлен в каталог учебных серверов Pomo.",
+    "featureNotListed": "Этого сервера нет в каталоге учебных серверов Pomo.",
+    "featureRemoved": "Сервер удалён из каталога учебных серверов Pomo."
+});
+Object.assign(Messages['tr'], {
+    "featureNeedManageServer": "Bunu yapmak için **Sunucuyu Yönet** iznine ihtiyacın var.",
+    "featureAlreadyListed": "Bu sunucu zaten Pomo çalışma sunucuları dizininde. Kaldırmak için `/server unfeature` kullan.",
+    "featurePending": "Bu sunucunun başvurusu inceleme bekliyor. Sana DM ile haber vereceğiz.",
+    "featureModalTitle": "Sunucunu listele",
+    "featureModalDescription": "Sunucun ne hakkında?",
+    "featureModalInvite": "Kalıcı davet bağlantısı (isteğe bağlı)",
+    "featureInviteInvalid": "Bu, bu sunucu için geçerli bir davet bağlantısı değil.",
+    "featureInviteTemporary": "Bu davetin süresi doluyor. Lütfen süresi dolmayan bir davet kullan.",
+    "featureInviteNoPermission": "Pomo burada davet oluşturamıyor. Forma kalıcı bir davet yapıştır veya Pomo'ya **Davet Oluştur** iznini ver.",
+    "featureUnavailable": "Başvurular şu anda kullanılamıyor. Lütfen daha sonra tekrar dene.",
+    "featureSubmitted": "Başvuru gönderildi! Pomo ekibi inceleyecek ve sunucun listelendiğinde DM alacaksın. İstediğin zaman `/server unfeature` ile kaldırabilirsin.",
+    "featureApprovedDm": "🎉 **{server}** artık Pomo çalışma sunucuları dizininde! İstediğin zaman `/server unfeature` ile kaldırabilirsin.",
+    "featureRejectedDm": "İlgin için teşekkürler! **{server}** bu sefer Pomo çalışma sunucuları dizinine eklenmedi.",
+    "featureNotListed": "Bu sunucu Pomo çalışma sunucuları dizininde değil.",
+    "featureRemoved": "Bu sunucu Pomo çalışma sunucuları dizininden kaldırıldı."
+});
+Object.assign(Messages['az'], {
+    "featureNeedManageServer": "Bunun üçün **Serveri idarə et** icazəsi lazımdır.",
+    "featureAlreadyListed": "Bu server artıq Pomo-nun təhsil serverləri siyahısındadır. Çıxarmaq üçün `/server unfeature` yaz.",
+    "featurePending": "Bu serverin müraciəti yoxlanılmağı gözləyir. Sənə DM ilə xəbər verəcəyik.",
+    "featureModalTitle": "Serverini siyahıya əlavə et",
+    "featureModalDescription": "Serverin nə haqqındadır?",
+    "featureModalInvite": "Daimi dəvət linki (istəyə bağlı)",
+    "featureInviteInvalid": "Bu, bu server üçün düzgün dəvət linki deyil.",
+    "featureInviteTemporary": "Bu dəvətin müddəti bitir. Müddəti bitməyən dəvət linki istifadə et.",
+    "featureInviteNoPermission": "Pomo burada dəvət yarada bilmir. Formaya daimi dəvət linki yapışdır və ya Pomo-ya **Dəvət yarat** icazəsi ver.",
+    "featureUnavailable": "Müraciətlər hazırda mümkün deyil. Bir az sonra yenidən yoxla.",
+    "featureSubmitted": "Müraciət göndərildi! Pomo komandası yoxlayacaq, serverin siyahıya düşəndə sənə DM gələcək. İstədiyin vaxt `/server unfeature` ilə çıxara bilərsən.",
+    "featureApprovedDm": "🎉 **{server}** artıq Pomo-nun təhsil serverləri siyahısındadır! İstədiyin vaxt `/server unfeature` ilə çıxara bilərsən.",
+    "featureRejectedDm": "Marağın üçün təşəkkürlər! **{server}** bu dəfə Pomo-nun təhsil serverləri siyahısına əlavə olunmadı.",
+    "featureNotListed": "Bu server Pomo-nun təhsil serverləri siyahısında deyil.",
+    "featureRemoved": "Bu server Pomo-nun təhsil serverləri siyahısından çıxarıldı."
+});
+Object.assign(Messages['ja'], {
+    "featureNeedManageServer": "これを行うには **サーバー管理** 権限が必要です。",
+    "featureAlreadyListed": "このサーバーはすでに Pomo の学習サーバー一覧に載っています。外すには `/server unfeature` を使ってください。",
+    "featurePending": "このサーバーの申請は確認待ちです。結果は DM でお知らせします。",
+    "featureModalTitle": "サーバーを掲載する",
+    "featureModalDescription": "どんなサーバーですか？",
+    "featureModalInvite": "無期限の招待リンク（任意）",
+    "featureInviteInvalid": "このサーバーの有効な招待リンクではありません。",
+    "featureInviteTemporary": "この招待には有効期限があります。無期限の招待を使ってください。",
+    "featureInviteNoPermission": "Pomo はここで招待を作成できません。無期限の招待リンクをフォームに貼るか、Pomo に **招待を作成** 権限を付与してください。",
+    "featureUnavailable": "現在、申請を受け付けていません。後でもう一度お試しください。",
+    "featureSubmitted": "申請を送信しました！Pomo チームが確認し、掲載されたら DM でお知らせします。`/server unfeature` でいつでも外せます。",
+    "featureApprovedDm": "🎉 **{server}** が Pomo の学習サーバー一覧に掲載されました！`/server unfeature` でいつでも外せます。",
+    "featureRejectedDm": "ご関心ありがとうございます！今回は **{server}** を Pomo の学習サーバー一覧に掲載できませんでした。",
+    "featureNotListed": "このサーバーは Pomo の学習サーバー一覧に載っていません。",
+    "featureRemoved": "このサーバーを Pomo の学習サーバー一覧から外しました。"
+});
+Object.assign(Messages['ko'], {
+    "featureNeedManageServer": "이 작업에는 **서버 관리** 권한이 필요해요.",
+    "featureAlreadyListed": "이 서버는 이미 Pomo 공부 서버 목록에 있어요. 빼려면 `/server unfeature`를 사용하세요.",
+    "featurePending": "이 서버의 신청이 검토를 기다리고 있어요. 결과는 DM으로 알려드릴게요.",
+    "featureModalTitle": "서버 등록하기",
+    "featureModalDescription": "어떤 서버인가요?",
+    "featureModalInvite": "영구 초대 링크 (선택)",
+    "featureInviteInvalid": "이 서버의 올바른 초대 링크가 아니에요.",
+    "featureInviteTemporary": "이 초대는 만료돼요. 만료되지 않는 초대를 사용해 주세요.",
+    "featureInviteNoPermission": "Pomo가 여기서 초대를 만들 수 없어요. 양식에 영구 초대 링크를 붙여 넣거나 Pomo에게 **초대 만들기** 권한을 주세요.",
+    "featureUnavailable": "지금은 신청을 받을 수 없어요. 나중에 다시 시도해 주세요.",
+    "featureSubmitted": "신청을 보냈어요! Pomo 팀이 검토하고, 서버가 등록되면 DM을 보내드릴게요. 언제든 `/server unfeature`로 뺄 수 있어요.",
+    "featureApprovedDm": "🎉 **{server}** 이(가) Pomo 공부 서버 목록에 등록됐어요! 언제든 `/server unfeature`로 뺄 수 있어요.",
+    "featureRejectedDm": "관심 가져 주셔서 감사해요! 이번에는 **{server}** 이(가) Pomo 공부 서버 목록에 추가되지 않았어요.",
+    "featureNotListed": "이 서버는 Pomo 공부 서버 목록에 없어요.",
+    "featureRemoved": "이 서버를 Pomo 공부 서버 목록에서 뺐어요."
+});
+Object.assign(Messages['ar'], {
+    "featureNeedManageServer": "تحتاج إلى صلاحية **إدارة الخادم** للقيام بذلك.",
+    "featureAlreadyListed": "هذا الخادم موجود بالفعل في دليل خوادم الدراسة في Pomo. استخدم `/server unfeature` لإزالته.",
+    "featurePending": "طلب هذا الخادم بانتظار المراجعة. سنخبرك عبر رسالة خاصة.",
+    "featureModalTitle": "أضف خادمك",
+    "featureModalDescription": "عن ماذا يتحدث خادمك؟",
+    "featureModalInvite": "رابط دعوة دائم (اختياري)",
+    "featureInviteInvalid": "هذا ليس رابط دعوة صالحًا لهذا الخادم.",
+    "featureInviteTemporary": "هذه الدعوة تنتهي صلاحيتها. استخدم دعوة لا تنتهي.",
+    "featureInviteNoPermission": "لا يستطيع Pomo إنشاء دعوة هنا. الصق رابط دعوة دائم في النموذج أو امنح Pomo صلاحية **إنشاء دعوة**.",
+    "featureUnavailable": "الطلبات غير متاحة حاليًا. حاول مرة أخرى لاحقًا.",
+    "featureSubmitted": "تم إرسال الطلب! سيراجعه فريق Pomo وستصلك رسالة خاصة عند إضافة خادمك. يمكنك إزالته في أي وقت عبر `/server unfeature`.",
+    "featureApprovedDm": "🎉 أصبح **{server}** الآن في دليل خوادم الدراسة في Pomo! يمكنك إزالته في أي وقت عبر `/server unfeature`.",
+    "featureRejectedDm": "شكرًا لاهتمامك! لم تتم إضافة **{server}** إلى دليل خوادم الدراسة في Pomo هذه المرة.",
+    "featureNotListed": "هذا الخادم ليس في دليل خوادم الدراسة في Pomo.",
+    "featureRemoved": "تمت إزالة هذا الخادم من دليل خوادم الدراسة في Pomo."
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,

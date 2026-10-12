@@ -163,6 +163,19 @@ function initDatabase() {
             user_id TEXT PRIMARY KEY,
             timezone TEXT NOT NULL DEFAULT 'UTC'
         );
+        CREATE TABLE IF NOT EXISTS featured_servers (
+            guild_id TEXT PRIMARY KEY,
+            guild_name TEXT,
+            requested_by TEXT NOT NULL,
+            description TEXT NOT NULL,
+            invite_url TEXT NOT NULL,
+            member_count INTEGER DEFAULT 0,
+            status TEXT NOT NULL DEFAULT 'pending',
+            listing_channel_id TEXT,
+            listing_message_id TEXT,
+            created_at TEXT DEFAULT (datetime('now')),
+            reviewed_at TEXT
+        );
     `);
 
     // Ensure at least 1 season exists

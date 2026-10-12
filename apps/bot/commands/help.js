@@ -121,6 +121,7 @@ const categories = {
             { name: '/challenge [create/list/join/leaderboard]', desc: 'Create and join community study challenges (time, streak, sessions, goals).' },
             { name: '/health', desc: 'View server health dashboard with engagement metrics and actionable recommendations.' },
             { name: '/serverstats', desc: 'View server activity, focus trends, setup status, and top contributors. Manage Server permission required.' },
+            { name: '/server feature', desc: 'List your server in the Pomo study server directory. Remove it any time with /server unfeature. Manage Server permission required.' },
             { name: '/ambient', desc: 'Get a link to ambient study sounds (rain, cafe, forest, ocean, lo-fi).' },
             { name: '/guide [topic] [share] [panel]', desc: 'Show a simple guide. Server managers can share a guide or post an interactive onboarding panel.' },
             { name: '/feedback [type] [message]', desc: 'Send a bug report, suggestion, or question directly to the PomoBot team.' },

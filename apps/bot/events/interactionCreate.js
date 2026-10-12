@@ -275,6 +275,10 @@ async function routeButton(interaction) {
             return await require('../utils/feedbackReplies').handleUserReplyButton(interaction);
         }
 
+        if (customId.startsWith('feature_approve_') || customId.startsWith('feature_reject_')) {
+            return await require('../utils/featuredServers').handleReviewButton(interaction);
+        }
+
         if (customId.startsWith('habit_tick_')) {
             return await require('../commands/habit').handleHabitButton(interaction);
         }
@@ -655,6 +659,10 @@ async function handleModalSubmit(interaction) {
         }
         if (interaction.customId === 'fb_user_modal') {
             return await require('../utils/feedbackReplies').handleUserReplyModal(interaction);
+        }
+
+        if (interaction.customId === 'feature_modal') {
+            return await require('../utils/featuredServers').handleFeatureModal(interaction);
         }
 
         if (interaction.customId === 'daily_goal_modal') {
