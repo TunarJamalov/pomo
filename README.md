@@ -76,6 +76,11 @@ Bug reports, translations and pull requests are welcome. Please read
 [CONTRIBUTING.md](CONTRIBUTING.md) first. Security issues: see
 [SECURITY.md](SECURITY.md).
 
+## Credits
+
+- Code: Tunar Jamalov ([AzeDev](https://azedev.com))
+- Artwork & logo: **Arool** ([@arool_fakesmile](https://discord.com/users/981269241191862282) on Discord)
+
 ## License
 
 Copyright (C) 2025-2026 Tunar Jamalov (AzeDev)
@@ -88,7 +93,7 @@ same license.
 The AGPL covers the source code only:
 
 - **Logo and artwork** (images of plants, pets, badges and the Pomo logo) were made
-  for Pomo and are **not** under the AGPL. All rights reserved; you can use them
+  for Pomo by Arool and are **not** under the AGPL. All rights reserved; you can use them
   to run and test the code, but not in your own public bot or product.
 - **Ambient sounds** in `assets/ambient` and `public/audio` are royalty-free tracks.
 - The name "Pomo" identifies the official bot. If you run your own public copy,
