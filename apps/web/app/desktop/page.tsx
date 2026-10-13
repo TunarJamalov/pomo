@@ -12,17 +12,17 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import Footer from "@/components/Footer";
-import { DESKTOP_DOWNLOAD_URL, MICROSOFT_STORE_URL } from "@/lib/links";
+import { DESKTOP_DOWNLOAD_URL, LINUX_APPIMAGE_URL, LINUX_DEB_URL, MICROSOFT_STORE_URL } from "@/lib/links";
 
 export const metadata: Metadata = {
-  title: { absolute: "Pomo Focus Desktop | Pomodoro Timer for Windows" },
+  title: { absolute: "Pomo Focus Desktop | Pomodoro Timer for Windows and Linux" },
   description:
-    "Download Pomo Focus Desktop for Windows. Start Pomodoro sessions, use tray controls and mini mode, and sync completed focus sessions with PomoBot.",
+    "Download Pomo Focus Desktop for Windows and Linux. Start Pomodoro sessions, use tray controls and mini mode, and sync completed focus sessions with PomoBot.",
   alternates: { canonical: "/desktop" },
   openGraph: {
     title: "Pomo Focus Desktop",
     description:
-      "A clean Windows Pomodoro timer with tray controls, mini mode, reminders, and optional PomoBot sync.",
+      "A clean Pomodoro timer for Windows and Linux with tray controls, mini mode, reminders, and optional PomoBot sync.",
     url: "https://pomofocus.online/desktop",
     images: [{ url: "/screenshots/dashboard.png", width: 1200, height: 630, alt: "Pomo Focus Desktop" }],
   },
@@ -52,7 +52,7 @@ const features = [
   {
     icon: KeyRound,
     title: "PomoBot sync",
-    body: "Connect from the web dashboard to sync completed focus sessions to your Discord profile.",
+    body: "Press Connect with Discord in the app to sync completed focus sessions to your Discord profile.",
   },
   {
     icon: ShieldCheck,
@@ -62,9 +62,9 @@ const features = [
 ];
 
 const steps = [
-  "Download and install Pomo Focus for Windows.",
+  "Download and install Pomo Focus for Windows or Linux.",
   "Open the app and start focusing immediately.",
-  "Optional: sign in on pomofocus.online and connect the desktop app from your dashboard.",
+  "Optional: press Connect with Discord in the app and sign in to sync your sessions.",
 ];
 
 export default function DesktopDownloadPage() {
@@ -73,10 +73,10 @@ export default function DesktopDownloadPage() {
       <section className="pb-16 pt-28 md:pb-24 md:pt-36">
         <div className="site-container grid items-center gap-12 md:grid-cols-[1fr_1fr] md:gap-16">
           <div>
-            <p className="kicker mb-6">Pomo Focus for Windows</p>
+            <p className="kicker mb-6">Pomo Focus for Windows and Linux</p>
             <h1 className="site-heading text-[clamp(40px,6.5vw,72px)]">Focus without typing a command.</h1>
             <p className="mt-6 max-w-[560px] text-[17px] leading-relaxed text-[var(--site-muted)]">
-              A clean Pomodoro timer for Windows. Use it on its own, or connect it to PomoBot to sync finished
+              A clean Pomodoro timer for Windows and Linux. Use it on its own, or connect it to PomoBot to sync finished
               sessions, rewards, streaks and history.
             </p>
 
@@ -91,7 +91,15 @@ export default function DesktopDownloadPage() {
               </a>
             </div>
             <p className="mt-5 text-[13px] text-[var(--site-subtle)]">
-              If the direct download doesn&apos;t start, use the Microsoft Store link.
+              On Linux:{" "}
+              <a href={LINUX_APPIMAGE_URL} className="underline underline-offset-4 hover:text-[var(--site-fg)]">
+                AppImage
+              </a>{" "}
+              (any distro) or{" "}
+              <a href={LINUX_DEB_URL} className="underline underline-offset-4 hover:text-[var(--site-fg)]">
+                .deb
+              </a>{" "}
+              (Ubuntu, Debian, Mint). Make the AppImage executable, then open it.
             </p>
           </div>
 

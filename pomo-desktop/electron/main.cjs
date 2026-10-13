@@ -1,9 +1,11 @@
 const { app, BrowserWindow, Menu, Notification, Tray, ipcMain, nativeImage, powerMonitor, shell } = require('electron');
 const path = require('node:path');
+const linux = require('./linux.cjs');
 
 const PROTOCOL = 'pomo';
 const START_HIDDEN_ARG = '--hidden';
-const APP_ICON = path.join(__dirname, '../assets/icon.ico');
+// Linux cannot load .ico files
+const APP_ICON = path.join(__dirname, process.platform === 'win32' ? '../assets/icon.ico' : '../assets/icon-512.png');
 const TRAY_ICON = path.join(__dirname, '../assets/icon-32.png');
 let mainWindow = null;
 let tray = null;
@@ -116,12 +118,16 @@ function shouldStartHidden() {
 }
 
 function getStartupSettings() {
+  if (process.platform === 'linux') return { openAtLogin: linux.isStartupEnabled() };
   return {
     openAtLogin: app.getLoginItemSettings({ args: [START_HIDDEN_ARG] }).openAtLogin
   };
 }
 
 function setStartupSettings(enabled) {
+  if (process.platform === 'linux') {
+    return { openAtLogin: linux.setStartupEnabled(Boolean(enabled), { hiddenArg: START_HIDDEN_ARG, icon: linuxIconPath() }) };
+  }
   app.setLoginItemSettings({
     openAtLogin: Boolean(enabled),
     args: Boolean(enabled) ? [START_HIDDEN_ARG] : []
@@ -129,7 +135,16 @@ function setStartupSettings(enabled) {
   return getStartupSettings();
 }
 
+function linuxIconPath() {
+  return path.join(app.getPath('userData'), 'icon.png');
+}
+
 function registerProtocol() {
+  if (process.platform === 'linux') {
+    linux.registerAppImageProtocol({ iconSource: APP_ICON, iconTarget: linuxIconPath() });
+    // A moved or updated AppImage would leave launch-on-startup pointing at the old file
+    if (linux.isStartupEnabled()) linux.setStartupEnabled(true, { hiddenArg: START_HIDDEN_ARG, icon: linuxIconPath() });
+  }
   if (process.defaultApp) {
     app.setAsDefaultProtocolClient(PROTOCOL, process.execPath, [path.resolve(process.argv[1])]);
   } else {

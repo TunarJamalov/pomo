@@ -26,6 +26,7 @@ pomo-desktop/node_modules/
 pomo-desktop/dist/
 pomo-desktop/dist-electron/
 pomo-desktop/release/
+release-ci/
 
 # Desktop installer is hosted on the server, not in git
 apps/web/public/downloads/*

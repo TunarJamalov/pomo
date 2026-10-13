@@ -10,8 +10,15 @@ export const BOT_INVITE_URL =
 export const SUPPORT_SERVER_URL = "https://discord.gg/XEubrrkBmB";
 
 
+// Desktop builds are attached to the latest GitHub release of the public repo under fixed names
+const DESKTOP_RELEASE_URL = "https://github.com/TunarJamalov/pomo/releases/latest/download";
+
 export const DESKTOP_DOWNLOAD_URL =
-  process.env.NEXT_PUBLIC_DESKTOP_DOWNLOAD_URL || "/downloads/Pomo-Focus-Setup.exe";
+  process.env.NEXT_PUBLIC_DESKTOP_DOWNLOAD_URL || `${DESKTOP_RELEASE_URL}/Pomo-Focus-Setup.exe`;
+
+export const LINUX_APPIMAGE_URL = `${DESKTOP_RELEASE_URL}/Pomo-Focus.AppImage`;
+
+export const LINUX_DEB_URL = `${DESKTOP_RELEASE_URL}/pomo-focus_amd64.deb`;
 
 export const MICROSOFT_STORE_URL =
   process.env.NEXT_PUBLIC_MICROSOFT_STORE_URL || "https://apps.microsoft.com/detail/9PDMHQ05QR55";

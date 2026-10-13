@@ -4,6 +4,8 @@
   "private": true,
   "description": "Desktop companion app for PomoBot",
   "author": "Tunar Jamalov",
+  "homepage": "https://pomofocus.online",
+  "desktopName": "pomo-focus.desktop",
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -84,6 +86,32 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon-512.png",
+      "category": "Education",
+      "executableName": "pomo-focus",
+      "maintainer": "Tunar Jamalov <139899544+TunarJamalov@users.noreply.github.com>",
+      "synopsis": "Pomodoro focus timer for Pomo on Discord",
+      "artifactName": "Pomo-Focus-${version}-${arch}.${ext}",
+      "syncDesktopName": true
+    },
+    "deb": {
+      "artifactName": "pomo-focus_${version}_${arch}.${ext}"
     }
   }
 }

@@ -55,8 +55,8 @@ const elsewhere = [
   {
     icon: Monitor,
     color: "var(--product-desktop)",
-    title: "Pomo Focus for Windows",
-    body: "A quiet desktop timer with mini mode. Sessions sync to your Discord profile.",
+    title: "Pomo Focus for desktop",
+    body: "A quiet timer for Windows and Linux with mini mode. Sessions sync to your Discord profile.",
     href: "/desktop",
     cta: "Get the app",
   },
@@ -81,7 +81,7 @@ const jsonLd = {
   description:
     "Discord Pomodoro and study bot with focus timers, automatic voice study tracking, streaks, leaderboards, study pets and a virtual garden.",
   applicationCategory: "EducationalApplication",
-  operatingSystem: "Discord, Web, Windows",
+  operatingSystem: "Discord, Web, Windows, Linux",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   sameAs: [SUPPORT_SERVER_URL, TOPGG_URL, GITHUB_URL, TIKTOK_URL],
 };
