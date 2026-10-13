@@ -670,6 +670,7 @@ async function handleTeamComplete(client, sessionId) {
     // Minutes each member was actually present (late joiners get less)
     const memberMinutesById = new Map();
 
+    const teamChallengeNews = [];
     if (!isBreak) {
         const getActivePet = _getActivePet;
 
@@ -760,13 +761,8 @@ async function handleTeamComplete(client, sessionId) {
 
                 // Update challenge progress for team members
                 try {
-                    const { getActiveChallengesForUser, updateChallengeProgress } = require('../utils/database');
-                    const activeChallenges = getActiveChallengesForUser(member.user_id, session.guild_id);
-                    for (const ch of activeChallenges) {
-                        if (ch.challenge_type === 'time') updateChallengeProgress(ch.id, member.user_id, memberMinutes);
-                        else if (ch.challenge_type === 'sessions') updateChallengeProgress(ch.id, member.user_id, 1);
-                    }
-                } catch (_) {}
+                    teamChallengeNews.push(...require('../utils/challenges').recordChallengeFocus({ userId: member.user_id, guildId: session.guild_id, minutes: memberMinutes }));
+                } catch (err) { console.error('[TEAM] Challenge progress failed:', err.message); }
 
                 const petResult = awardPetXP(member.user_id, userXP);
                 let petMsg = '';
@@ -837,6 +833,10 @@ async function handleTeamComplete(client, sessionId) {
     try {
         const channel = await client.channels.fetch(session.channel_id);
         await channel.send({ content: results.join(' '), embeds: [embed] });
+        if (teamChallengeNews.length) {
+            const mentioned = members.map(m => m.user_id);
+            await channel.send({ content: [...new Set(teamChallengeNews)].join('\n'), allowedMentions: { users: mentioned } }).catch(() => {});
+        }
 
         if (session.message_id && !willTransition) {
             const msg = await channel.messages.fetch(session.message_id).catch(() => null);

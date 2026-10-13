@@ -247,7 +247,15 @@ async function handleDone(interaction, userId, language) {
         )
         .setTimestamp();
 
-    await interaction.reply({ embeds: [embed] });
+    let challengeNews = [];
+    try { challengeNews = require('../utils/challenges').recordGoalCompleted(userId); } catch (err) {
+        console.error('[TODO] Goal challenge progress failed:', err.message);
+    }
+    await interaction.reply({
+        content: challengeNews.length ? challengeNews.join('\n') : undefined,
+        embeds: [embed],
+        allowedMentions: { users: [userId] },
+    });
 }
 
 async function handleDelete(interaction, userId, language) {

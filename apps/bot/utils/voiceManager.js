@@ -369,15 +369,11 @@ function awardVoiceFocus(userId, guildId, creditedMinutes, rewardedMinutes, star
         } catch (err) { console.error('[VOICE] Expedition progress failed:', err.message); }
     }
 
-    // Update challenge progress
+    // Update challenge progress (voice has no text channel to announce in;
+    // completions still show on /challenge leaderboard)
     try {
-        const { getActiveChallengesForUser, updateChallengeProgress } = require('./database');
-        const activeChallenges = getActiveChallengesForUser(userId, guildId);
-        for (const ch of activeChallenges) {
-            if (ch.challenge_type === 'time') updateChallengeProgress(ch.id, userId, creditedMinutes);
-            else if (ch.challenge_type === 'sessions') updateChallengeProgress(ch.id, userId, 1);
-        }
-    } catch (_) {}
+        require('./challenges').recordChallengeFocus({ userId, guildId, minutes: creditedMinutes });
+    } catch (err) { console.error('[VOICE] Challenge progress failed:', err.message); }
 
     const { streak } = applyStudyStreak(userId, user, activePet);
     recordSessionActivity(userId);

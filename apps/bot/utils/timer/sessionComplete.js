@@ -16,8 +16,6 @@ const {
     addFocusMinutesToTodo,
     getOrCreateSettings,
     getOrCreateGuildSettings,
-    getActiveChallengesForUser,
-    updateChallengeProgress,
     recordGuildFocusProgress,
     recordActivityReward
 } = require('../database');
@@ -285,15 +283,10 @@ async function handleSessionComplete(client, session, deps) {
         
 
         // Update challenge progress for any active challenges the user has joined
-        if (session.guild_id) {
-            try {
-                const activeChallenges = getActiveChallengesForUser(session.user_id, session.guild_id);
-                for (const ch of activeChallenges) {
-                    if (ch.challenge_type === 'time') updateChallengeProgress(ch.id, session.user_id, minutes);
-                    else if (ch.challenge_type === 'sessions') updateChallengeProgress(ch.id, session.user_id, 1);
-                }
-            } catch (_) {}
-        }
+        let challengeNews = [];
+        try {
+            challengeNews = require('../challenges').recordChallengeFocus({ userId: session.user_id, guildId: session.guild_id, minutes });
+        } catch (err) { console.error('[TIMER] Challenge progress failed:', err.message); }
         // Expedition progress
         if (userClan) {
             try {
@@ -404,6 +397,10 @@ async function handleSessionComplete(client, session, deps) {
                     console.error('[TIMER] Session end card failed:', cardErr.message);
                     await channel.send({ content: `<@${session.user_id}>`, embeds: [embed] }).catch(() => {});
                 }
+            }
+
+            if (challengeNews.length) {
+                await channel.send({ content: challengeNews.join('\n'), allowedMentions: { users: [session.user_id] } }).catch(() => {});
             }
 
             // Update original message

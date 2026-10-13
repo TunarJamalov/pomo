@@ -948,6 +948,11 @@ function initDatabase() {
     try { db.exec('ALTER TABLE users ADD COLUMN streak_shields_remaining INTEGER DEFAULT 0'); } catch(_) {}
     // Month (YYYY-MM) the Pro streak shields were last refilled for
     try { db.exec('ALTER TABLE users ADD COLUMN pro_shields_month TEXT DEFAULT NULL'); } catch(_) {}
+    // Challenge progress for streak/goal/team types and completion markers
+    try { db.exec('ALTER TABLE challenge_members ADD COLUMN streak_last_day TEXT DEFAULT NULL'); } catch(_) {}
+    try { db.exec('ALTER TABLE challenge_members ADD COLUMN streak_run INTEGER DEFAULT 0'); } catch(_) {}
+    try { db.exec('ALTER TABLE challenge_members ADD COLUMN completed_at TEXT DEFAULT NULL'); } catch(_) {}
+    try { db.exec('ALTER TABLE challenges ADD COLUMN completed_at TEXT DEFAULT NULL'); } catch(_) {}
     try { db.exec('ALTER TABLE users ADD COLUMN lapse_check_count INTEGER DEFAULT 0'); } catch(_) {}
     try { db.exec('ALTER TABLE users ADD COLUMN lapse_detected_at TEXT DEFAULT NULL'); } catch(_) {}
     try { db.exec('ALTER TABLE users ADD COLUMN persona TEXT DEFAULT NULL'); } catch(_) {}

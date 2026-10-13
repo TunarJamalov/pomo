@@ -21,6 +21,7 @@ const CHALLENGE_TYPES = [
 ];
 
 const MAX_DURATION_DAYS = 365;
+const { targetLabel, syncGoalProgress, UNIT } = require('../utils/challenges');
 
 function parseDuration(input) {
     const match = String(input).match(/^(\d+)([dwm])$/);
@@ -147,7 +148,7 @@ async function handleCreate(interaction, userId, language) {
     const embed = successEmbed(
         `🎯 Challenge Created: ${title}`,
         `**Type:** ${typeInfo.desc}\n` +
-        `**Target:** ${target}${type === 'time' ? ' min' : type === 'streak' ? ' days' : ' sessions'}\n` +
+        `**Target:** ${targetLabel(type, target)}\n` +
         `**Duration:** ${days} days\n` +
         `**Ends:** <t:${Math.floor(endDate.getTime() / 1000)}:D>\n\n` +
         `Share \`/challenge join id:${challengeId}\` with friends!`
@@ -176,7 +177,7 @@ async function handleList(interaction, language) {
             const typeInfo = CHALLENGE_TYPES.find(t => t.value === c.challenge_type) || { desc: c.challenge_type };
             const endDate = new Date(c.end_date);
             const endTs = Math.floor(endDate.getTime() / 1000);
-            return `**#${c.id}** ${typeInfo.desc}\n📝 ${c.title}\n🎯 ${c.target_value} | 📊 ${c.member_count || 0} participants | ⏰ <t:${endTs}:R>`;
+            return `**#${c.id}** ${typeInfo.desc}\n📝 ${c.title}\n🎯 ${targetLabel(c.challenge_type, c.target_value)} | 📊 ${c.member_count || 0} participants | ⏰ <t:${endTs}:R>`;
         }).join('\n\n') || 'No challenges yet.')
         .setTimestamp();
 
@@ -237,22 +238,34 @@ async function handleLeaderboard(interaction, userId, language) {
         });
     }
 
+    // Goals finished on the website are only seen by recounting
+    if (challenge.challenge_type === 'goal') {
+        for (const m of db.prepare('SELECT user_id FROM challenge_members WHERE challenge_id = ?').all(challengeId)) syncGoalProgress(m.user_id);
+    }
     const leaderboard = getChallengeLeaderboard(challengeId);
     const typeInfo = CHALLENGE_TYPES.find(t => t.value === challenge.challenge_type) || { desc: challenge.challenge_type };
+    const type = challenge.challenge_type;
+    const isTeam = type === 'team';
+    const teamTotal = leaderboard.reduce((sum, entry) => sum + entry.progress, 0);
+    const teamLine = isTeam
+        ? `**Team total:** ${teamTotal} / ${targetLabel(type, challenge.target_value)}${challenge.completed_at ? ' ✅' : ''}\n`
+        : '';
 
     const embed = new EmbedBuilder()
         .setColor(Colors.WARNING)
         .setTitle(`🏆 ${challenge.title}`)
         .setDescription(
             `**Type:** ${typeInfo.desc}\n` +
-            `**Target:** ${challenge.target_value}\n` +
+            `**Target:** ${targetLabel(type, challenge.target_value)}${isTeam ? ' together' : ''}\n` +
+            teamLine +
             `**Participants:** ${leaderboard.length}\n\n` +
             (leaderboard.length > 0
                 ? leaderboard.slice(0, 10).map((entry, i) => {
                     const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
-                    return `${medal} <@${entry.discord_id}> — ${entry.progress}${challenge.challenge_type === 'time' ? 'm' : ''}`;
+                    const done = !isTeam && entry.completed_at ? ' ✅' : '';
+                    return `${medal} <@${entry.discord_id}> — ${entry.progress} ${UNIT[type] || ''}${done}`.trimEnd();
                 }).join('\n')
-                : 'No participants yet. Use `/challenge join id:${challengeId}` to start!')
+                : `No participants yet. Use \`/challenge join id:${challengeId}\` to start!`)
         )
         .setFooter({ text: `Ends ${challenge.end_date ? new Date(challenge.end_date).toLocaleDateString() : 'Unknown'}` })
         .setTimestamp();
