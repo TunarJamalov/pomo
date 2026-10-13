@@ -104,6 +104,9 @@ const PROFILE_KEY = 'pomo-desktop-profile';
 const IDLE_GUARD_THRESHOLD_SECONDS = 15 * 60;
 const MAX_RECENT_SESSIONS = 10;
 
+// Signed-in page that hands the app a desktop token through a pomo:// link
+const CONNECT_URL = 'https://pomofocus.online/dashboard/desktop?from=app';
+
 const links = [
   { label: 'Dashboard', href: 'https://pomofocus.online' },
   { label: 'Support', href: 'https://discord.gg/XEubrrkBmB' },
@@ -156,7 +159,7 @@ export function App() {
   const [subject, setSubject] = useState('general');
   const [syncState, setSyncState] = useState<SyncState>({
     status: 'idle',
-    message: 'Add a desktop token to sync completed focus sessions.'
+    message: 'Connect with Discord to sync completed focus sessions.'
   });
   const [compactMode, setCompactMode] = useState(false);
   const [startupEnabled, setStartupEnabled] = useState(false);
@@ -169,6 +172,7 @@ export function App() {
   const elapsedSeconds = Math.max(0, totalSeconds - remainingSeconds);
   const progress = totalSeconds === 0 ? 0 : Math.min(100, (elapsedSeconds / totalSeconds) * 100);
   const modeLabel = modeMeta[mode].label;
+  const isConnected = Boolean(syncSettings.token.trim() && connectedProfile);
 
   useEffect(() => {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
@@ -204,16 +208,15 @@ export function App() {
       const apiUrl = typeof payload.apiUrl === 'string' ? payload.apiUrl.trim() : '';
       if (!token) return;
 
+      const resolvedApiUrl = apiUrl || DEFAULT_SYNC.apiUrl;
       setSyncSettings(current => ({
         ...current,
         token,
-        apiUrl: apiUrl || current.apiUrl || DEFAULT_SYNC.apiUrl,
+        apiUrl: resolvedApiUrl,
         autoSync: true
       }));
-      setSyncState({
-        status: 'synced',
-        message: 'Desktop token connected. Click Test Sync to verify your account.'
-      });
+      // Check the new connection right away so the profile shows without an extra click
+      void testSync({ token, apiUrl: resolvedApiUrl });
     });
 
     return () => {
@@ -566,16 +569,19 @@ export function App() {
     }
   }
 
-  async function testSync() {
-    if (!syncSettings.token.trim()) {
-      setSyncState({ status: 'error', message: 'Add a desktop token before testing sync.' });
+  /** Checks the connection; a fresh deep link passes its token directly because state updates later. */
+  async function testSync(override?: { token: string; apiUrl: string }) {
+    const token = (override?.token ?? syncSettings.token).trim();
+    const apiUrl = (override?.apiUrl ?? syncSettings.apiUrl).trim();
+    if (!token) {
+      setSyncState({ status: 'error', message: 'Connect with Discord first.' });
       return;
     }
 
-    setSyncState({ status: 'syncing', message: 'Checking desktop sync...' });
+    setSyncState({ status: 'syncing', message: 'Checking your Pomo connection...' });
     try {
-      const response = await fetch(syncSettings.apiUrl.trim(), {
-        headers: { Authorization: `Bearer ${syncSettings.token.trim()}` }
+      const response = await fetch(apiUrl, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(describeSyncFailure(response.status, data.error));
@@ -621,18 +627,27 @@ export function App() {
           <p className="eyebrow">Pomo Desktop</p>
           <h1>Focus without typing a command.</h1>
           <p className="hero-copy">
-            Start a clean desktop focus session, get notified when it ends, and sync completed sessions
-            back to your PomoBot profile when your desktop token is connected.
+            Start a focus session in one click and get notified when it ends.
+            {isConnected
+              ? ' Your sessions count toward your Pomo profile on Discord.'
+              : ' Connect your Discord account to earn water, keep your streak and see your stats in Pomo.'}
           </p>
           <div className="hero-actions">
             <button className="primary-button" onClick={startTimer}>
               <Play size={18} />
               Start Focus
             </button>
-            <a className="secondary-button" href="https://pomofocus.online/dashboard" target="_blank" rel="noreferrer">
-              <LogIn size={18} />
-              Open Dashboard
-            </a>
+            {isConnected ? (
+              <a className="secondary-button" href="https://pomofocus.online/dashboard" target="_blank" rel="noreferrer">
+                <LogIn size={18} />
+                Open Dashboard
+              </a>
+            ) : (
+              <a className="secondary-button" href={CONNECT_URL} target="_blank" rel="noreferrer">
+                <LogIn size={18} />
+                Connect with Discord
+              </a>
+            )}
             <button className="secondary-button" onClick={toggleCompactMode}>
               {compactMode ? <Maximize2 size={18} /> : <Minimize2 size={18} />}
               {compactMode ? 'Full Mode' : 'Mini Mode'}
@@ -837,10 +852,26 @@ export function App() {
       <section className="sync-panel">
         <div>
           <PanelHeader icon={<Wifi size={18} />} title="Pomo Sync" />
-          <p className="panel-copy">
-            Connect a desktop token to send completed focus sessions to your PomoBot profile.
-            The app never stores your Discord password or bot token.
-          </p>
+          {isConnected ? (
+            <p className="panel-copy">
+              Completed focus sessions are sent to your Pomo profile automatically.
+            </p>
+          ) : (
+            <>
+              <p className="panel-copy">
+                Link this app to your Discord account in three steps. The app never sees your Discord password.
+              </p>
+              <ol className="connect-steps">
+                <li>Press <strong>Connect with Discord</strong> and sign in on the website.</li>
+                <li>Press <strong>Connect</strong> on that page.</li>
+                <li>Allow your browser to open Pomo Focus. Done!</li>
+              </ol>
+              <a className="primary-button connect-button" href={CONNECT_URL} target="_blank" rel="noreferrer">
+                <LogIn size={18} />
+                Connect with Discord
+              </a>
+            </>
+          )}
           {connectedProfile && (
             <div className="profile-preview">
               {connectedProfile.avatar ? (
@@ -858,22 +889,6 @@ export function App() {
           )}
         </div>
         <div className="sync-form">
-          <label>
-            API URL
-            <input
-              value={syncSettings.apiUrl}
-              onChange={event => setSyncSettings(current => ({ ...current, apiUrl: event.target.value }))}
-            />
-          </label>
-          <label>
-            Desktop token
-            <input
-              type="password"
-              value={syncSettings.token}
-              onChange={event => setSyncSettings(current => ({ ...current, token: event.target.value }))}
-              placeholder="Paste token from dashboard"
-            />
-          </label>
           <label className="toggle-row">
             <input
               type="checkbox"
@@ -888,14 +903,38 @@ export function App() {
               : <KeyRound size={18} />}
             <span>{syncState.message}</span>
           </div>
-          <button className="wide-button" onClick={testSync}>Test Sync</button>
+          <button className="wide-button" onClick={() => testSync()}>
+            {isConnected ? 'Check connection' : 'Test Sync'}
+          </button>
+          {isConnected && (
+            <a className="reconnect-link" href={CONNECT_URL} target="_blank" rel="noreferrer">Reconnect another account</a>
+          )}
+          <details className="advanced-sync">
+            <summary>Advanced: connect manually</summary>
+            <label>
+              API URL
+              <input
+                value={syncSettings.apiUrl}
+                onChange={event => setSyncSettings(current => ({ ...current, apiUrl: event.target.value }))}
+              />
+            </label>
+            <label>
+              Desktop token
+              <input
+                type="password"
+                value={syncSettings.token}
+                onChange={event => setSyncSettings(current => ({ ...current, token: event.target.value }))}
+                placeholder="Paste token from pomofocus.online/dashboard/desktop"
+              />
+            </label>
+          </details>
         </div>
       </section>
 
-      <section className="feature-grid" aria-label="Desktop app roadmap">
-        <Feature icon={<Clock3 />} title="Local MVP" body="Timer, pause, reset, settings, and desktop notifications work locally first." />
-        <Feature icon={<Sprout />} title="Pomo Sync" body="Completed sessions can sync to your PomoBot profile through the web API." />
-        <Feature icon={<Bell />} title="Store Ready Later" body="After login UX and tray mode, we package it properly for Microsoft Store." />
+      <section className="feature-grid" aria-label="Why connect">
+        <Feature icon={<Sprout />} title="Grow your garden" body="Every focus session earns water and XP for your Pomo garden and level." />
+        <Feature icon={<Flame />} title="Keep your streak" body="Desktop sessions count toward the same streak as /study on Discord." />
+        <Feature icon={<Gauge />} title="All your stats in one place" body="See desktop focus time in /stats, your weekly recap and on the dashboard." />
       </section>
 
       <section className="links-panel">
@@ -987,7 +1026,7 @@ function subjectLabel(value: string) {
 function describeSyncFailure(status: number, error: unknown) {
   const raw = typeof error === 'string' ? error.trim() : '';
   if (status === 401 || status === 403) {
-    return 'Desktop token is invalid or expired. Reconnect Pomo Desktop from the dashboard.';
+    return 'Your connection expired. Press "Connect with Discord" to link the app again.';
   }
   if (status === 404) {
     return 'Sync endpoint was not found. Check the API URL.';

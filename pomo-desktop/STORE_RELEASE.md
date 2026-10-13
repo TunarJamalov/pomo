@@ -5,7 +5,7 @@
 1. Run `npm run build`.
 2. Run `npm run package:dir`.
 3. Open `release/win-unpacked/Pomo Focus.exe`.
-4. Check timer, mini mode, tray mode, startup toggle, token sync, and notifications.
+4. Check timer, mini mode, tray mode, startup toggle, Connect with Discord, and notifications.
 
 ## Build Outputs
 
@@ -17,7 +17,7 @@ Run:
 npm run package:win
 ```
 
-Use the generated installer from `release/Pomo Focus-1.0.3-x64.exe`.
+Use the generated installer from `release/Pomo Focus-1.1.0-x64.exe`.
 
 ### Microsoft Store
 
@@ -27,7 +27,7 @@ Run:
 npm run package:store
 ```
 
-Upload the generated Store package from `release/` to Partner Center.
+Upload `release/Pomo Focus-Store-1.1.0-x64.appx` to Partner Center.
 
 Store identity values are already configured in `package.json`:
 
@@ -56,7 +56,7 @@ A clean Pomodoro desktop companion for PomoBot with focus timers, reminders, tra
 
 Pomo Focus helps you start focused study sessions without typing Discord commands. Use a clean Pomodoro timer, pause or resume sessions, receive desktop notifications, keep the timer in your system tray, and switch into a small always-on-top mini mode while you work.
 
-If you use PomoBot on Discord, you can connect the desktop app from the Pomo dashboard and sync completed focus sessions to your profile for Water, XP, streaks, and history. The app never asks for your Discord password or bot token.
+If you use PomoBot on Discord, press Connect with Discord to link the app in a few seconds. Completed focus sessions then sync to your profile for Water, XP, streaks, and history. The app never asks for your Discord password or bot token.
 
 ### Feature Bullets
 
@@ -68,6 +68,13 @@ If you use PomoBot on Discord, you can connect the desktop app from the Pomo das
 - Idle Guard confirmation for long idle sessions
 - Recent session history with retry sync
 - Optional PomoBot profile sync through pomofocus.online
+
+### What's New in 1.1.0
+
+- One-click Connect with Discord: sign in on the website and the app links itself
+- Fixed the connect link not opening the Microsoft Store version of the app
+- Connections now last 180 days instead of expiring after a few hours
+- Clearer setup steps and connection status
 
 ## Assets
 
@@ -86,6 +93,7 @@ If you use PomoBot on Discord, you can connect the desktop app from the Pomo das
 ## Before Submission
 
 - Remove test tokens from screenshots.
+- Install the Store package and confirm Connect with Discord on pomofocus.online/dashboard/desktop opens the app and shows your profile.
 - Confirm the app never asks for a Discord password.
 - Confirm sync goes through `pomofocus-web` API only.
 - Confirm closing the app keeps it in the tray.

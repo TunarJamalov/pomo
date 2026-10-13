@@ -1,6 +1,6 @@
 {
   "name": "pomo-desktop",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "private": true,
   "description": "Desktop companion app for PomoBot",
   "author": "Tunar Jamalov",
@@ -44,6 +44,14 @@
     "extraMetadata": {
       "main": "electron/main.cjs"
     },
+    "protocols": [
+      {
+        "name": "Pomo Focus",
+        "schemes": [
+          "pomo"
+        ]
+      }
+    ],
     "win": {
       "icon": "assets/icon.ico",
       "target": [

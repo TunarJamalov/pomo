@@ -631,6 +631,52 @@ kbd {
   margin-top: 16px;
 }
 
+.connect-steps {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 18px;
+  padding-left: 22px;
+  color: #d6dfeb;
+  line-height: 1.45;
+}
+
+.connect-steps li::marker {
+  color: #55e0a9;
+  font-weight: 800;
+}
+
+a.connect-button {
+  text-decoration: none;
+}
+
+.reconnect-link {
+  justify-self: center;
+  color: #aebacc;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.reconnect-link:hover {
+  color: #55e0a9;
+}
+
+.advanced-sync {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 12px;
+}
+
+.advanced-sync summary {
+  color: #7f8ba0;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.advanced-sync[open] {
+  display: grid;
+  gap: 12px;
+}
+
 .feature-icon {
   display: grid;
   width: 42px;

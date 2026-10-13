@@ -1,16 +1,38 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { redirect } from "next/navigation";
 import { createActivityToken } from "@/lib/activityAuth";
-import { Monitor, KeyRound, ShieldCheck, Timer, ExternalLink, PlugZap } from "lucide-react";
+import { Monitor, KeyRound, ShieldCheck, Timer, ExternalLink, PlugZap, Download } from "lucide-react";
+import { CopyTokenButton, DesktopSignIn, OpenDesktopButton } from "./DesktopConnect";
 
 export const revalidate = 0;
 
-export default async function DesktopPage() {
+const STORE_URL = "https://apps.microsoft.com/detail/9PDMHQ05QR55";
+
+export default async function DesktopPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const session = await getServerSession(authOptions);
+  // The app links here with ?from=app; after sign-in the page opens the app on its own
+  const fromApp = (await searchParams).from === "app";
 
   if (!session || !session.user) {
-    redirect("/");
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-3xl mx-auto">
+        <DesktopHeader />
+        <div className="glass-panel p-8">
+          <div className="flex items-center gap-3 mb-4">
+            <PlugZap className="text-emerald-300" />
+            <h2 className="text-xl font-bold">Sign in to connect Pomo Focus</h2>
+          </div>
+          <p className="text-[var(--text-secondary)] mb-6">
+            Sign in with the Discord account you use with Pomo. Right after that, this page opens the app and links it to your profile.
+          </p>
+          <DesktopSignIn callbackUrl={fromApp ? "/dashboard/desktop?from=app" : "/dashboard/desktop"} />
+        </div>
+      </div>
+    );
   }
 
   const discordId = (session.user as any).id as string;
@@ -24,15 +46,7 @@ export default async function DesktopPage() {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-3xl mx-auto">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
-          <Monitor className="text-emerald-300" size={28} />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold">Pomo Desktop</h1>
-          <p className="text-[var(--text-secondary)]">Connect the desktop app to sync completed focus sessions.</p>
-        </div>
-      </div>
+      <DesktopHeader />
 
       <div className="glass-panel p-8 mb-6">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-6">
@@ -42,37 +56,34 @@ export default async function DesktopPage() {
               <h2 className="text-xl font-bold">Connect Desktop App</h2>
             </div>
             <p className="text-[var(--text-secondary)]">
-              If Pomo Desktop is installed, this opens the app and fills the sync token automatically.
+              Press the button. If your browser asks to open Pomo Focus, choose <strong>Open</strong>. The app shows your profile once it is linked.
             </p>
           </div>
-          <a
-            href={connectUrl}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 font-bold text-black hover:-translate-y-1 transition-transform"
-          >
-            <Monitor size={18} />
-            Open Pomo Desktop
-          </a>
+          <OpenDesktopButton connectUrl={connectUrl} autoOpen={fromApp} />
         </div>
 
-        <div className="flex items-center gap-3 mb-4">
-          <KeyRound className="text-[var(--blurple)]" />
-          <h2 className="text-xl font-bold">Manual Token</h2>
-        </div>
-        <p className="text-[var(--text-secondary)] mb-4">
-          If the button does not open the app yet, paste this token into the desktop app sync settings. It expires automatically, so refresh this page if sync stops later.
-        </p>
-        <textarea
-          readOnly
-          value={token}
-          className="w-full min-h-32 rounded-xl bg-black/40 border border-[var(--border)] p-4 text-sm text-[var(--text-secondary)] outline-none"
-        />
+        <details className="border-t border-[var(--border)] pt-5">
+          <summary className="flex items-center gap-3 cursor-pointer font-bold">
+            <KeyRound size={18} className="text-[var(--blurple)]" />
+            Nothing happened? Connect manually
+          </summary>
+          <p className="text-[var(--text-secondary)] mt-4 mb-4">
+            Update Pomo Focus to the latest version, or copy this code and paste it in the app under <strong>Advanced: connect manually</strong>. It stays valid for 180 days.
+          </p>
+          <textarea
+            readOnly
+            value={token}
+            className="w-full min-h-28 rounded-xl bg-black/40 border border-[var(--border)] p-4 text-sm text-[var(--text-secondary)] outline-none mb-3"
+          />
+          <CopyTokenButton token={token} />
+        </details>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InfoCard
           icon={<Timer size={20} />}
           title="Sync Sessions"
-          body="Completed desktop focus sessions can reward Water, XP, streak, and history."
+          body="Completed desktop focus sessions reward Water, XP, streak, and history."
         />
         <InfoCard
           icon={<ShieldCheck size={20} />}
@@ -90,6 +101,29 @@ export default async function DesktopPage() {
           <p className="text-sm text-[var(--text-secondary)]">Check synced sessions in your dashboard history.</p>
         </a>
       </div>
+    </div>
+  );
+}
+
+function DesktopHeader() {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
+      <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
+        <Monitor className="text-emerald-300" size={28} />
+      </div>
+      <div className="flex-1">
+        <h1 className="text-3xl font-bold">Pomo Desktop</h1>
+        <p className="text-[var(--text-secondary)]">Focus sessions from the app earn Water, XP and streak on your Pomo profile.</p>
+      </div>
+      <a
+        href={STORE_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center gap-2 text-sm font-bold text-[var(--text-secondary)] hover:text-white transition-colors"
+      >
+        <Download size={16} />
+        Get the app
+      </a>
     </div>
   );
 }
