@@ -7,14 +7,23 @@ type ActivityUser = {
   avatar?: string | null;
 };
 
+export type TokenScope = 'activity' | 'desktop';
+
 export type ActivityClaims = {
   sub: string;
   username: string;
   avatar: string | null;
   exp: number;
+  /** Missing on tokens issued before scopes existed; those are activity tokens. */
+  scope?: TokenScope;
 };
 
-const TOKEN_TTL_SECONDS = 60 * 60 * 6;
+// The Discord Activity re-authenticates every launch, so its tokens can be short.
+// The desktop app is connected once from the dashboard and must keep syncing.
+const TOKEN_TTL_SECONDS: Record<TokenScope, number> = {
+  activity: 60 * 60 * 6,
+  desktop: 60 * 60 * 24 * 180,
+};
 
 let warnedAboutFallbackSecret = false;
 
@@ -46,7 +55,7 @@ function signPayload(payload: string, secret: string) {
   return crypto.createHmac('sha256', secret).update(payload).digest('base64url');
 }
 
-export function createActivityToken(user: ActivityUser) {
+export function createActivityToken(user: ActivityUser, { scope = 'activity' }: { scope?: TokenScope } = {}) {
   const secret = getSecret();
   if (!secret) {
     throw new Error('Missing ACTIVITY_TOKEN_SECRET or fallback secret');
@@ -56,7 +65,8 @@ export function createActivityToken(user: ActivityUser) {
     sub: user.id,
     username: user.global_name || user.username || `User#${user.id.slice(-4)}`,
     avatar: user.avatar ?? null,
-    exp: Math.floor(Date.now() / 1000) + TOKEN_TTL_SECONDS,
+    exp: Math.floor(Date.now() / 1000) + TOKEN_TTL_SECONDS[scope],
+    scope,
   };
 
   const payload = base64url(JSON.stringify(claims));
@@ -87,8 +97,14 @@ export function verifyActivityToken(token: string | null | undefined): ActivityC
   }
 }
 
-export function getActivityClaims(request: Request) {
+/**
+ * Claims from the Bearer token. Long-lived desktop tokens only work where the
+ * caller opts in (the desktop sync endpoint), never on the Activity APIs.
+ */
+export function getActivityClaims(request: Request, { allowDesktop = false }: { allowDesktop?: boolean } = {}) {
   const header = request.headers.get('authorization') || '';
   const token = header.startsWith('Bearer ') ? header.slice('Bearer '.length) : null;
-  return verifyActivityToken(token);
+  const claims = verifyActivityToken(token);
+  if (claims?.scope === 'desktop' && !allowDesktop) return null;
+  return claims;
 }

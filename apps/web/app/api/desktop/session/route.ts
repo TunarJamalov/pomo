@@ -71,7 +71,7 @@ function getDb() {
 }
 
 export async function GET(request: Request) {
-  const claims = getActivityClaims(request);
+  const claims = getActivityClaims(request, { allowDesktop: true });
   if (!claims) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS_HEADERS });
   }
@@ -101,7 +101,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const claims = getActivityClaims(request);
+  const claims = getActivityClaims(request, { allowDesktop: true });
   if (!claims) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS_HEADERS });
   }

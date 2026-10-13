@@ -18,7 +18,7 @@ export default async function DesktopPage() {
     id: discordId,
     username: session.user.name || `User#${discordId.slice(-4)}`,
     avatar: session.user.image || null,
-  });
+  }, { scope: "desktop" });
   const apiUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://pomofocus.online"}/api/desktop/session`;
   const connectUrl = `pomo://connect?token=${encodeURIComponent(token)}&apiUrl=${encodeURIComponent(apiUrl)}`;
 
