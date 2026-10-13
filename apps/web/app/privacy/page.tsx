@@ -11,7 +11,7 @@ export default function PrivacyPage() {
   return (
     <main className="site min-h-screen">
       <div className="site-container max-w-[760px] pb-24 pt-28 md:pt-36">
-        <p className="kicker mb-6">Legal · Last updated April 2026</p>
+        <p className="kicker mb-6">Legal · Last updated October 2026</p>
         <h1 className="site-heading mb-12 text-[clamp(36px,5vw,56px)]">Privacy Policy</h1>
 
         <div className="space-y-10 border-t border-[var(--site-line)] pt-10 text-[15px] leading-relaxed text-[var(--site-muted)] [&_h2]:mb-3 [&_h2]:text-[18px] [&_h2]:font-medium [&_h2]:tracking-[-0.01em] [&_h2]:text-[var(--site-fg)] [&_strong]:text-[var(--site-fg-2)]">
@@ -47,6 +47,9 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-bold text-white mb-4">4. Data Sharing</h2>
             <p>
               We do not sell, trade, or transfer your personally identifiable information to outside parties. Your data is kept secure on our private servers and is only accessible through our secure API.
+            </p>
+            <p className="mt-3">
+              If you buy Pomo Pro, the payment is handled by Lemon Squeezy (our merchant of record), which processes your payment details and email under its own privacy policy. We only receive your Discord ID, subscription status, renewal date and the email on the receipt, and use them to turn Pro on and off.
             </p>
           </section>
 

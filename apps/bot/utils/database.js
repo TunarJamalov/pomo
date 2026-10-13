@@ -163,6 +163,29 @@ function initDatabase() {
             user_id TEXT PRIMARY KEY,
             timezone TEXT NOT NULL DEFAULT 'UTC'
         );
+        CREATE TABLE IF NOT EXISTS billing_events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            provider TEXT NOT NULL,
+            event_hash TEXT NOT NULL UNIQUE,
+            event_name TEXT NOT NULL,
+            payload TEXT NOT NULL,
+            received_at TEXT DEFAULT (datetime('now')),
+            processed_at TEXT,
+            result TEXT
+        );
+        CREATE TABLE IF NOT EXISTS billing_subscriptions (
+            provider TEXT NOT NULL,
+            subscription_id TEXT NOT NULL,
+            discord_id TEXT,
+            status TEXT,
+            variant_name TEXT,
+            renews_at TEXT,
+            ends_at TEXT,
+            customer_portal_url TEXT,
+            test_mode INTEGER DEFAULT 0,
+            updated_at TEXT DEFAULT (datetime('now')),
+            PRIMARY KEY (provider, subscription_id)
+        );
         CREATE TABLE IF NOT EXISTS featured_servers (
             guild_id TEXT PRIMARY KEY,
             guild_name TEXT,
@@ -2248,6 +2271,41 @@ function getPremiumEvents(userId, limit = 10) {
         ORDER BY id DESC
         LIMIT ?
     `).all(userId, safeLimit);
+}
+
+/**
+ * Keeps Pro active until at least `until` (a Date). Unlike grantPremium it never
+ * stacks: repeated billing events for the same period leave the date unchanged.
+ */
+function extendPremiumUntil({ userId, until, grantedBy, source, note = null, providerRef = null }) {
+    getOrCreateUser(userId);
+    return db.transaction(() => {
+        const existing = getPremiumEntitlement(userId);
+        const current = existing?.status === 'active' && existing.expires_at ? parseSqliteDate(existing.expires_at) : null;
+        const target = current && current > until ? current : until;
+        db.prepare(`
+            INSERT INTO premium_entitlements (
+                user_id, plan_key, status, source, starts_at, expires_at,
+                granted_by, note, provider_ref, created_at, updated_at, revoked_at
+            )
+            VALUES (?, 'pro_beta', 'active', ?, datetime('now'), ?, ?, ?, ?, datetime('now'), datetime('now'), NULL)
+            ON CONFLICT(user_id) DO UPDATE SET
+                status = 'active',
+                source = excluded.source,
+                starts_at = CASE WHEN premium_entitlements.status = 'active' THEN premium_entitlements.starts_at ELSE excluded.starts_at END,
+                expires_at = excluded.expires_at,
+                granted_by = excluded.granted_by,
+                note = excluded.note,
+                provider_ref = excluded.provider_ref,
+                updated_at = datetime('now'),
+                revoked_at = NULL
+        `).run(userId, source, toSqliteDate(target), grantedBy || null, note, providerRef);
+        db.prepare(`
+            INSERT INTO premium_events (user_id, action, plan_key, source, duration_days, actor_id, note)
+            VALUES (?, 'grant', 'pro_beta', ?, ?, ?, ?)
+        `).run(userId, source, Math.max(0, Math.round((target - Date.now()) / 86400000)), grantedBy || null, note);
+        return getPremiumEntitlement(userId);
+    })();
 }
 
 function sqliteNow() {
@@ -4526,6 +4584,7 @@ module.exports = {
     setRuntimeState,
     getRuntimeState,
     grantPremium,
+    extendPremiumUntil,
     revokePremium,
     listActivePremiumEntitlements,
     expirePremiumEntitlements,

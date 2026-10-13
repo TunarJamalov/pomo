@@ -73,7 +73,7 @@ const categories = {
             { name: '/dataexport [period]', desc: 'Privately export your completed solo, team, and voice focus history as CSV. Pomo Pro.' },
             { name: '/proprofile [view/accent/badge/reset]', desc: 'Customize your profile accent and badge style. Pomo Pro.' },
             { name: '/streak [status/recover/repair]', desc: 'View, restore, or repair a broken streak. Repair costs 50 Water (no Pro required).' },
-            { name: '/premium [status/perks/activate]', desc: 'View your Pomo Pro status and perks, or activate Pro after subscribing on Boosty.' },
+            { name: '/premium [status/perks]', desc: 'Get Pomo Pro ($2.99/month or $19.99/year), see your status and manage your subscription.' },
             { name: '/leaderboard', desc: 'Server or global rankings by focus time, season or all-time. Includes a Top Clans tab.' },
             { name: '/send [@user] [amount] [reason]', desc: '**Send water to a friend.** Requires owner approval. Level 3+ required. Max 2,000 per transfer.' },
         ],

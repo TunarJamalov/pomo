@@ -49,8 +49,7 @@ module.exports = {
         startTopggStatsPoster(client);
         startSetupReminderJob(client);
         startPremiumExpiryJob(client);
-        // No-op unless BOOSTY_POLLER_ENABLED=true
-        require('../services/boostyPoller').startBoostyPoller();
+        require('../services/billingProcessor').startBillingProcessor(client);
         startDailyBankInterest();
         (async () => recoverSessions(client))().catch(err => console.error('[READY] recoverSessions failed:', err));
         (async () => recoverTeamSessions(client))().catch(err => console.error('[READY] recoverTeamSessions failed:', err));

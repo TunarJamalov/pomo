@@ -4,7 +4,6 @@ import { TimerRuler } from "@/components/site/TimerDial";
 import {
   AZEDEV_URL,
   BOT_INVITE_URL,
-  DONATION_URL,
   GITHUB_URL,
   SUPPORT_SERVER_URL,
   TIKTOK_URL,
@@ -38,7 +37,7 @@ const COLUMNS: Array<{ title: string; links: Array<{ label: string; href: string
       { label: "Top.gg", href: TOPGG_URL, external: true },
       { label: "GitHub", href: GITHUB_URL, external: true },
       { label: "TikTok", href: TIKTOK_URL, external: true },
-      { label: "Boosty", href: DONATION_URL, external: true },
+      { label: "Pomo Pro", href: "/support" },
     ],
   },
   {

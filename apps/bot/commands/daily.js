@@ -75,16 +75,11 @@ module.exports = {
         if (wantsPremium) {
             const premium = await isPremium(interaction.client, userId);
             if (!premium) {
-                const row = new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setLabel('⭐ Get Premium')
-                        .setStyle(ButtonStyle.Link)
-                        .setURL('https://boosty.to/pomobot')
-                );
+                const row = require('../utils/billing').buyRow(getInteractionLanguage(interaction), userId);
                 return interaction.reply({
                     embeds: [errorEmbed(
                         '⭐ Premium Only',
-                        'The premium daily is exclusive to **PomoBot Premium** members.\n\nGet premium to unlock:\n✅ 2nd daily with **5–8 extra fruits**\n✅ Auto **2x Water Boost**\n✅ **+50% bigger** quest rewards'
+                        'The premium daily is exclusive to **Pomo Pro** members.\n\nGet premium to unlock:\n✅ 2nd daily with **5–8 extra fruits**\n✅ Auto **2x Water Boost**\n✅ **+50% bigger** quest rewards'
                     )],
                     components: [row],
                     flags: 64,

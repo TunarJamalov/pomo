@@ -46,7 +46,6 @@ const { handleHelpCategory } = require('../commands/help');
 const { handleGuidePanelButton, handleGuidePanelPostButton } = require('../commands/guide');
 const { handleSetDailyGoalBtn, handleDailyGoalSubmit } = require('../utils/dailyGoalHandler');
 const { handlePersonaSelect } = require('../commands/persona');
-const { handleVerificationModalSubmit, handleOwnerApprove, handleOwnerReject } = require('../utils/premiumVerification');
 const { handlePlanJoin, handlePlanLeave, handlePlanLaunch } = require('../commands/plan');
 const { handleTransferButton } = require('../commands/send');
 const {
@@ -289,16 +288,6 @@ async function routeButton(interaction) {
 
         
         
-        if (customId.startsWith('pro_approve_')) {
-            const targetUserId = customId.replace('pro_approve_', '');
-            return await handleOwnerApprove(interaction, targetUserId);
-        }
-
-        if (customId.startsWith('pro_reject_')) {
-            const targetUserId = customId.replace('pro_reject_', '');
-            return await handleOwnerReject(interaction, targetUserId);
-        }
-
         if (customId === 'upsell_dismiss') {
             const { db } = require('../utils/database');
             db.prepare('UPDATE upsell_log SET was_clicked = 1 WHERE user_id = ? AND was_clicked = 0').run(interaction.user.id);
@@ -650,10 +639,6 @@ async function handleChannelSelectMenu(interaction) {
 async function handleModalSubmit(interaction) {
     try {
         
-        if (interaction.customId === 'pro_verification_modal') {
-            return await handleVerificationModalSubmit(interaction);
-        }
-
         if (interaction.customId?.startsWith('fb_reply_modal_')) {
             return await require('../utils/feedbackReplies').handleOwnerReplyModal(interaction);
         }

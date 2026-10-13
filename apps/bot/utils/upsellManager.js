@@ -6,7 +6,7 @@ const { Colors, GardenPlotLimits } = require('./constants');
 const { isProActive } = require('./premiumManager');
 const { t, getInteractionLanguage } = require('./i18n');
 
-const DONATION_URL = process.env.POMO_DONATION_URL || 'https://boosty.to/pomobot';
+const { buyButtons } = require('./billing');
 
 const UPSELL_COOLDOWNS = {
   GLOBAL_HOURS:   24,
@@ -62,7 +62,7 @@ async function triggerUpsell(interaction, upsellType) {
       .setTitle(`${t(language, 'upsellStreakTitle')} 🔥`)
       .setDescription(t(language, 'upsellStreakBody', plotVars));
     buttons.addComponents(
-      new ButtonBuilder().setLabel(t(language, 'upsellGetProButton')).setStyle(ButtonStyle.Link).setURL(DONATION_URL).setEmoji('🛡️'),
+      ...buyButtons(language, interaction.user.id),
       new ButtonBuilder().setCustomId('upsell_dismiss').setLabel(t(language, 'upsellMaybeLaterButton')).setStyle(ButtonStyle.Secondary)
     );
   } else if (upsellType === 'GARDEN_FULL') {
@@ -70,7 +70,7 @@ async function triggerUpsell(interaction, upsellType) {
       .setTitle(`${t(language, 'upsellGardenTitle')} 🌱`)
       .setDescription(t(language, 'upsellGardenBody', plotVars));
     buttons.addComponents(
-      new ButtonBuilder().setLabel(t(language, 'upsellUnlockPlotsButton', { count: GardenPlotLimits.PRO - GardenPlotLimits.FREE })).setStyle(ButtonStyle.Link).setURL(DONATION_URL).setEmoji('🌱'),
+      ...buyButtons(language, interaction.user.id),
       new ButtonBuilder().setCustomId('upsell_dismiss').setLabel(t(language, 'upsellNotNowButton')).setStyle(ButtonStyle.Secondary)
     );
   } else if (upsellType === 'PERSONA_SWITCH') {
@@ -78,7 +78,7 @@ async function triggerUpsell(interaction, upsellType) {
       .setTitle(`${t(language, 'upsellPersonaTitle')} 🎭`)
       .setDescription(t(language, 'upsellPersonaBody', plotVars));
     buttons.addComponents(
-      new ButtonBuilder().setLabel(t(language, 'upsellGetProButton')).setStyle(ButtonStyle.Link).setURL(DONATION_URL).setEmoji('🎭'),
+      ...buyButtons(language, interaction.user.id),
       new ButtonBuilder().setCustomId('upsell_dismiss').setLabel(t(language, 'upsellMaybeLaterButton')).setStyle(ButtonStyle.Secondary)
     );
   } else {
@@ -87,7 +87,7 @@ async function triggerUpsell(interaction, upsellType) {
       .setTitle(`${t(language, 'upsellGenericTitle')} ⭐`)
       .setDescription(t(language, 'upsellGenericBody', plotVars));
     buttons.addComponents(
-      new ButtonBuilder().setLabel(t(language, 'upsellGetProButton')).setStyle(ButtonStyle.Link).setURL(DONATION_URL).setEmoji('⭐'),
+      ...buyButtons(language, interaction.user.id),
       new ButtonBuilder().setCustomId('upsell_dismiss').setLabel(t(language, 'upsellMaybeLaterButton')).setStyle(ButtonStyle.Secondary)
     );
   }

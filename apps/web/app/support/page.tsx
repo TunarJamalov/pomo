@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { ArrowUpRight, Check, Coffee, Crown, Server, Sparkles, Zap } from "lucide-react";
+import { getServerSession } from "next-auth";
+import { ArrowUpRight, Check, Crown, Server, Sparkles, Zap } from "lucide-react";
 import Footer from "@/components/Footer";
-import { DONATION_URL, SUPPORT_SERVER_URL } from "@/lib/links";
+import ProSignInButton from "@/components/site/ProSignInButton";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { SUPPORT_SERVER_URL } from "@/lib/links";
+import { checkoutUrl, PRO_PLANS, type ProPlan } from "@/lib/billing";
 
 export const metadata: Metadata = {
-  title: "Support Pomo",
-  description: "Support the Pomo Discord study bot, get help in the support server and see what Pomo Pro includes.",
+  title: "Pomo Pro",
+  description: "Get Pomo Pro for $2.99/month or $19.99/year: 2x water, streak shields, a bigger garden, 15 habits, advanced stats and more.",
   alternates: { canonical: "/support" },
 };
 
@@ -23,99 +27,136 @@ const PRO_PERKS = [
   ["Priority help", "And no upgrade messages"],
 ];
 
+const PLAN_COPY: Record<ProPlan, { title: string; note: string; badge?: string }> = {
+  monthly: { title: "Monthly", note: "Billed every month. Cancel any time." },
+  yearly: { title: "Yearly", note: "One payment a year, about $1.67 a month.", badge: "Save 44%" },
+};
+
+const FAQ = [
+  ["How does Pro turn on?", "Pay with the button on this page or with /premium in Discord. Pro is linked to your Discord account and turns on automatically about a minute later."],
+  ["How do I cancel?", "Run /premium status in Discord and press Manage subscription, or use the link in your receipt email. You keep Pro until the end of the period you paid for."],
+  ["Refunds", "If something went wrong, message us in the support server within 14 days of a payment and we will refund it."],
+  ["Payment methods", "Card or PayPal. Payments are processed by Lemon Squeezy, our merchant of record, which also handles sales tax and VAT."],
+];
+
 const COSTS = [
   { icon: Server, title: "Servers", body: "Hosting the Discord bot, the web dashboard and the databases 24/7." },
   { icon: Zap, title: "Reliability", body: "Keeping everything fast and responsive during peak study hours." },
-  { icon: Sparkles, title: "New features", body: "Support directly funds new study tools and quality-of-life improvements." },
+  { icon: Sparkles, title: "New features", body: "Pro directly funds new study tools and quality-of-life improvements." },
 ];
 
-export default function SupportPage() {
+export default async function SupportPage() {
+  const session = await getServerSession(authOptions);
+  const discordId = (session?.user as { id?: string } | undefined)?.id ?? null;
+  // A checkout without a Discord id can't be linked to anyone, so links are only built after sign-in
+  const plans = (Object.keys(PRO_PLANS) as ProPlan[]).map(plan => ({
+    plan,
+    ...PRO_PLANS[plan],
+    ...PLAN_COPY[plan],
+    configured: Boolean(checkoutUrl(plan)),
+    url: discordId ? checkoutUrl(plan, discordId) : null,
+  }));
+
   return (
     <main className="site min-h-screen">
       <section className="pb-16 pt-28 md:pb-20 md:pt-36">
         <div className="site-container">
-          <p className="kicker mb-6">Support Pomo</p>
-          <h1 className="site-heading max-w-[760px] text-[clamp(40px,6.5vw,72px)]">Keep Pomo running.</h1>
+          <p className="kicker mb-6">Pomo Pro</p>
+          <h1 className="site-heading max-w-[760px] text-[clamp(40px,6.5vw,72px)]">Study more. Keep the streak.</h1>
           <p className="mt-6 max-w-[600px] text-[17px] leading-relaxed text-[var(--site-muted)]">
-            Pomo is built by a solo developer and kept online for study communities around the world. Support it on
-            Boosty and unlock Pomo Pro.
+            Pomo is built by a solo developer and kept online for study communities around the world. Pro unlocks extra
+            perks and keeps Pomo free for everyone else.
           </p>
         </div>
       </section>
 
-      <section className="border-t border-[var(--site-line)] py-16 md:py-24">
-        <div className="site-container grid gap-4 md:grid-cols-2">
-          <div className="panel flex flex-col justify-between gap-10 p-7 md:p-10">
-            <div>
-              <div className="mb-6 flex items-center gap-3">
-                <Coffee size={18} className="text-[var(--site-fg-2)]" />
-                <h2 className="text-[20px] font-medium tracking-[-0.02em] text-[var(--site-fg)]">One-time support</h2>
-              </div>
-              <p className="text-[15px] leading-relaxed text-[var(--site-muted)]">
-                Donations help cover hosting, development time and the services that keep Pomo available 24/7.
-              </p>
-            </div>
-            <a href={DONATION_URL} target="_blank" rel="noreferrer" className="btn btn-outline h-11 w-full">
-              Support on Boosty
-              <ArrowUpRight size={14} />
-            </a>
-          </div>
-
-          <div className="panel flex flex-col justify-between gap-10 p-7 md:p-10">
-            <div>
-              <div className="mb-6 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <Crown size={18} className="text-[var(--site-fg-2)]" />
-                  <h2 className="text-[20px] font-medium tracking-[-0.02em] text-[var(--site-fg)]">Pomo Pro</h2>
-                </div>
-                <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--site-muted)]">
-                  <span className="status-dot" style={{ background: "var(--status-live)" }} />
-                  Available
-                </span>
-              </div>
-              <ul className="border-t border-[var(--site-line)]">
-                {PRO_PERKS.map(([title, detail]) => (
-                  <li key={title} className="flex items-baseline justify-between gap-4 border-b border-[var(--site-line)] py-2.5">
-                    <span className="flex items-center gap-2 text-[14px] text-[var(--site-fg)]">
-                      <Check size={13} className="text-[var(--status-live)]" />
-                      {title}
+      <section id="pricing" className="scroll-mt-24 border-t border-[var(--site-line)] py-16 md:py-24">
+        <div className="site-container grid gap-4 lg:grid-cols-[1fr_1fr_1.15fr]">
+          {plans.map(p => (
+            <div key={p.plan} className="panel flex flex-col justify-between gap-10 p-7 md:p-10">
+              <div>
+                <div className="mb-6 flex items-center justify-between gap-3">
+                  <h2 className="text-[20px] font-medium tracking-[-0.02em] text-[var(--site-fg)]">{p.title}</h2>
+                  {p.badge && (
+                    <span className="rounded-full bg-[var(--tomato-soft)] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--tomato)]">
+                      {p.badge}
                     </span>
-                    <span className="text-right text-[13px] text-[var(--site-muted)]">{detail}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-5 text-[13px] leading-relaxed text-[var(--site-subtle)]">
-                After subscribing on Boosty, run <code className="font-mono">/premium activate</code> in Discord with your
-                Boosty email and Pro turns on automatically.
-              </p>
+                  )}
+                </div>
+                <p className="text-[44px] font-semibold tracking-[-0.03em] text-[var(--site-fg)]">
+                  {p.price}
+                  <span className="ml-1 text-[16px] font-normal text-[var(--site-muted)]">/ {p.period}</span>
+                </p>
+                <p className="mt-3 text-[14px] leading-relaxed text-[var(--site-muted)]">{p.note}</p>
+              </div>
+              {p.url ? (
+                <a href={p.url} className={`btn h-11 w-full ${p.plan === "yearly" ? "btn-tomato" : "btn-outline"}`}>
+                  Get {p.title}
+                  <ArrowUpRight size={14} />
+                </a>
+              ) : p.configured && !discordId ? (
+                <ProSignInButton label="Sign in with Discord to subscribe" className={`btn h-11 w-full ${p.plan === "yearly" ? "btn-tomato" : "btn-outline"}`} />
+              ) : (
+                <span className="btn btn-outline h-11 w-full opacity-60">Coming soon</span>
+              )}
             </div>
-            <a href={DONATION_URL} target="_blank" rel="noreferrer" className="btn btn-tomato h-11 w-full">
-              Get Pomo Pro
-              <ArrowUpRight size={14} />
-            </a>
+          ))}
+
+          <div className="panel p-7 md:p-10">
+            <div className="mb-6 flex items-center gap-3">
+              <Crown size={18} className="text-[var(--site-fg-2)]" />
+              <h2 className="text-[20px] font-medium tracking-[-0.02em] text-[var(--site-fg)]">Everything in Pro</h2>
+            </div>
+            <ul className="border-t border-[var(--site-line)]">
+              {PRO_PERKS.map(([title, detail]) => (
+                <li key={title} className="flex items-baseline justify-between gap-4 border-b border-[var(--site-line)] py-2.5">
+                  <span className="flex items-center gap-2 text-[14px] text-[var(--site-fg)]">
+                    <Check size={13} className="text-[var(--status-live)]" />
+                    {title}
+                  </span>
+                  <span className="text-right text-[13px] text-[var(--site-muted)]">{detail}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-5 text-[13px] leading-relaxed text-[var(--site-subtle)]">
+              Prefer Discord? Run <code className="font-mono">/premium perks</code> and pay from there.
+            </p>
           </div>
         </div>
       </section>
 
       <section className="border-t border-[var(--site-line)] py-16 md:py-24">
-        <div className="site-container">
-          <p className="kicker mb-5">Where the money goes</p>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {COSTS.map(({ icon: Icon, title, body }) => (
-              <div key={title} className="panel p-7">
-                <Icon size={18} className="text-[var(--site-fg-2)]" />
-                <h3 className="mt-5 text-[16px] font-medium text-[var(--site-fg)]">{title}</h3>
-                <p className="mt-2 text-[14px] leading-relaxed text-[var(--site-muted)]">{body}</p>
-              </div>
-            ))}
+        <div className="site-container grid gap-10 md:grid-cols-2">
+          <div>
+            <p className="kicker mb-5">Questions</p>
+            <dl className="divide-y divide-[var(--site-line)] border-y border-[var(--site-line)]">
+              {FAQ.map(([q, a]) => (
+                <div key={q} className="py-5">
+                  <dt className="text-[15px] font-medium text-[var(--site-fg)]">{q}</dt>
+                  <dd className="mt-2 text-[14px] leading-relaxed text-[var(--site-muted)]">{a}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
-          <p className="mt-8 text-[14px] text-[var(--site-muted)]">
-            Questions?{" "}
-            <a href={SUPPORT_SERVER_URL} target="_blank" rel="noreferrer" className="text-[var(--site-fg)] underline underline-offset-4">
-              Ask in the support server
-            </a>
-            .
-          </p>
+          <div>
+            <p className="kicker mb-5">Where the money goes</p>
+            <div className="grid gap-4">
+              {COSTS.map(({ icon: Icon, title, body }) => (
+                <div key={title} className="panel p-6">
+                  <Icon size={18} className="text-[var(--site-fg-2)]" />
+                  <h3 className="mt-4 text-[16px] font-medium text-[var(--site-fg)]">{title}</h3>
+                  <p className="mt-2 text-[14px] leading-relaxed text-[var(--site-muted)]">{body}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-8 text-[14px] text-[var(--site-muted)]">
+              More questions?{" "}
+              <a href={SUPPORT_SERVER_URL} target="_blank" rel="noreferrer" className="text-[var(--site-fg)] underline underline-offset-4">
+                Ask in the support server
+              </a>
+              .
+            </p>
+          </div>
         </div>
       </section>
 

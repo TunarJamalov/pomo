@@ -17,7 +17,7 @@ backups/
 *.db.gz.sha256
 pomo_pgdata/
 
-# Bot runtime data (SQLite database, Boosty tokens)
+# Bot runtime data (SQLite database)
 apps/bot/data/
 apps/data/
 

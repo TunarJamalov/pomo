@@ -8,7 +8,6 @@ const fs = require('fs');
 const path = require('path');
 const { Client, Collection, GatewayIntentBits, Partials } = require('discord.js');
 const { initDatabase } = require('./utils/database');
-const { stopBoostyPoller } = require('./services/boostyPoller');
 
 // ─── Optional Proxy Support (for VDS providers that DPI-block Discord gateway) ─
 // Set HTTPS_PROXY=http://host:port  or  HTTPS_PROXY=socks5://host:port  in .env
@@ -146,7 +145,6 @@ loginWithRetry();
 // ─── Graceful Shutdown ───────────────────────────────────────
 function shutdown(signal) {
     console.log(`[SHUTDOWN] ${signal} received, shutting down gracefully...`);
-    stopBoostyPoller();
     client.destroy();
     const { db } = require('./utils/database');
     db.close();

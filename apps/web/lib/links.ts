@@ -9,8 +9,6 @@ export const BOT_INVITE_URL =
 
 export const SUPPORT_SERVER_URL = "https://discord.gg/XEubrrkBmB";
 
-export const DONATION_URL = process.env.NEXT_PUBLIC_DONATION_URL || "https://boosty.to/pomobot";
-export const HAS_DONATION_URL = true;
 
 export const DESKTOP_DOWNLOAD_URL =
   process.env.NEXT_PUBLIC_DESKTOP_DOWNLOAD_URL || "/downloads/Pomo-Focus-Setup.exe";

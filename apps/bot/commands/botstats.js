@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { getPollerState } = require('../services/boostyPoller');
 const {
     getGuildAnalytics,
     getActivationAnalytics,
@@ -67,10 +66,14 @@ module.exports = {
             ).join('\n')
             : 'No panel clicks yet.';
 
-                const pollerState = getPollerState();
-        const lastPollDisplay = pollerState.lastSuccessfulPollAt
-            ? `<t:${Math.floor(pollerState.lastSuccessfulPollAt.getTime() / 1000)}:R>`
-            : '_Never_';
+        const { db: statsDb } = require('../utils/database');
+        const pro = statsDb.prepare(`
+            SELECT
+                (SELECT COUNT(*) FROM premium_entitlements WHERE status = 'active' AND (expires_at IS NULL OR expires_at > datetime('now'))) AS active,
+                (SELECT COUNT(*) FROM premium_entitlements WHERE status = 'active' AND source = 'lemonsqueezy' AND expires_at > datetime('now')) AS paid,
+                (SELECT COUNT(*) FROM billing_events WHERE processed_at IS NULL) AS queued,
+                (SELECT MAX(received_at) FROM billing_events) AS last_event
+        `).get();
 
         const embed = new EmbedBuilder()
             .setColor(Colors.INFO)
@@ -84,7 +87,7 @@ module.exports = {
                 { name: 'Net Growth (7d)', value: `${(analytics.joins_7d || 0) - (analytics.leaves_7d || 0)}`, inline: true },
                 { name: 'Registered Users', value: `${users}`, inline: true },
                                 { name: 'Active Users (7d)', value: `${activeUsers}`, inline: true },
-                { name: '🔄 Boosty Poller', value: `Status: ${pollerState.isRunning ? '🟡 Running' : '🟢 Idle'}\nLast Success: ${lastPollDisplay}\nFailures: ${pollerState.consecutiveFailures} | Cycles: ${pollerState.totalCyclesRun}`, inline: false },
+                { name: '💰 Pomo Pro', value: `Active: ${pro.active} (paid via Lemon Squeezy: ${pro.paid})\nPayment events waiting: ${pro.queued}${pro.last_event ? ` · last ${pro.last_event} UTC` : ''}`, inline: false },
                 { name: 'Configured Servers', value: `${activation.configured_guilds || 0} (${setupRate}%)`, inline: true },
                 { name: 'Setup Funnel', value: `None ${setupFunnel.setup_none || 0} / Partial ${setupFunnel.setup_partial || 0} / Complete ${setupFunnel.setup_complete || 0} (${completeRate}%)`, inline: false },
                 { name: 'Focus Servers (7d)', value: `${activation.focus_guilds_7d || 0}`, inline: true },
