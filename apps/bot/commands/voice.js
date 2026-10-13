@@ -290,6 +290,7 @@ async function handleLeaderboard(interaction, language) {
         .setColor(Colors.STUDY)
         .setTitle(t(language, 'voiceLeaderboardTitle', { period: labels[period] }))
         .setDescription(description)
+        .setFooter({ text: t(language, 'voiceLeaderboardHint') })
         .setTimestamp();
 
     await interaction.reply({ embeds: [embed] });

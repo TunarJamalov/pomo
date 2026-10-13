@@ -294,7 +294,7 @@ function buildSetupNudgeEmbed(eligibility) {
         .setColor(Colors.INFO)
         .setTitle(recommendation.title)
         .setDescription(
-            `Members completed **${eligibility.completed_sessions} focus sessions** in the last 7 days.\n\n` +
+            `Members completed **${eligibility.completed_sessions} focus session${eligibility.completed_sessions === 1 ? '' : 's'}** in the last 7 days.\n\n` +
             `${recommendation.body}\n\n${recommendation.impact}\n\n` +
             'This suggestion is shown only once.'
         )

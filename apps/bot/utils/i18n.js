@@ -13372,6 +13372,128 @@ Object.assign(Messages['ar'], {
     "premiumPerksFooter": "شكرًا لدعمك Pomo! ❤️"
 });
 
+Object.assign(Messages['en'], {
+    "setupFollowupTitle": "Pomo is ready when you are 🍅",
+    "setupFollowupBody": "Want your members to actually use Pomo?\n\n**⚡ Quick Setup** takes one click: it counts study time in your voice channels, posts weekly progress reports here and sets a weekly server goal. No new channels.\n\nOr just try `/study 25` right now.\n\n_This is a one-time message._"
+});
+Object.assign(Messages['es'], {
+    "setupFollowupTitle": "Pomo está listo cuando tú lo estés 🍅",
+    "setupFollowupBody": "¿Quieres que tus miembros usen Pomo de verdad?\n\n**⚡ Configuración rápida** es un clic: cuenta el tiempo de estudio en tus canales de voz, publica informes semanales aquí y pone una meta semanal al servidor. Sin canales nuevos.\n\nO prueba `/study 25` ahora mismo.\n\n_Este mensaje se envía una sola vez._"
+});
+Object.assign(Messages['fr'], {
+    "setupFollowupTitle": "Pomo est prêt quand tu l'es 🍅",
+    "setupFollowupBody": "Tu veux que tes membres utilisent vraiment Pomo ?\n\n**⚡ Configuration rapide** se fait en un clic : elle compte le temps d'étude dans tes salons vocaux, publie des rapports hebdomadaires ici et fixe un objectif hebdomadaire au serveur. Aucun nouveau salon.\n\nOu essaie `/study 25` tout de suite.\n\n_Ce message n'est envoyé qu'une fois._"
+});
+Object.assign(Messages['pt-BR'], {
+    "setupFollowupTitle": "O Pomo está pronto quando você estiver 🍅",
+    "setupFollowupBody": "Quer que seus membros usem o Pomo de verdade?\n\n**⚡ Configuração rápida** é um clique: conta o tempo de estudo nos seus canais de voz, publica relatórios semanais aqui e define uma meta semanal para o servidor. Nenhum canal novo.\n\nOu experimente `/study 25` agora mesmo.\n\n_Esta mensagem é enviada só uma vez._"
+});
+Object.assign(Messages['ru'], {
+    "setupFollowupTitle": "Pomo готов, когда готов ты 🍅",
+    "setupFollowupBody": "Хочешь, чтобы участники действительно пользовались Pomo?\n\n**⚡ Быстрая настройка** — один клик: Pomo будет считать время учёбы в голосовых каналах, публиковать здесь еженедельные отчёты и поставит серверу недельную цель. Новых каналов не будет.\n\nИли просто попробуй `/study 25` прямо сейчас.\n\n_Это сообщение отправляется один раз._"
+});
+Object.assign(Messages['tr'], {
+    "setupFollowupTitle": "Pomo sen hazır olduğunda hazır 🍅",
+    "setupFollowupBody": "Üyelerinin Pomo'yu gerçekten kullanmasını ister misin?\n\n**⚡ Hızlı Kurulum** tek tık: ses kanallarındaki çalışma süresini sayar, haftalık ilerleme raporlarını buraya gönderir ve sunucuya haftalık bir hedef koyar. Yeni kanal açmaz.\n\nYa da hemen `/study 25` dene.\n\n_Bu mesaj yalnızca bir kez gönderilir._"
+});
+Object.assign(Messages['az'], {
+    "setupFollowupTitle": "Pomo sən hazır olanda hazırdır 🍅",
+    "setupFollowupBody": "Üzvlərin Pomo-dan həqiqətən istifadə etsin istəyirsən?\n\n**⚡ Sürətli quraşdırma** bir klikdir: voice kanallarında oxu vaxtını sayır, həftəlik hesabatları bura göndərir və serverə həftəlik məqsəd qoyur. Yeni kanal yaratmır.\n\nVə ya elə indi `/study 25` yoxla.\n\n_Bu mesaj yalnız bir dəfə göndərilir._"
+});
+Object.assign(Messages['ja'], {
+    "setupFollowupTitle": "準備ができたら Pomo はいつでも 🍅",
+    "setupFollowupBody": "メンバーに Pomo を使ってもらいたいですか？\n\n**⚡ クイックセットアップ**はワンクリック：ボイスチャンネルの勉強時間を記録し、ここに週間レポートを投稿し、サーバーの週間目標を設定します。新しいチャンネルは作りません。\n\nまたは今すぐ `/study 25` を試してみてください。\n\n_このメッセージは一度だけ送信されます。_"
+});
+Object.assign(Messages['ko'], {
+    "setupFollowupTitle": "준비되면 Pomo도 준비 완료 🍅",
+    "setupFollowupBody": "멤버들이 Pomo를 제대로 쓰길 원하나요?\n\n**⚡ 빠른 설정**은 클릭 한 번이에요: 음성 채널의 공부 시간을 기록하고, 여기에 주간 리포트를 올리고, 서버 주간 목표를 정해요. 새 채널은 만들지 않아요.\n\n아니면 지금 바로 `/study 25`를 써 보세요.\n\n_이 메시지는 한 번만 보내져요._"
+});
+Object.assign(Messages['ar'], {
+    "setupFollowupTitle": "Pomo جاهز متى ما كنت جاهزًا 🍅",
+    "setupFollowupBody": "هل تريد أن يستخدم أعضاؤك Pomo فعلًا؟\n\n**⚡ الإعداد السريع** بنقرة واحدة: يحسب وقت الدراسة في قنواتك الصوتية، وينشر تقارير أسبوعية هنا، ويضع هدفًا أسبوعيًا للخادم. دون إنشاء قنوات جديدة.\n\nأو جرّب `/study 25` الآن.\n\n_تُرسل هذه الرسالة مرة واحدة فقط._"
+});
+
+Object.assign(Messages['en'], {
+    "leaderboardServerWeek": "Server · This week",
+    "leaderboardServerWeekDesc": "All study in this server this week",
+    "leaderboardServerToday": "Server · Today",
+    "leaderboardServerTodayDesc": "All study in this server today",
+    "leaderboardServerPeriodFooter": "Counts /study, /pomodoro, /team and voice tracking in this server",
+    "voiceLeaderboardHint": "Voice channels only. /leaderboard → \"Server · This week\" also counts /study and /team"
+});
+Object.assign(Messages['es'], {
+    "leaderboardServerWeek": "Servidor · Esta semana",
+    "leaderboardServerWeekDesc": "Todo el estudio en este servidor esta semana",
+    "leaderboardServerToday": "Servidor · Hoy",
+    "leaderboardServerTodayDesc": "Todo el estudio en este servidor hoy",
+    "leaderboardServerPeriodFooter": "Cuenta /study, /pomodoro, /team y el seguimiento de voz en este servidor",
+    "voiceLeaderboardHint": "Solo canales de voz. /leaderboard → \"Servidor · Esta semana\" también cuenta /study y /team"
+});
+Object.assign(Messages['fr'], {
+    "leaderboardServerWeek": "Serveur · Cette semaine",
+    "leaderboardServerWeekDesc": "Toute l'étude sur ce serveur cette semaine",
+    "leaderboardServerToday": "Serveur · Aujourd'hui",
+    "leaderboardServerTodayDesc": "Toute l'étude sur ce serveur aujourd'hui",
+    "leaderboardServerPeriodFooter": "Compte /study, /pomodoro, /team et le suivi vocal sur ce serveur",
+    "voiceLeaderboardHint": "Salons vocaux uniquement. /leaderboard → « Serveur · Cette semaine » compte aussi /study et /team"
+});
+Object.assign(Messages['pt-BR'], {
+    "leaderboardServerWeek": "Servidor · Esta semana",
+    "leaderboardServerWeekDesc": "Todo o estudo neste servidor esta semana",
+    "leaderboardServerToday": "Servidor · Hoje",
+    "leaderboardServerTodayDesc": "Todo o estudo neste servidor hoje",
+    "leaderboardServerPeriodFooter": "Conta /study, /pomodoro, /team e o rastreamento de voz neste servidor",
+    "voiceLeaderboardHint": "Só canais de voz. /leaderboard → \"Servidor · Esta semana\" também conta /study e /team"
+});
+Object.assign(Messages['ru'], {
+    "leaderboardServerWeek": "Сервер · Эта неделя",
+    "leaderboardServerWeekDesc": "Вся учёба на этом сервере за неделю",
+    "leaderboardServerToday": "Сервер · Сегодня",
+    "leaderboardServerTodayDesc": "Вся учёба на этом сервере за сегодня",
+    "leaderboardServerPeriodFooter": "Учитывает /study, /pomodoro, /team и голосовой трекинг на этом сервере",
+    "voiceLeaderboardHint": "Только голосовые каналы. /leaderboard → «Сервер · Эта неделя» учитывает и /study, и /team"
+});
+Object.assign(Messages['tr'], {
+    "leaderboardServerWeek": "Sunucu · Bu hafta",
+    "leaderboardServerWeekDesc": "Bu sunucudaki bu haftaki tüm çalışma",
+    "leaderboardServerToday": "Sunucu · Bugün",
+    "leaderboardServerTodayDesc": "Bu sunucudaki bugünkü tüm çalışma",
+    "leaderboardServerPeriodFooter": "Bu sunucudaki /study, /pomodoro, /team ve ses takibini sayar",
+    "voiceLeaderboardHint": "Yalnızca ses kanalları. /leaderboard → \"Sunucu · Bu hafta\" /study ve /team'i de sayar"
+});
+Object.assign(Messages['az'], {
+    "leaderboardServerWeek": "Server · Bu həftə",
+    "leaderboardServerWeekDesc": "Bu serverdə bu həftəki bütün dərslər",
+    "leaderboardServerToday": "Server · Bu gün",
+    "leaderboardServerTodayDesc": "Bu serverdə bugünkü bütün dərslər",
+    "leaderboardServerPeriodFooter": "Bu serverdə /study, /pomodoro, /team və voice izləməni sayır",
+    "voiceLeaderboardHint": "Yalnız voice kanallar. /leaderboard → \"Server · Bu həftə\" /study və /team-i də sayır"
+});
+Object.assign(Messages['ja'], {
+    "leaderboardServerWeek": "サーバー · 今週",
+    "leaderboardServerWeekDesc": "このサーバーでの今週のすべての勉強",
+    "leaderboardServerToday": "サーバー · 今日",
+    "leaderboardServerTodayDesc": "このサーバーでの今日のすべての勉強",
+    "leaderboardServerPeriodFooter": "このサーバーの /study・/pomodoro・/team・ボイス記録を集計",
+    "voiceLeaderboardHint": "ボイスチャンネルのみ。/leaderboard →「サーバー · 今週」は /study と /team も集計します"
+});
+Object.assign(Messages['ko'], {
+    "leaderboardServerWeek": "서버 · 이번 주",
+    "leaderboardServerWeekDesc": "이 서버의 이번 주 모든 공부",
+    "leaderboardServerToday": "서버 · 오늘",
+    "leaderboardServerTodayDesc": "이 서버의 오늘 모든 공부",
+    "leaderboardServerPeriodFooter": "이 서버의 /study, /pomodoro, /team, 음성 기록을 합산해요",
+    "voiceLeaderboardHint": "음성 채널만 집계해요. /leaderboard → \"서버 · 이번 주\"는 /study와 /team도 포함해요"
+});
+Object.assign(Messages['ar'], {
+    "leaderboardServerWeek": "الخادم · هذا الأسبوع",
+    "leaderboardServerWeekDesc": "كل الدراسة في هذا الخادم هذا الأسبوع",
+    "leaderboardServerToday": "الخادم · اليوم",
+    "leaderboardServerTodayDesc": "كل الدراسة في هذا الخادم اليوم",
+    "leaderboardServerPeriodFooter": "يحسب /study و /pomodoro و /team وتتبّع الصوت في هذا الخادم",
+    "voiceLeaderboardHint": "القنوات الصوتية فقط. /leaderboard ← «الخادم · هذا الأسبوع» يحسب /study و /team أيضًا"
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,

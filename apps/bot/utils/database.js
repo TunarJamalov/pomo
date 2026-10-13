@@ -1051,6 +1051,7 @@ function initDatabase() {
     try { db.exec('ALTER TABLE guild_installations ADD COLUMN setup_reminder_sent_at TEXT DEFAULT NULL'); } catch(_) {}
     try { db.exec('ALTER TABLE guild_installations ADD COLUMN setup_reminder_attempted_at TEXT DEFAULT NULL'); } catch(_) {}
     try { db.exec('ALTER TABLE guild_installations ADD COLUMN setup_nudge_sent_at TEXT DEFAULT NULL'); } catch(_) {}
+    try { db.exec('ALTER TABLE guild_installations ADD COLUMN setup_followup_sent_at TEXT DEFAULT NULL'); } catch(_) {}
 
     try { db.exec("ALTER TABLE activity_commands ADD COLUMN type TEXT DEFAULT 'study'"); } catch (_) {}
     try { db.exec("ALTER TABLE activity_commands ADD COLUMN extra_data TEXT DEFAULT NULL"); } catch (_) {}
@@ -3005,7 +3006,13 @@ function getActivationAnalytics() {
                 COALESCE(gs.voice_tracking_enabled, 0) = 1
                 OR COALESCE(gs.report_enabled, 0) = 1
                 OR COALESCE(gs.goal_enabled, 0) = 1
-            ) THEN 1 ELSE 0 END) as setup_nudge_conversions
+            ) THEN 1 ELSE 0 END) as setup_nudge_conversions,
+            SUM(CASE WHEN gi.setup_followup_sent_at IS NOT NULL THEN 1 ELSE 0 END) as setup_followups_sent,
+            SUM(CASE WHEN gi.setup_followup_sent_at IS NOT NULL AND (
+                COALESCE(gs.voice_tracking_enabled, 0) = 1
+                OR COALESCE(gs.report_enabled, 0) = 1
+                OR COALESCE(gs.goal_enabled, 0) = 1
+            ) THEN 1 ELSE 0 END) as setup_followup_conversions
         FROM guild_installations gi
         LEFT JOIN guild_settings gs ON gs.guild_id = gi.guild_id
     `).get();
@@ -3173,7 +3180,7 @@ function getSetupReminderCandidates(limit = 5) {
               gi.setup_reminder_attempted_at IS NULL
               OR gi.setup_reminder_attempted_at < datetime('now', '-7 days')
           )
-          AND gi.joined_at < datetime('now', '-14 days')
+          AND gi.joined_at < datetime('now', '-7 days')
           AND (
               COALESCE(gs.voice_tracking_enabled, 0) = 0
               OR COALESCE(gs.report_enabled, 0) = 0
@@ -3183,17 +3190,17 @@ function getSetupReminderCandidates(limit = 5) {
               SELECT 1 FROM study_sessions s
               WHERE s.guild_id = gi.guild_id
                 AND s.title != '__break__'
-                AND s.started_at >= datetime('now', '-14 days')
+                AND s.started_at >= datetime('now', '-7 days')
           )
           AND NOT EXISTS (
               SELECT 1 FROM team_sessions ts
               WHERE ts.guild_id = gi.guild_id
-                AND ts.started_at >= datetime('now', '-14 days')
+                AND ts.started_at >= datetime('now', '-7 days')
           )
           AND NOT EXISTS (
               SELECT 1 FROM voice_sessions vs
               WHERE vs.guild_id = gi.guild_id
-                AND vs.started_at >= datetime('now', '-14 days')
+                AND vs.started_at >= datetime('now', '-7 days')
           )
         ORDER BY gi.joined_at ASC
         LIMIT ?
@@ -3255,6 +3262,36 @@ function getSetupNudgeEligibility(guildId, minimumSessions = 3) {
     `).get(guildId, safeMinimum) || null;
 }
 
+/**
+ * Servers that joined 20-72 hours ago and turned on nothing yet. Most servers
+ * that leave do so in the first days, long before the 7-day reminder.
+ */
+function getSetupFollowupCandidates(limit = 40) {
+    return db.prepare(`
+        SELECT gi.guild_id, gi.guild_name, gi.member_count
+        FROM guild_installations gi
+        LEFT JOIN guild_settings gs ON gs.guild_id = gi.guild_id
+        WHERE gi.active = 1
+          AND gi.is_baseline = 0
+          AND gi.setup_followup_sent_at IS NULL
+          AND gi.joined_at <= datetime('now', '-20 hours')
+          AND gi.joined_at >= datetime('now', '-72 hours')
+          AND COALESCE(gs.voice_tracking_enabled, 0) = 0
+          AND COALESCE(gs.report_enabled, 0) = 0
+          AND COALESCE(gs.goal_enabled, 0) = 0
+        ORDER BY gi.joined_at ASC
+        LIMIT ?
+    `).all(Math.max(1, Math.min(Number(limit) || 40, 200)));
+}
+
+function markSetupFollowupSent(guildId) {
+    return db.prepare(`
+        UPDATE guild_installations
+        SET setup_followup_sent_at = COALESCE(setup_followup_sent_at, datetime('now'))
+        WHERE guild_id = ?
+    `).run(guildId).changes > 0;
+}
+
 function markSetupNudgeSent(guildId) {
     return db.prepare(`
         UPDATE guild_installations
@@ -3307,7 +3344,7 @@ function getSetupNudgeCandidates(limit = 20) {
               OR COALESCE(gs.goal_enabled, 0) = 0
           )
         GROUP BY gi.guild_id
-        HAVING COUNT(focus.occurred_at) >= 3
+        HAVING COUNT(focus.occurred_at) >= 1
         ORDER BY completed_sessions DESC
         LIMIT ?
     `).all(safeLimit);
@@ -4655,6 +4692,8 @@ module.exports = {
     markSetupReminderAttempt,
     getSetupNudgeEligibility,
     markSetupNudgeSent,
+    getSetupFollowupCandidates,
+    markSetupFollowupSent,
     getSetupNudgeCandidates,
     getWeekStart,
     configureGuildGoal,

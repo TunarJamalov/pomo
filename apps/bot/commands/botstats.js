@@ -94,6 +94,7 @@ module.exports = {
                 { name: 'Command Servers (7d)', value: `${activation.command_guilds_7d || 0}`, inline: true },
                 { name: 'Voice / Reports / Goals', value: `${activation.voice_guilds || 0} / ${activation.report_guilds || 0} / ${activation.goal_guilds || 0}`, inline: false },
                 { name: 'Setup Nudges / Conversions', value: `${activation.setup_nudges_sent || 0} / ${activation.setup_nudge_conversions || 0}`, inline: true },
+                { name: 'Day-1 Follow-ups / Conversions', value: `${activation.setup_followups_sent || 0} / ${activation.setup_followup_conversions || 0}`, inline: true },
                 { name: 'Guide Panels / Clicks (7d)', value: `${onboarding.panels_posted || 0} / ${onboarding.panel_clicks || 0}`, inline: true },
                 { name: 'Panel Reach (7d)', value: `${onboarding.guilds || 0} servers / ${onboarding.users || 0} users`, inline: true },
                 { name: 'Top Panel Clicks', value: onboardingTopicsText, inline: false },

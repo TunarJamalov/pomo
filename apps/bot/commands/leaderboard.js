@@ -10,7 +10,8 @@ const {
     EmbedBuilder,
 } = require('discord.js');
 const { Colors } = require('../utils/constants');
-const { db, getOrCreateUser, getClanLeaderboardTotal } = require('../utils/database');
+const { db, getOrCreateUser, getClanLeaderboardTotal, getOrCreateGuildSettings } = require('../utils/database');
+const { getDayWindow, getWeekWindow, toSqlDateTime } = require('../utils/timezone');
 const { formatTime } = require('../utils/embeds');
 const { getInteractionLanguage, t } = require('../utils/i18n');
 
@@ -47,6 +48,8 @@ function buildDropdown(selected, language = 'en') {
             .addOptions([
                 { label: t(language, 'leaderboardGlobalFocus'), value: 'global_alltime', emoji: '🌌', description: t(language, 'leaderboardGlobalFocusDesc'), default: selected === 'global_alltime' },
                 { label: t(language, 'leaderboardGlobalXp'), value: 'global_alltime_xp', emoji: '🌟', description: t(language, 'leaderboardGlobalXpDesc'), default: selected === 'global_alltime_xp' },
+                { label: t(language, 'leaderboardServerWeek'), value: 'server_week', emoji: '📅', description: t(language, 'leaderboardServerWeekDesc'), default: selected === 'server_week' },
+                { label: t(language, 'leaderboardServerToday'), value: 'server_today', emoji: '☀️', description: t(language, 'leaderboardServerTodayDesc'), default: selected === 'server_today' },
                 { label: t(language, 'leaderboardServerFocus'), value: 'server_alltime', emoji: '🏛️', description: t(language, 'leaderboardServerFocusDesc'), default: selected === 'server_alltime' },
                 { label: t(language, 'leaderboardServerXp'), value: 'server_alltime_xp', emoji: '⭐', description: t(language, 'leaderboardServerXpDesc'), default: selected === 'server_alltime_xp' },
                 { label: t(language, 'leaderboardSeasonFocus'), value: 'global_season', emoji: '🌍', description: t(language, 'leaderboardSeasonFocusDesc'), default: selected === 'global_season' },
@@ -79,6 +82,10 @@ async function buildLeaderboardEmbed(interaction, scope, language = 'en') {
             .setDescription(desc)
             .setFooter({ text: t(language, 'leaderboardClanFooter') })
             .setTimestamp();
+    }
+
+    if (scope === 'server_week' || scope === 'server_today') {
+        return buildServerPeriodEmbed(interaction, scope, language);
     }
 
     // ─── Personal Leaderboard ──────────────────────────────────
@@ -153,6 +160,64 @@ async function buildLeaderboardEmbed(interaction, scope, language = 'en') {
 }
 
 /**
+ * Minutes studied in one server between two UTC times, from every source:
+ * solo (/study, /pomodoro), team sessions and tracked voice. Voice credit
+ * already excludes minutes that overlap a running timer, so nothing counts twice.
+ */
+function getServerPeriodRows(guildId, startUtc, endUtc, limit = 10) {
+    const from = toSqlDateTime(startUtc);
+    const to = toSqlDateTime(endUtc);
+    return db.prepare(`
+        SELECT user_id, SUM(minutes) AS minutes FROM (
+            SELECT user_id, duration AS minutes FROM study_sessions
+            WHERE guild_id = ? AND completed = 1 AND title != '__break__'
+              AND started_at >= ? AND started_at < ?
+            UNION ALL
+            SELECT tm.user_id, ts.duration AS minutes FROM team_members tm
+            JOIN team_sessions ts ON ts.id = tm.session_id
+            WHERE ts.guild_id = ? AND ts.status = 'completed'
+              AND ts.started_at >= ? AND ts.started_at < ?
+            UNION ALL
+            SELECT user_id, credited_minutes AS minutes FROM voice_sessions
+            WHERE guild_id = ? AND status = 'completed' AND credited_minutes > 0
+              AND ended_at >= ? AND ended_at < ?
+        )
+        GROUP BY user_id
+        HAVING minutes > 0
+        ORDER BY minutes DESC
+        LIMIT ?
+    `).all(guildId, from, to, guildId, from, to, guildId, from, to, limit);
+}
+
+function buildServerPeriodEmbed(interaction, scope, language = 'en') {
+    const isWeek = scope === 'server_week';
+    const title = `📅 ${t(language, 'leaderboardTitle', {
+        period: t(language, isWeek ? 'thisWeekLabel' : 'todayLabel'),
+        scope: t(language, 'serverScope'),
+        metric: t(language, 'focusTimeMetric'),
+    })}`;
+    const footer = t(language, 'leaderboardServerPeriodFooter');
+    if (!interaction.guildId) {
+        return new EmbedBuilder().setColor(Colors.INFO).setTitle(title).setDescription(t(language, 'noLeaderboardData')).setFooter({ text: footer }).setTimestamp();
+    }
+
+    const timeZone = getOrCreateGuildSettings(interaction.guildId)?.timezone || 'UTC';
+    const window = isWeek ? getWeekWindow(new Date(), timeZone) : getDayWindow(new Date(), timeZone);
+    const rows = getServerPeriodRows(interaction.guildId, window.startUtc, window.endUtc);
+    const medals = ['🥇', '🥈', '🥉'];
+    const description = rows.length
+        ? rows.map((row, i) => `${medals[i] || `**${i + 1}.**`} <@${row.user_id}> — ${formatTime(row.minutes)} ⏱️`).join('\n')
+        : t(language, 'noLeaderboardData');
+
+    return new EmbedBuilder()
+        .setColor(Colors.MARKET)
+        .setTitle(title)
+        .setDescription(description)
+        .setFooter({ text: footer })
+        .setTimestamp();
+}
+
+/**
  * Top 10 for a server without fetching every member: rank people who have
  * studied in this server (solo, voice or team), then confirm only the best
  * candidates are still members.
@@ -197,3 +262,5 @@ async function handleLeaderboardScope(interaction) {
 }
 
 module.exports.handleLeaderboardScope = handleLeaderboardScope;
+module.exports.getServerPeriodRows = getServerPeriodRows;
+module.exports.buildDropdown = buildDropdown;
