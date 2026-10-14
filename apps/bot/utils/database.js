@@ -2280,7 +2280,7 @@ function getPremiumEvents(userId, limit = 10) {
  * Keeps Pro active until at least `until` (a Date). Unlike grantPremium it never
  * stacks: repeated billing events for the same period leave the date unchanged.
  */
-function extendPremiumUntil({ userId, until, grantedBy, source, note = null, providerRef = null }) {
+function extendPremiumUntil({ userId, until, grantedBy, source, note = null, providerRef = null, planKey = 'pro_beta' }) {
     getOrCreateUser(userId);
     return db.transaction(() => {
         const existing = getPremiumEntitlement(userId);
@@ -2291,9 +2291,10 @@ function extendPremiumUntil({ userId, until, grantedBy, source, note = null, pro
                 user_id, plan_key, status, source, starts_at, expires_at,
                 granted_by, note, provider_ref, created_at, updated_at, revoked_at
             )
-            VALUES (?, 'pro_beta', 'active', ?, datetime('now'), ?, ?, ?, ?, datetime('now'), datetime('now'), NULL)
+            VALUES (?, ?, 'active', ?, datetime('now'), ?, ?, ?, ?, datetime('now'), datetime('now'), NULL)
             ON CONFLICT(user_id) DO UPDATE SET
                 status = 'active',
+                plan_key = excluded.plan_key,
                 source = excluded.source,
                 starts_at = CASE WHEN premium_entitlements.status = 'active' THEN premium_entitlements.starts_at ELSE excluded.starts_at END,
                 expires_at = excluded.expires_at,
@@ -2302,7 +2303,7 @@ function extendPremiumUntil({ userId, until, grantedBy, source, note = null, pro
                 provider_ref = excluded.provider_ref,
                 updated_at = datetime('now'),
                 revoked_at = NULL
-        `).run(userId, source, toSqliteDate(target), grantedBy || null, note, providerRef);
+        `).run(userId, planKey, source, toSqliteDate(target), grantedBy || null, note, providerRef);
         db.prepare(`
             INSERT INTO premium_events (user_id, action, plan_key, source, duration_days, actor_id, note)
             VALUES (?, 'grant', 'pro_beta', ?, ?, ?, ?)

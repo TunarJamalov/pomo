@@ -1,5 +1,13 @@
 const { getOrCreateUser, getPremiumEntitlement } = require('./database');
 
+/**
+ * Pomo has two paid plans: Plus (plan_key 'plus') and Pro (every other active
+ * plan, including older 'pro_beta' grants, supporter roles and legacy flags).
+ */
+function tierOfPlan(planKey) {
+    return planKey === 'plus' ? 'plus' : 'pro';
+}
+
 async function getPremiumStatus(client, userId) {
     const user = getOrCreateUser(userId);
     const entitlement = getPremiumEntitlement(userId);
@@ -7,6 +15,7 @@ async function getPremiumStatus(client, userId) {
     if (entitlement?.status === 'active') {
         return {
             active: true,
+            tier: tierOfPlan(entitlement.plan_key),
             planKey: entitlement.plan_key,
             source: entitlement.source,
             startsAt: entitlement.starts_at,
@@ -18,6 +27,7 @@ async function getPremiumStatus(client, userId) {
     if (user.premium === 1) {
         return {
             active: true,
+            tier: 'pro',
             planKey: 'legacy',
             source: 'legacy_override',
             startsAt: null,
@@ -32,6 +42,7 @@ async function getPremiumStatus(client, userId) {
     if (roleSource) {
         return {
             active: true,
+            tier: 'pro',
             planKey: 'supporter',
             source: roleSource,
             startsAt: null,
@@ -62,8 +73,15 @@ async function getPremiumStatus(client, userId) {
     };
 }
 
+/** Any paid plan (Plus or Pro): the shared perks. */
 async function isPremium(client, userId) {
     return (await getPremiumStatus(client, userId)).active;
+}
+
+/** Pro only: the perks Plus does not include. */
+async function hasFullPro(client, userId) {
+    const status = await getPremiumStatus(client, userId);
+    return status.active && status.tier === 'pro';
 }
 
 async function hasPremiumRole(client, userId) {
@@ -139,6 +157,8 @@ async function syncPremiumRole(client, userId, shouldHaveRole) {
 module.exports = {
     getPremiumStatus,
     isPremium,
+    hasFullPro,
+    tierOfPlan,
     hasPremiumRole,
     hasMembershipRole,
     getPremiumRoleSource,

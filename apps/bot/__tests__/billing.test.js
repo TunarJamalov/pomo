@@ -101,8 +101,8 @@ describe('buying from Discord', () => {
         process.env.PRO_SALES_OPEN = 'true';
         const urls = buyButtons('en').map(b => b.toJSON().url);
         expect(urls).toEqual([
-            'https://pomofocus.online/pricing?plan=monthly#pricing',
-            'https://pomofocus.online/pricing?plan=yearly#pricing',
+            'https://pomofocus.online/pricing?plan=plus#pricing',
+            'https://pomofocus.online/pricing?plan=pro#pricing',
         ]);
     });
 

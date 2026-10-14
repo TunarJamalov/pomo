@@ -3,11 +3,11 @@ const { getInteractionLanguage, t } = require('../utils/i18n');
 const { Colors } = require('../utils/constants');
 const { successEmbed, errorEmbed } = require('../utils/embeds');
 const { playLofi, stopLofi, isPlayingLofi, isAudioAvailable } = require('../utils/audioPlayer');
-const { getPremiumEntitlement } = require('../utils/database');
+const { isFullPro } = require('../utils/premiumManager');
 
+// 24/7 lofi is Pro only (not in Plus)
 function checkPremium(userId) {
-    const entitlement = getPremiumEntitlement(userId);
-    return entitlement && entitlement.status === 'active';
+    return isFullPro(userId);
 }
 
 module.exports = {

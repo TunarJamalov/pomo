@@ -35,7 +35,8 @@ module.exports = {
         }
 
         const premium = await getPremiumStatus(interaction.client, interaction.user.id);
-        if (subcommand === 'recover' && !premium.active) {
+        // /streak recover is Pro only (not in Plus)
+        if (subcommand === 'recover' && !(premium.active && premium.tier === 'pro')) {
             return interaction.editReply({
                 embeds: [errorEmbed(
                     t(language, 'proFeatureTitle'),

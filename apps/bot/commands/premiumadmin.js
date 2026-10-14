@@ -36,7 +36,11 @@ module.exports = {
                 .addStringOption(input =>
                     input.setName('note')
                         .setDescription('Private reason or tester note')
-                        .setMaxLength(200)))
+                        .setMaxLength(200))
+                .addStringOption(input =>
+                    input.setName('plan')
+                        .setDescription('Plan to grant (default: Pro)')
+                        .addChoices({ name: 'Pro', value: 'pro' }, { name: 'Plus', value: 'plus' })))
         .addSubcommand(option =>
             option.setName('revoke')
                 .setDescription('Revoke Pro Beta access immediately')
@@ -93,7 +97,8 @@ async function handleGrant(interaction) {
         });
     }
 
-    const entitlement = grantProAccess(target.id, days, interaction.user.id, { note, source: 'manual_beta' });
+    const planKey = interaction.options.getString('plan') || 'pro';
+    const entitlement = grantProAccess(target.id, days, interaction.user.id, { note, source: 'manual_beta', planKey });
     const roleSync = await syncPremiumRole(interaction.client, target.id, true);
 
     await interaction.reply({

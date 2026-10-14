@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 const { db, getOrCreateUser } = require('../utils/database');
 const { Colors } = require('../utils/constants');
-const { isProActive } = require('../utils/premiumManager');
+const { isFullPro } = require('../utils/premiumManager');
 const { t, getInteractionLanguage } = require('../utils/i18n');
 
 // Free users can switch persona once per this many days; Pro can switch any time
@@ -150,7 +150,8 @@ async function handlePersonaSelect(interaction) {
         return interaction.update({ content: t(language, 'personaAlreadyBody', { name: lp.name }), embeds: [], components: [] });
     }
 
-    if (user.persona && user.persona_changed_at && !isProActive(userId)) {
+    // Unlimited switching is Pro only (not in Plus)
+    if (user.persona && user.persona_changed_at && !isFullPro(userId)) {
         const changedAt = new Date(`${user.persona_changed_at.replace(' ', 'T')}Z`);
         const nextSwitch = new Date(changedAt.getTime() + FREE_SWITCH_COOLDOWN_DAYS * 86400000);
         if (nextSwitch > new Date()) {

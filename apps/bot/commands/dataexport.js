@@ -3,7 +3,7 @@ const {
     AttachmentBuilder,
 } = require('discord.js');
 const { db } = require('../utils/database');
-const { isPremium } = require('../utils/premiumCheck');
+const { hasFullPro } = require('../utils/premiumCheck');
 const { errorEmbed } = require('../utils/embeds');
 const { getInteractionLanguage, t } = require('../utils/i18n');
 
@@ -27,7 +27,8 @@ module.exports = {
     async execute(interaction) {
         const language = getInteractionLanguage(interaction);
         await interaction.deferReply({ flags: 64 });
-        const premium = await isPremium(interaction.client, interaction.user.id);
+        // Pro only (not in Plus)
+        const premium = await hasFullPro(interaction.client, interaction.user.id);
         if (!premium) {
             return interaction.editReply({
                 embeds: [errorEmbed(

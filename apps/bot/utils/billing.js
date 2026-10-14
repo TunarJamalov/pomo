@@ -1,32 +1,33 @@
 /**
- * Pomo Pro checkout. Payments run through Paddle on the pricing page, where the
- * buyer signs in with Discord so the webhook knows who to give Pro to. The bot
- * only links there, and only once sales are open (PRO_SALES_OPEN=true).
+ * Pomo Plus / Pomo Pro checkout. Payments run on the website's pricing page,
+ * where the buyer signs in with Discord so the payment can be linked to them.
+ * The bot only links there, and only once sales are open (PRO_SALES_OPEN=true).
+ * Keep prices in sync with apps/web/lib/billing.ts.
  */
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { db } = require('./database');
 const { t } = require('./i18n');
 
 const PLANS = {
-    monthly: { price: '$2.99', labelKey: 'proBuyMonthly' },
-    yearly: { price: '$19.99', labelKey: 'proBuyYearly' },
+    plus: { monthly: '$1.49', yearly: '$11.99', labelKey: 'planBuyPlus' },
+    pro: { monthly: '$1.99', yearly: '$15.99', labelKey: 'planBuyPro' },
 };
 const PRICING_PAGE = 'https://pomofocus.online/pricing';
 
-/** True when Pro can actually be bought (Paddle is live). */
+/** True when a plan can actually be bought (checkout is live). */
 function checkoutConfigured() {
     return process.env.PRO_SALES_OPEN === 'true';
 }
 
-/** Plan buttons to the pricing page while sales are open, otherwise one link to it. */
+/** One button per plan to the pricing page while sales are open, otherwise one link to it. */
 function buyButtons(language) {
     if (!checkoutConfigured()) {
         return [new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(t(language, 'upsellGetProButton')).setURL(PRICING_PAGE)];
     }
     return Object.entries(PLANS).map(([plan, info]) => new ButtonBuilder()
         .setStyle(ButtonStyle.Link)
-        .setLabel(t(language, info.labelKey, { price: info.price }))
-        .setEmoji(plan === 'yearly' ? '⭐' : '🍅')
+        .setLabel(t(language, info.labelKey, { price: info.monthly }))
+        .setEmoji(plan === 'pro' ? '🚀' : '⭐')
         .setURL(`${PRICING_PAGE}?plan=${plan}#pricing`));
 }
 

@@ -18,15 +18,17 @@ const { t, getUserLanguage } = require('./i18n');
  * Called by: premiumadmin grant and the reactivation campaign. Paid Pro from
  * Paddle uses extendPremiumUntil (services/billingProcessor.js).
  */
-function grantProAccess(userId, days = 30, grantedBy = 'OWNER_MANUAL', { note = null, source = 'manual' } = {}) {
+function grantProAccess(userId, days = 30, grantedBy = 'OWNER_MANUAL', { note = null, source = 'manual', planKey = 'pro' } = {}) {
     const entitlement = grantPremium({
         userId,
         durationDays: days,
         grantedBy,
         note,
-        planKey: 'pro_beta',
+        planKey,
         source,
     });
+    // Streak shields are a Pro perk; Plus starts with none
+    const shields = planKey === 'plus' ? 0 : PRO_STREAK_SHIELDS;
 
     db.prepare(`
         UPDATE users SET
@@ -35,9 +37,9 @@ function grantProAccess(userId, days = 30, grantedBy = 'OWNER_MANUAL', { note = 
             lapse_detected_at        = NULL,
             lapse_check_count        = 0
         WHERE discord_id = ?
-    `).run(PRO_STREAK_SHIELDS, currentMonth(), userId);
+    `).run(shields, currentMonth(), userId);
 
-    console.log(`[PremiumManager] Pro granted to ${userId} for ${days} days (by ${grantedBy})`);
+    console.log(`[PremiumManager] ${planKey} granted to ${userId} for ${days} days (by ${grantedBy})`);
     return entitlement;
 }
 
@@ -64,11 +66,22 @@ function revokeProAccess(userId, revokedBy = 'SYSTEM', note = null) {
  * Synchronous Pro check from the database (managed entitlement or legacy flag).
  * Discord supporter roles are only checked by the async premiumCheck.isPremium.
  */
+/** Any paid plan (Plus or Pro). */
 function isProActive(userId) {
+    return getProTier(userId) !== null;
+}
+
+/** 'plus', 'pro' or null. Plus is plan_key 'plus'; every other active plan is Pro. */
+function getProTier(userId) {
     const entitlement = getPremiumEntitlement(userId);
-    if (entitlement?.status === 'active') return true;
+    if (entitlement?.status === 'active') return entitlement.plan_key === 'plus' ? 'plus' : 'pro';
     const user = db.prepare('SELECT premium FROM users WHERE discord_id = ?').get(userId);
-    return user?.premium === 1;
+    return user?.premium === 1 ? 'pro' : null;
+}
+
+/** Pro only: the perks Plus does not include (streak shields, advanced stats, lofi, ...). */
+function isFullPro(userId) {
+    return getProTier(userId) === 'pro';
 }
 
 function getMaxGardenPlots(userId) {
@@ -84,7 +97,7 @@ function currentMonth(date = new Date()) {
  * refill happens lazily the first time shields are used or read in a month.
  */
 function refillProStreakShields(userId) {
-    if (!isProActive(userId)) return;
+    if (!isFullPro(userId)) return;
     db.prepare(`
         UPDATE users SET streak_shields_remaining = ?, pro_shields_month = ?
         WHERE discord_id = ? AND (pro_shields_month IS NULL OR pro_shields_month <> ?)
@@ -96,7 +109,7 @@ function refillProStreakShields(userId) {
  * Returns true when the streak should be protected.
  */
 function consumeProStreakShield(userId) {
-    if (!isProActive(userId)) return false;
+    if (!isFullPro(userId)) return false;
     refillProStreakShields(userId);
     const result = db.prepare(`
         UPDATE users SET streak_shields_remaining = streak_shields_remaining - 1
@@ -152,6 +165,8 @@ module.exports = {
     grantProAccess,
     revokeProAccess,
     isProActive,
+    getProTier,
+    isFullPro,
     getMaxGardenPlots,
     consumeProStreakShield,
     refillProStreakShields,

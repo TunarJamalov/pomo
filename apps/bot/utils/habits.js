@@ -10,6 +10,7 @@ const { db, getOrCreateUser, incrementUser } = require('./database');
 const { getTimeZoneParts, formatLocalDate, addLocalDays, normalizeTimeZone } = require('./timezone');
 
 const FREE_HABITS = 5;
+const PLUS_HABITS = 10;
 const PRO_HABITS = 15;
 const REWARD_WATER = 1;
 const DAILY_REWARD_CAP = 3;
@@ -67,8 +68,9 @@ function getHabit(userId, habitId) {
 }
 
 function getHabitLimit(userId) {
-    const { isProActive } = require('./premiumManager');
-    return isProActive(userId) ? PRO_HABITS : FREE_HABITS;
+    const tier = require('./premiumManager').getProTier(userId);
+    if (tier === 'pro') return PRO_HABITS;
+    return tier === 'plus' ? PLUS_HABITS : FREE_HABITS;
 }
 
 /** Returns { habit } or { error: 'limit' | 'duplicate' }. */
@@ -255,6 +257,7 @@ function buildHabitOverview(userId, guildId = null, now = new Date()) {
 
 module.exports = {
     FREE_HABITS,
+    PLUS_HABITS,
     PRO_HABITS,
     getHabitLimit,
     DAILY_REWARD_CAP,

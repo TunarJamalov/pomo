@@ -1,38 +1,37 @@
 /**
- * Pomo Pro checkout through Paddle. Server-only: prices, token and environment
- * come from env. The checkout carries the buyer's Discord id as custom data,
- * which the webhook reads. Keep prices in sync with apps/bot/utils/billing.js.
+ * Pomo's two paid plans. Keep prices and perks in sync with the bot
+ * (PLANS in apps/bot/utils/billing.js, planPlusItems/planProItems in apps/bot/utils/i18n.js).
  */
-export const PRO_PLANS = {
-  monthly: { env: "PADDLE_PRICE_MONTHLY", price: "$2.99", period: "month" },
-  yearly: { env: "PADDLE_PRICE_YEARLY", price: "$19.99", period: "year" },
+export const PRO_TIERS = {
+  plus: {
+    name: "Pomo Plus",
+    monthly: "$1.49",
+    yearly: "$11.99",
+    yearlyPerMonth: "$1.00",
+    perks: [
+      ["2x Water", "On every focus session: solo, team and voice"],
+      ["2nd daily reward", "/daily premium: +5 💧 and 5–8 fruits"],
+      ["Better quests", "+50% rewards, 2 fruits each"],
+      ["Bigger garden", "8 plots instead of 6"],
+      ["More habits", "10 habits instead of 5"],
+      ["Your style", "/proprofile accent and badge, no upgrade messages"],
+    ],
+  },
+  pro: {
+    name: "Pomo Pro",
+    monthly: "$1.99",
+    yearly: "$15.99",
+    yearlyPerMonth: "$1.33",
+    perks: [
+      ["Everything in Plus", "All of the Plus perks"],
+      ["15 habits", "The most habits you can track"],
+      ["3 Streak Shields a month", "Plus /streak recover once every 30 days"],
+      ["Deeper stats", "/stats advanced, /mygoal and /dataexport"],
+      ["Unlimited personas", "Switch /persona whenever you like"],
+      ["24/7 lofi radio", "/lofi in your voice channel"],
+      ["Priority help", "In the support server"],
+    ],
+  },
 } as const;
 
-export type ProPlan = keyof typeof PRO_PLANS;
-
-export type PaddleSetup = {
-  environment: "sandbox" | "production";
-  token: string;
-  prices: Record<ProPlan, string>;
-};
-
-/** The Paddle settings, or null while checkout isn't configured. */
-export function paddleSetup(): PaddleSetup | null {
-  const token = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN?.trim();
-  const monthly = process.env[PRO_PLANS.monthly.env]?.trim();
-  const yearly = process.env[PRO_PLANS.yearly.env]?.trim();
-  if (!token || !monthly || !yearly) return null;
-  const environment = process.env.NEXT_PUBLIC_PADDLE_ENV === "production" ? "production" : "sandbox";
-  return { environment, token, prices: { monthly, yearly } };
-}
-
-/**
- * Whether this visitor may open a checkout. In sandbox only the owner's test
- * accounts can, so nobody else gets Pro from a test card.
- */
-export function canCheckout(setup: PaddleSetup | null, discordId: string | null): boolean {
-  if (!setup || !discordId) return false;
-  if (setup.environment === "production") return true;
-  const testers = (process.env.PADDLE_TEST_DISCORD_IDS ?? "").split(",").map(s => s.trim()).filter(Boolean);
-  return testers.includes(discordId);
-}
+export type ProTier = keyof typeof PRO_TIERS;

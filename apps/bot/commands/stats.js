@@ -9,7 +9,7 @@ const {
 } = require('discord.js');
 const { Colors, xpForLevel } = require('../utils/constants');
 const { getOrCreateUser, db } = require('../utils/database');
-const { isPremium } = require('../utils/premiumCheck');
+const { hasFullPro } = require('../utils/premiumCheck');
 const { generateStatsDashboard } = require('../utils/canvas');
 const { getInteractionLanguage, t } = require('../utils/i18n');
 
@@ -46,7 +46,8 @@ module.exports = {
         await interaction.deferReply();
 
         if (view === 'advanced') {
-            const premium = await isPremium(interaction.client, userId);
+            // Pro only (not in Plus)
+            const premium = await hasFullPro(interaction.client, userId);
             if (!premium) {
                 const embed = new EmbedBuilder()
                     .setColor(Colors.MARKET)

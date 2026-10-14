@@ -1,39 +1,16 @@
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { Check, Crown } from "lucide-react";
+import { Check } from "lucide-react";
 import Footer from "@/components/Footer";
-import ProSignInButton from "@/components/site/ProSignInButton";
-import PaddleCheckoutButton, { PaddleTransactionOpener } from "@/components/site/PaddleCheckoutButton";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { SUPPORT_SERVER_URL } from "@/lib/links";
-import { canCheckout, paddleSetup, PRO_PLANS, type ProPlan } from "@/lib/billing";
+import { PRO_TIERS, type ProTier } from "@/lib/billing";
 
 export const metadata: Metadata = {
   title: "Pricing",
-  description: "Pomo Pro is a $2.99/month or $19.99/year subscription that unlocks extra features in the Pomo Discord bot: 2x water, streak shields, a bigger garden, 15 habits, advanced stats and more.",
+  description: "Pomo Plus ($1.49/month) and Pomo Pro ($1.99/month) unlock extra features in the Pomo Discord bot: 2x water, a bigger garden, more habits, streak shields, advanced stats and 24/7 lofi radio.",
   alternates: { canonical: "/pricing" },
 };
 
-// Keep in sync with the bot's /premium perks (premiumPerksItems in apps/bot/utils/i18n.js)
-const PRO_PERKS = [
-  ["2x Water", "On every focus session: solo, team and voice"],
-  ["2nd daily reward", "/daily premium: +5 💧 and 5–8 fruits"],
-  ["Better quests", "+50% rewards, 2 fruits each, claimed automatically"],
-  ["3 Streak Shields a month", "Plus /streak recover once every 30 days"],
-  ["Bigger garden", "8 plots instead of 6"],
-  ["More habits", "15 habits instead of 5"],
-  ["Deeper stats", "/stats advanced, /mygoal and /dataexport"],
-  ["Your style", "/proprofile accent and badge, unlimited /persona switches"],
-  ["24/7 lofi radio", "/lofi in your voice channel"],
-  ["Priority help", "And no upgrade messages"],
-];
-
-const PLAN_COPY: Record<ProPlan, { title: string; note: string; badge?: string }> = {
-  monthly: { title: "Monthly", note: "Billed every month. Cancel any time." },
-  yearly: { title: "Yearly", note: "One payment a year, about $1.67 a month.", badge: "Save 44%" },
-};
-
-// What every account gets without paying, so the line between Free and Pro is clear
+// What every account gets without paying, so the line between Free and the paid plans is clear
 const FREE_FEATURES = [
   "Focus timers: /study, /pomodoro and group /team sessions",
   "Automatic voice study tracking",
@@ -44,118 +21,66 @@ const FREE_FEATURES = [
 ];
 
 const FAQ = [
-  ["What do I get?", "A subscription for your Discord account. The Pro features above unlock in the Pomo bot and on the dashboard for as long as the subscription is active."],
-  ["How does Pro turn on?", "Pay with the button on this page or with /premium in Discord. Pro is linked to your Discord account and turns on automatically about a minute later."],
-  ["How do I cancel?", "Run /premium status in Discord and press Manage subscription, or use the link in your receipt email. You keep Pro until the end of the period you paid for."],
+  ["What do I get?", "A subscription for your Discord account. The plan's features unlock in the Pomo bot and on the dashboard for as long as the subscription is active."],
+  ["Plus or Pro?", "Plus covers the everyday boosts: more water, a bigger garden and 10 habits. Pro adds streak shields, deeper stats, 15 habits and 24/7 lofi radio."],
+  ["How do I cancel?", "Run /premium status in Discord, or use the link in your receipt email. You keep your plan until the end of the period you paid for."],
   ["Refunds", "Every payment has a 14-day money-back guarantee: ask within 14 days for a full refund, no questions asked."],
-  ["Who handles the payment?", "Paddle.com, our merchant of record. It processes the payment and handles sales tax, VAT and receipts."],
 ];
 
-export default async function PricingPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const session = await getServerSession(authOptions);
-  const discordId = (session?.user as { id?: string } | undefined)?.id ?? null;
-  const query = await searchParams;
-  // Plan buttons in Discord link here with ?plan=; open that checkout once signed in
-  const wantedPlan = typeof query.plan === "string" ? query.plan : null;
-  const welcome = query.welcome === "1";
-  // Payment links and card updates from Paddle's emails land here with ?_ptxn=
-  const paddleTransaction = typeof query._ptxn === "string";
-
-  const setup = paddleSetup();
-  // A checkout without a Discord id can't be linked to anyone, so it only opens after sign-in
-  const checkout = canCheckout(setup, discordId) ? setup : null;
-  const salesOpen = setup?.environment === "production";
-  const plans = (Object.keys(PRO_PLANS) as ProPlan[]).map(plan => ({
-    plan,
-    ...PRO_PLANS[plan],
-    ...PLAN_COPY[plan],
-  }));
+export default function PricingPage() {
+  const tiers = (Object.keys(PRO_TIERS) as ProTier[]).map(tier => ({ tier, ...PRO_TIERS[tier] }));
 
   return (
     <main className="site min-h-screen">
-      {paddleTransaction && setup && <PaddleTransactionOpener environment={setup.environment} token={setup.token} />}
       <section className="pb-16 pt-28 md:pb-20 md:pt-36">
         <div className="site-container">
           <p className="kicker mb-6">Pricing</p>
-          <h1 className="site-heading max-w-[760px] text-[clamp(40px,6.5vw,72px)]">Pomo Pro</h1>
+          <h1 className="site-heading max-w-[760px] text-[clamp(40px,6.5vw,72px)]">Pomo Plus and Pro</h1>
           <p className="mt-6 max-w-[600px] text-[17px] leading-relaxed text-[var(--site-muted)]">
-            A monthly or yearly subscription that unlocks extra features in the Pomo Discord bot and dashboard. The
-            core timers, voice tracking and stats stay free.
+            Two monthly or yearly plans that unlock extra features in the Pomo Discord bot and dashboard. The core
+            timers, voice tracking and stats stay free.
           </p>
-          {welcome && (
-            <div className="panel mt-8 max-w-[600px] p-5 text-[15px] text-[var(--site-fg)]">
-              Thanks for subscribing! Pro turns on for your Discord account within a minute. Check it with{" "}
-              <code className="font-mono">/premium status</code>.
-            </div>
-          )}
         </div>
       </section>
 
       <section id="pricing" className="scroll-mt-24 border-t border-[var(--site-line)] py-16 md:py-24">
-        <div className="site-container grid gap-4 lg:grid-cols-[1fr_1fr_1.15fr]">
-          {plans.map(p => (
-            <div key={p.plan} className="panel flex flex-col justify-between gap-10 p-7 md:p-10">
+        <div className="site-container grid gap-4 md:grid-cols-2">
+          {tiers.map(p => (
+            <div
+              key={p.tier}
+              className={`panel flex flex-col justify-between gap-10 p-7 md:p-10 ${p.tier === "pro" ? "ring-1 ring-[var(--tomato)]" : ""}`}
+            >
               <div>
                 <div className="mb-6 flex items-center justify-between gap-3">
-                  <h2 className="text-[20px] font-medium tracking-[-0.02em] text-[var(--site-fg)]">{p.title}</h2>
-                  {p.badge && (
+                  <h2 className="text-[20px] font-medium tracking-[-0.02em] text-[var(--site-fg)]">{p.name}</h2>
+                  {p.tier === "pro" && (
                     <span className="rounded-full bg-[var(--tomato-soft)] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--tomato)]">
-                      {p.badge}
+                      Most features
                     </span>
                   )}
                 </div>
                 <p className="text-[44px] font-semibold tracking-[-0.03em] text-[var(--site-fg)]">
-                  {p.price}
-                  <span className="ml-1 text-[16px] font-normal text-[var(--site-muted)]">/ {p.period}</span>
+                  {p.monthly}
+                  <span className="ml-1 text-[16px] font-normal text-[var(--site-muted)]">/ month</span>
                 </p>
-                <p className="mt-3 text-[14px] leading-relaxed text-[var(--site-muted)]">{p.note}</p>
+                <p className="mt-2 text-[14px] text-[var(--site-muted)]">
+                  or {p.yearly} a year, about {p.yearlyPerMonth} a month
+                </p>
+                <ul className="mt-8 border-t border-[var(--site-line)]">
+                  {p.perks.map(([title, detail]) => (
+                    <li key={title} className="flex items-baseline justify-between gap-4 border-b border-[var(--site-line)] py-2.5">
+                      <span className="flex items-center gap-2 text-[14px] text-[var(--site-fg)]">
+                        <Check size={13} className="shrink-0 text-[var(--status-live)]" />
+                        {title}
+                      </span>
+                      <span className="text-right text-[13px] text-[var(--site-muted)]">{detail}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              {checkout && discordId ? (
-                <PaddleCheckoutButton
-                  environment={checkout.environment}
-                  token={checkout.token}
-                  priceId={checkout.prices[p.plan]}
-                  discordId={discordId}
-                  label={`Get ${p.title}`}
-                  autoOpen={wantedPlan === p.plan}
-                  className={`btn h-11 w-full ${p.plan === "yearly" ? "btn-tomato" : "btn-outline"}`}
-                />
-              ) : salesOpen && !discordId ? (
-                <ProSignInButton
-                  label="Sign in with Discord to subscribe"
-                  callbackUrl={`/pricing?plan=${p.plan}#pricing`}
-                  className={`btn h-11 w-full ${p.plan === "yearly" ? "btn-tomato" : "btn-outline"}`}
-                />
-              ) : (
-                <span className="btn btn-outline h-11 w-full opacity-60">Coming soon</span>
-              )}
+              <span className="btn btn-outline h-11 w-full opacity-60">Coming soon</span>
             </div>
           ))}
-
-          <div className="panel p-7 md:p-10">
-            <div className="mb-6 flex items-center gap-3">
-              <Crown size={18} className="text-[var(--site-fg-2)]" />
-              <h2 className="text-[20px] font-medium tracking-[-0.02em] text-[var(--site-fg)]">Everything in Pro</h2>
-            </div>
-            <ul className="border-t border-[var(--site-line)]">
-              {PRO_PERKS.map(([title, detail]) => (
-                <li key={title} className="flex items-baseline justify-between gap-4 border-b border-[var(--site-line)] py-2.5">
-                  <span className="flex items-center gap-2 text-[14px] text-[var(--site-fg)]">
-                    <Check size={13} className="text-[var(--status-live)]" />
-                    {title}
-                  </span>
-                  <span className="text-right text-[13px] text-[var(--site-muted)]">{detail}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-5 text-[13px] leading-relaxed text-[var(--site-subtle)]">
-              Prefer Discord? Run <code className="font-mono">/premium perks</code> and pay from there.
-            </p>
-          </div>
         </div>
       </section>
 
