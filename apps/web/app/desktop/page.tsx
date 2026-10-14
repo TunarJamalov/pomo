@@ -12,7 +12,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import Footer from "@/components/Footer";
-import { DESKTOP_DOWNLOAD_URL, LINUX_APPIMAGE_URL, LINUX_DEB_URL, MICROSOFT_STORE_URL } from "@/lib/links";
+import { AUR_PACKAGE_URL, DESKTOP_DOWNLOAD_URL, LINUX_APPIMAGE_URL, LINUX_DEB_URL, MICROSOFT_STORE_URL } from "@/lib/links";
 
 export const metadata: Metadata = {
   title: { absolute: "Pomo Focus Desktop | Pomodoro Timer for Windows and Linux" },
@@ -100,6 +100,13 @@ export default function DesktopDownloadPage() {
                 .deb
               </a>{" "}
               (Ubuntu, Debian, Mint). Make the AppImage executable, then open it.
+            </p>
+            <p className="mt-2 text-[13px] text-[var(--site-subtle)]">
+              On Arch:{" "}
+              <a href={AUR_PACKAGE_URL} target="_blank" rel="noreferrer" className="hover:text-[var(--site-fg)]">
+                <code className="font-mono">yay -S pomofocus-bin</code>
+              </a>{" "}
+              from the AUR.
             </p>
           </div>
 

@@ -20,6 +20,8 @@ export const LINUX_APPIMAGE_URL = `${DESKTOP_RELEASE_URL}/Pomo-Focus.AppImage`;
 
 export const LINUX_DEB_URL = `${DESKTOP_RELEASE_URL}/pomo-focus_amd64.deb`;
 
+export const AUR_PACKAGE_URL = "https://aur.archlinux.org/packages/pomofocus-bin";
+
 export const MICROSOFT_STORE_URL =
   process.env.NEXT_PUBLIC_MICROSOFT_STORE_URL || "https://apps.microsoft.com/detail/9PDMHQ05QR55";
 
