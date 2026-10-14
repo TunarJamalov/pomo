@@ -24,6 +24,7 @@ export const PRO_TIERS = {
     yearlyPerMonth: "$1.33",
     perks: [
       ["Everything in Plus", "All of the Plus perks"],
+      ["Pomo assistant", "Reminders at your best hour, before exams and when you've been away"],
       ["15 habits", "The most habits you can track"],
       ["3 Streak Shields a month", "Plus /streak recover once every 30 days"],
       ["Deeper stats", "/stats advanced, /mygoal and /dataexport"],

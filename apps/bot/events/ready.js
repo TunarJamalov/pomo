@@ -50,6 +50,7 @@ module.exports = {
         startSetupReminderJob(client);
         startPremiumExpiryJob(client);
         require('../services/billingProcessor').startBillingProcessor(client);
+        require('../utils/assistant').startAssistantJob(client);
         startDailyBankInterest();
         (async () => recoverSessions(client))().catch(err => console.error('[READY] recoverSessions failed:', err));
         (async () => recoverTeamSessions(client))().catch(err => console.error('[READY] recoverTeamSessions failed:', err));

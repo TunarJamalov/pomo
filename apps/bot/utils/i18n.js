@@ -13656,6 +13656,148 @@ Object.assign(Messages['ar'], {
     "premiumPerksHowToBody": "اختر خطة بالأسفل. تُفتح صفحة الدفع في متصفحك وتُفعَّل خطتك تلقائيًا خلال دقيقة. يمكنك الإلغاء في أي وقت من `/premium status`."
 });
 
+// Pomo assistant (Pro): utils/assistant.js and /assistant
+Object.assign(Messages['en'], {
+    "assistantTitle": "🍅🤖 Pomo assistant",
+    "assistantFooter": "Turn this off any time with /assistant off",
+    "assistantBestHourBody": "It's {time}, usually your most focused hour, and you haven't studied yet today. Start a 25-minute session? `/pomodoro`",
+    "assistantExamBody": "**{title}** is in **{days} day(s)**. You've studied **{done}h** of your **{target}h** target, so about **{perDay}h a day** is left. `/pomodoro`",
+    "assistantExamNoTargetBody": "**{title}** is in **{days} day(s)**. A couple of focused sessions today keep you on track. `/pomodoro`",
+    "assistantComebackBody": "You usually study about {days} days a week, but not for the last 2 days. One 25-minute session gets you back on track. `/pomodoro`",
+    "assistantOnBody": "The assistant is on. I'll message you at most once a day: at your best study hour, 7, 3 and 1 days before an exam, and when you've been away for a couple of days.",
+    "assistantOffBody": "The assistant is off. Turn it back on any time with `/assistant on`.",
+    "assistantProOnly": "The Pomo assistant is a Pomo Pro feature. See `/premium perks`.",
+    "assistantStatusBody": "**Status:** {status}\n**Your best study hour:** {hour}\n**Upcoming exams:** {exams} (add one with `/exam`)",
+    "assistantNeedData": "not enough sessions yet (5 needed in 30 days)",
+    "planProItems": "✨ **Everything in Plus**, and:\n🤖 **Pomo assistant**: reminders at your best hour, before exams and when you've been away (`/assistant`)\n🗓️ **15 habits**\n🛡️ **3 Streak Shields every month**, plus `/streak recover` once every 30 days\n📊 `/stats advanced`, `/mygoal` and `/dataexport`\n🎭 Unlimited `/persona` switches\n🎧 **24/7 lofi radio** with `/lofi`\n💬 Priority help in the support server"
+});
+Object.assign(Messages['es'], {
+    "assistantTitle": "🍅🤖 Asistente de Pomo",
+    "assistantFooter": "Desactívalo cuando quieras con /assistant off",
+    "assistantBestHourBody": "Son las {time}, normalmente tu hora más productiva, y hoy aún no has estudiado. ¿Empezamos una sesión de 25 minutos? `/pomodoro`",
+    "assistantExamBody": "**{title}** es en **{days} día(s)**. Has estudiado **{done}h** de tu objetivo de **{target}h**, así que quedan unas **{perDay}h al día**. `/pomodoro`",
+    "assistantExamNoTargetBody": "**{title}** es en **{days} día(s)**. Un par de sesiones de enfoque hoy te mantienen al día. `/pomodoro`",
+    "assistantComebackBody": "Sueles estudiar unos {days} días a la semana, pero no en los últimos 2 días. Una sesión de 25 minutos te vuelve a encarrilar. `/pomodoro`",
+    "assistantOnBody": "El asistente está activado. Te escribiré como máximo una vez al día: a tu mejor hora de estudio, 7, 3 y 1 días antes de un examen, y cuando lleves un par de días sin estudiar.",
+    "assistantOffBody": "El asistente está desactivado. Vuelve a activarlo cuando quieras con `/assistant on`.",
+    "assistantProOnly": "El asistente de Pomo es una función de Pomo Pro. Mira `/premium perks`.",
+    "assistantStatusBody": "**Estado:** {status}\n**Tu mejor hora de estudio:** {hour}\n**Próximos exámenes:** {exams} (añade uno con `/exam`)",
+    "assistantNeedData": "aún no hay suficientes sesiones (hacen falta 5 en 30 días)",
+    "planProItems": "✨ **Todo lo de Plus**, y además:\n🤖 **Asistente de Pomo**: recordatorios a tu mejor hora, antes de exámenes y cuando te ausentas (`/assistant`)\n🗓️ **15 hábitos**\n🛡️ **3 escudos de racha al mes**, y `/streak recover` una vez cada 30 días\n📊 `/stats advanced`, `/mygoal` y `/dataexport`\n🎭 Cambios ilimitados de `/persona`\n🎧 **Radio lofi 24/7** con `/lofi`\n💬 Ayuda prioritaria en el servidor de soporte"
+});
+Object.assign(Messages['fr'], {
+    "assistantTitle": "🍅🤖 Assistant Pomo",
+    "assistantFooter": "Désactive-le quand tu veux avec /assistant off",
+    "assistantBestHourBody": "Il est {time}, souvent ton heure la plus productive, et tu n’as pas encore étudié aujourd’hui. On lance une session de 25 minutes ? `/pomodoro`",
+    "assistantExamBody": "**{title}** a lieu dans **{days} jour(s)**. Tu as étudié **{done} h** sur ton objectif de **{target} h**, il reste donc environ **{perDay} h par jour**. `/pomodoro`",
+    "assistantExamNoTargetBody": "**{title}** a lieu dans **{days} jour(s)**. Deux ou trois sessions aujourd’hui te gardent sur la bonne voie. `/pomodoro`",
+    "assistantComebackBody": "Tu étudies d’habitude environ {days} jours par semaine, mais pas ces 2 derniers jours. Une session de 25 minutes suffit pour reprendre le rythme. `/pomodoro`",
+    "assistantOnBody": "L’assistant est activé. Je t’écrirai au plus une fois par jour : à ta meilleure heure d’étude, 7, 3 et 1 jours avant un examen, et quand tu t’absentes quelques jours.",
+    "assistantOffBody": "L’assistant est désactivé. Réactive-le quand tu veux avec `/assistant on`.",
+    "assistantProOnly": "L’assistant Pomo est une fonctionnalité Pomo Pro. Vois `/premium perks`.",
+    "assistantStatusBody": "**Statut :** {status}\n**Ta meilleure heure d’étude :** {hour}\n**Examens à venir :** {exams} (ajoutes-en un avec `/exam`)",
+    "assistantNeedData": "pas encore assez de sessions (5 nécessaires sur 30 jours)",
+    "planProItems": "✨ **Tout ce qu’offre Plus**, et en plus :\n🤖 **Assistant Pomo** : rappels à ta meilleure heure, avant les examens et quand tu t’absentes (`/assistant`)\n🗓️ **15 habitudes**\n🛡️ **3 boucliers de série par mois**, plus `/streak recover` une fois tous les 30 jours\n📊 `/stats advanced`, `/mygoal` et `/dataexport`\n🎭 Changements de `/persona` illimités\n🎧 **Radio lofi 24h/24** avec `/lofi`\n💬 Aide prioritaire sur le serveur de support"
+});
+Object.assign(Messages['pt-BR'], {
+    "assistantTitle": "🍅🤖 Assistente do Pomo",
+    "assistantFooter": "Desligue quando quiser com /assistant off",
+    "assistantBestHourBody": "São {time}, geralmente seu horário mais focado, e você ainda não estudou hoje. Bora uma sessão de 25 minutos? `/pomodoro`",
+    "assistantExamBody": "**{title}** é em **{days} dia(s)**. Você estudou **{done}h** da sua meta de **{target}h**, então faltam cerca de **{perDay}h por dia**. `/pomodoro`",
+    "assistantExamNoTargetBody": "**{title}** é em **{days} dia(s)**. Algumas sessões de foco hoje mantêm você no caminho. `/pomodoro`",
+    "assistantComebackBody": "Você costuma estudar uns {days} dias por semana, mas não nos últimos 2 dias. Uma sessão de 25 minutos coloca você de volta nos trilhos. `/pomodoro`",
+    "assistantOnBody": "O assistente está ligado. Vou te mandar no máximo uma mensagem por dia: no seu melhor horário de estudo, 7, 3 e 1 dias antes de uma prova, e quando você ficar alguns dias sem estudar.",
+    "assistantOffBody": "O assistente está desligado. Ligue de novo quando quiser com `/assistant on`.",
+    "assistantProOnly": "O assistente do Pomo é um recurso do Pomo Pro. Veja `/premium perks`.",
+    "assistantStatusBody": "**Status:** {status}\n**Seu melhor horário de estudo:** {hour}\n**Próximas provas:** {exams} (adicione uma com `/exam`)",
+    "assistantNeedData": "ainda não há sessões suficientes (são necessárias 5 em 30 dias)",
+    "planProItems": "✨ **Tudo do Plus**, e mais:\n🤖 **Assistente do Pomo**: lembretes no seu melhor horário, antes de provas e quando você some (`/assistant`)\n🗓️ **15 hábitos**\n🛡️ **3 escudos de sequência por mês**, e `/streak recover` uma vez a cada 30 dias\n📊 `/stats advanced`, `/mygoal` e `/dataexport`\n🎭 Trocas ilimitadas de `/persona`\n🎧 **Rádio lofi 24/7** com `/lofi`\n💬 Ajuda prioritária no servidor de suporte"
+});
+Object.assign(Messages['ru'], {
+    "assistantTitle": "🍅🤖 Помощник Pomo",
+    "assistantFooter": "Выключить можно в любой момент: /assistant off",
+    "assistantBestHourBody": "Сейчас {time} — обычно твой самый продуктивный час, а сегодня ты ещё не занимался. Запустим сессию на 25 минут? `/pomodoro`",
+    "assistantExamBody": "До **{title}** осталось **{days} дн.** Ты позанимался **{done} ч** из цели **{target} ч**, значит осталось примерно **{perDay} ч в день**. `/pomodoro`",
+    "assistantExamNoTargetBody": "До **{title}** осталось **{days} дн.** Пара фокус-сессий сегодня поможет не отставать. `/pomodoro`",
+    "assistantComebackBody": "Обычно ты занимаешься около {days} дней в неделю, но последние 2 дня — нет. Одна сессия на 25 минут вернёт тебя в ритм. `/pomodoro`",
+    "assistantOnBody": "Помощник включён. Я напишу не чаще раза в день: в твой лучший час для учёбы, за 7, 3 и 1 день до экзамена и когда ты пропадёшь на пару дней.",
+    "assistantOffBody": "Помощник выключен. Включить снова можно командой `/assistant on`.",
+    "assistantProOnly": "Помощник Pomo — функция Pomo Pro. Смотри `/premium perks`.",
+    "assistantStatusBody": "**Статус:** {status}\n**Твой лучший час для учёбы:** {hour}\n**Предстоящие экзамены:** {exams} (добавь через `/exam`)",
+    "assistantNeedData": "пока мало сессий (нужно 5 за 30 дней)",
+    "planProItems": "✨ **Всё из Plus**, а также:\n🤖 **Помощник Pomo**: напоминания в твой лучший час, перед экзаменами и когда ты пропадаешь (`/assistant`)\n🗓️ **15 привычек**\n🛡️ **3 щита серии в месяц** и `/streak recover` раз в 30 дней\n📊 `/stats advanced`, `/mygoal` и `/dataexport`\n🎭 Безлимитная смена `/persona`\n🎧 **Lofi-радио 24/7** через `/lofi`\n💬 Приоритетная помощь на сервере поддержки"
+});
+Object.assign(Messages['tr'], {
+    "assistantTitle": "🍅🤖 Pomo asistanı",
+    "assistantFooter": "İstediğin zaman /assistant off ile kapatabilirsin",
+    "assistantBestHourBody": "Saat {time}, genelde en odaklı olduğun saat ve bugün henüz çalışmadın. 25 dakikalık bir oturum başlatalım mı? `/pomodoro`",
+    "assistantExamBody": "**{title}** sınavına **{days} gün** kaldı. **{target} saatlik** hedefinin **{done} saatini** çalıştın; günde yaklaşık **{perDay} saat** kaldı. `/pomodoro`",
+    "assistantExamNoTargetBody": "**{title}** sınavına **{days} gün** kaldı. Bugün birkaç odak oturumu seni yolunda tutar. `/pomodoro`",
+    "assistantComebackBody": "Genelde haftada yaklaşık {days} gün çalışıyorsun ama son 2 gündür çalışmadın. 25 dakikalık tek bir oturum seni yeniden ritme sokar. `/pomodoro`",
+    "assistantOnBody": "Asistan açık. Sana günde en fazla bir kez yazacağım: en iyi çalışma saatinde, bir sınavdan 7, 3 ve 1 gün önce ve birkaç gün ara verdiğinde.",
+    "assistantOffBody": "Asistan kapalı. İstediğin zaman `/assistant on` ile yeniden açabilirsin.",
+    "assistantProOnly": "Pomo asistanı bir Pomo Pro özelliğidir. `/premium perks` sayfasına bak.",
+    "assistantStatusBody": "**Durum:** {status}\n**En iyi çalışma saatin:** {hour}\n**Yaklaşan sınavlar:** {exams} (`/exam` ile ekle)",
+    "assistantNeedData": "henüz yeterli oturum yok (30 günde 5 gerekli)",
+    "planProItems": "✨ **Plus'taki her şey**, ayrıca:\n🤖 **Pomo asistanı**: en iyi saatinde, sınavlardan önce ve ara verdiğinde hatırlatmalar (`/assistant`)\n🗓️ **15 alışkanlık**\n🛡️ **Her ay 3 seri kalkanı**, ayrıca 30 günde bir `/streak recover`\n📊 `/stats advanced`, `/mygoal` ve `/dataexport`\n🎭 Sınırsız `/persona` değişimi\n🎧 `/lofi` ile **7/24 lofi radyo**\n💬 Destek sunucusunda öncelikli yardım"
+});
+Object.assign(Messages['az'], {
+    "assistantTitle": "🍅🤖 Pomo köməkçisi",
+    "assistantFooter": "İstədiyin vaxt /assistant off ilə söndürə bilərsən",
+    "assistantBestHourBody": "Saat {time}-dır, adətən ən fokuslu olduğun saat, bu gün isə hələ oxumamısan. 25 dəqiqəlik sessiya başladaq? `/pomodoro`",
+    "assistantExamBody": "**{title}** imtahanına **{days} gün** qalıb. **{target} saatlıq** hədəfinin **{done} saatını** oxumusan, yəni gündə təxminən **{perDay} saat** qalır. `/pomodoro`",
+    "assistantExamNoTargetBody": "**{title}** imtahanına **{days} gün** qalıb. Bu gün bir neçə fokus sessiyası səni yolda saxlayar. `/pomodoro`",
+    "assistantComebackBody": "Adətən həftədə təxminən {days} gün oxuyursan, amma son 2 gündür oxumamısan. Bir 25 dəqiqəlik sessiya səni yenidən ritmə qaytarar. `/pomodoro`",
+    "assistantOnBody": "Köməkçi açıqdır. Sənə gündə ən çox bir dəfə yazacam: ən yaxşı oxuma saatında, imtahana 7, 3 və 1 gün qalanda və bir neçə gün ara verəndə.",
+    "assistantOffBody": "Köməkçi söndürüldü. İstədiyin vaxt `/assistant on` ilə yenidən aça bilərsən.",
+    "assistantProOnly": "Pomo köməkçisi Pomo Pro özəlliyidir. `/premium perks`-ə bax.",
+    "assistantStatusBody": "**Vəziyyət:** {status}\n**Ən yaxşı oxuma saatın:** {hour}\n**Yaxınlaşan imtahanlar:** {exams} (`/exam` ilə əlavə et)",
+    "assistantNeedData": "hələ kifayət qədər sessiya yoxdur (30 gündə 5 lazımdır)",
+    "planProItems": "✨ **Plus-dakı hər şey**, üstəlik:\n🤖 **Pomo köməkçisi**: ən yaxşı saatında, imtahanlardan əvvəl və ara verəndə xatırlatmalar (`/assistant`)\n🗓️ **15 vərdiş**\n🛡️ **Hər ay 3 seriya qalxanı**, üstəlik 30 gündə bir `/streak recover`\n📊 `/stats advanced`, `/mygoal` və `/dataexport`\n🎭 Limitsiz `/persona` dəyişimi\n🎧 `/lofi` ilə **24/7 lofi radio**\n💬 Dəstək serverində prioritet kömək"
+});
+Object.assign(Messages['ja'], {
+    "assistantTitle": "🍅🤖 Pomoアシスタント",
+    "assistantFooter": "/assistant off でいつでもオフにできます",
+    "assistantBestHourBody": "{time}です。いつもいちばん集中できる時間ですが、今日はまだ勉強していません。25分のセッションを始めませんか？ `/pomodoro`",
+    "assistantExamBody": "**{title}** まであと **{days}日**。目標 **{target}時間** のうち **{done}時間** 勉強しました。1日あたり約 **{perDay}時間** です。`/pomodoro`",
+    "assistantExamNoTargetBody": "**{title}** まであと **{days}日**。今日いくつか集中セッションをすれば順調です。`/pomodoro`",
+    "assistantComebackBody": "いつもは週に約{days}日勉強していますが、この2日間は勉強していません。25分のセッション1回でリズムを取り戻せます。`/pomodoro`",
+    "assistantOnBody": "アシスタントをオンにしました。メッセージは1日最大1回：いちばん集中できる時間、試験の7日・3日・1日前、そして数日勉強が空いたときです。",
+    "assistantOffBody": "アシスタントをオフにしました。`/assistant on` でいつでもオンに戻せます。",
+    "assistantProOnly": "PomoアシスタントはPomo Proの機能です。`/premium perks` をご覧ください。",
+    "assistantStatusBody": "**状態：** {status}\n**いちばん集中できる時間：** {hour}\n**今後の試験：** {exams}（`/exam` で追加）",
+    "assistantNeedData": "まだセッションが足りません（30日で5回必要）",
+    "planProItems": "✨ **Plusのすべて**に加えて：\n🤖 **Pomoアシスタント**：集中できる時間、試験前、勉強が空いたときにリマインド（`/assistant`）\n🗓️ **習慣15個**\n🛡️ **毎月3つのストリークシールド**、30日に1回 `/streak recover`\n📊 `/stats advanced`、`/mygoal`、`/dataexport`\n🎭 `/persona` の切り替え無制限\n🎧 `/lofi` で **24時間lofiラジオ**\n💬 サポートサーバーでの優先サポート"
+});
+Object.assign(Messages['ko'], {
+    "assistantTitle": "🍅🤖 Pomo 어시스턴트",
+    "assistantFooter": "/assistant off로 언제든 끌 수 있어요",
+    "assistantBestHourBody": "지금은 {time}, 보통 가장 집중이 잘 되는 시간인데 오늘은 아직 공부하지 않았어요. 25분 세션을 시작할까요? `/pomodoro`",
+    "assistantExamBody": "**{title}**까지 **{days}일** 남았어요. 목표 **{target}시간** 중 **{done}시간** 공부했으니 하루 약 **{perDay}시간**이 남았어요. `/pomodoro`",
+    "assistantExamNoTargetBody": "**{title}**까지 **{days}일** 남았어요. 오늘 집중 세션 몇 번이면 충분히 따라갈 수 있어요. `/pomodoro`",
+    "assistantComebackBody": "보통 일주일에 {days}일 정도 공부하는데 지난 2일은 쉬었어요. 25분 세션 한 번이면 다시 리듬을 찾을 수 있어요. `/pomodoro`",
+    "assistantOnBody": "어시스턴트가 켜졌어요. 하루에 최대 한 번만 메시지를 보낼게요: 가장 집중이 잘 되는 시간, 시험 7일·3일·1일 전, 그리고 며칠 쉬었을 때요.",
+    "assistantOffBody": "어시스턴트가 꺼졌어요. `/assistant on`으로 언제든 다시 켤 수 있어요.",
+    "assistantProOnly": "Pomo 어시스턴트는 Pomo Pro 기능이에요. `/premium perks`를 확인하세요.",
+    "assistantStatusBody": "**상태:** {status}\n**가장 집중이 잘 되는 시간:** {hour}\n**다가오는 시험:** {exams}개 (`/exam`으로 추가)",
+    "assistantNeedData": "아직 세션이 부족해요 (30일 동안 5회 필요)",
+    "planProItems": "✨ **Plus의 모든 혜택**에 더해:\n🤖 **Pomo 어시스턴트**: 가장 집중되는 시간, 시험 전, 쉬고 있을 때 알림 (`/assistant`)\n🗓️ **습관 15개**\n🛡️ **매달 스트릭 보호막 3개**, 30일마다 한 번 `/streak recover`\n📊 `/stats advanced`, `/mygoal`, `/dataexport`\n🎭 `/persona` 무제한 변경\n🎧 `/lofi`로 **24시간 lofi 라디오**\n💬 지원 서버 우선 도움"
+});
+Object.assign(Messages['ar'], {
+    "assistantTitle": "🍅🤖 مساعد Pomo",
+    "assistantFooter": "يمكنك إيقافه في أي وقت عبر /assistant off",
+    "assistantBestHourBody": "الساعة الآن {time}، وهي عادةً أكثر ساعاتك تركيزًا، ولم تدرس بعد اليوم. هل نبدأ جلسة من 25 دقيقة؟ `/pomodoro`",
+    "assistantExamBody": "بقي على **{title}** **{days} يوم**. درست **{done} ساعة** من هدفك البالغ **{target} ساعة**، أي يتبقى نحو **{perDay} ساعة يوميًا**. `/pomodoro`",
+    "assistantExamNoTargetBody": "بقي على **{title}** **{days} يوم**. جلستان من التركيز اليوم تبقيانك على المسار. `/pomodoro`",
+    "assistantComebackBody": "عادةً تدرس نحو {days} أيام في الأسبوع، لكنك لم تدرس في آخر يومين. جلسة واحدة من 25 دقيقة تعيدك إلى الإيقاع. `/pomodoro`",
+    "assistantOnBody": "تم تشغيل المساعد. سأراسلك مرة واحدة يوميًا على الأكثر: في أفضل ساعة للدراسة، وقبل الامتحان بـ7 و3 و1 أيام، وعندما تنقطع لبضعة أيام.",
+    "assistantOffBody": "تم إيقاف المساعد. يمكنك تشغيله مجددًا في أي وقت عبر `/assistant on`.",
+    "assistantProOnly": "مساعد Pomo ميزة في Pomo Pro. اطّلع على `/premium perks`.",
+    "assistantStatusBody": "**الحالة:** {status}\n**أفضل ساعة دراسة لديك:** {hour}\n**الامتحانات القادمة:** {exams} (أضف واحدًا عبر `/exam`)",
+    "assistantNeedData": "لا توجد جلسات كافية بعد (يلزم 5 خلال 30 يومًا)",
+    "planProItems": "✨ **كل ما في Plus**، وأيضًا:\n🤖 **مساعد Pomo**: تذكيرات في أفضل ساعاتك وقبل الامتحانات وعند الانقطاع (`/assistant`)\n🗓️ **15 عادة**\n🛡️ **3 دروع للسلسلة كل شهر**، و`/streak recover` مرة كل 30 يومًا\n📊 `/stats advanced` و`/mygoal` و`/dataexport`\n🎭 تبديل غير محدود لـ `/persona`\n🎧 **راديو lofi على مدار الساعة** عبر `/lofi`\n💬 مساعدة ذات أولوية في خادم الدعم"
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,

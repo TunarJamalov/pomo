@@ -70,6 +70,7 @@ const categories = {
             { name: '/stats [view] [period]', desc: 'View basic stats or Pomo Pro analytics for the last 7, 30, or 90 days with a focus heatmap.' },
             { name: '/recap', desc: 'Generate a shareable image recap of your last 7 focus days.' },
             { name: '/mygoal [setup/status/disable]', desc: 'Create and track a recurring weekly or monthly personal focus goal. Pomo Pro.' },
+            { name: '/assistant [on/off/status]', desc: 'Your Pomo assistant: at most one DM a day at your best study hour, before exams and when you have been away. Pomo Pro.' },
             { name: '/dataexport [period]', desc: 'Privately export your completed solo, team, and voice focus history as CSV. Pomo Pro.' },
             { name: '/proprofile [view/accent/badge/reset]', desc: 'Customize your profile accent and badge style. Pomo Pro.' },
             { name: '/streak [status/recover/repair]', desc: 'View, restore, or repair a broken streak. Repair costs 50 Water (no Pro required).' },
