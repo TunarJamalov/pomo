@@ -55,6 +55,13 @@ module.exports = {
             .setName('settings')
             .setDescription('View this server\'s voice tracking settings'))
         .addSubcommand(sub => sub
+            .setName('dms')
+            .setDescription('Turn the summary DMs after voice sessions on or off')
+            .addBooleanOption(opt => opt
+                .setName('enabled')
+                .setDescription('Send members a summary DM')
+                .setRequired(true)))
+        .addSubcommand(sub => sub
             .setName('stats')
             .setDescription('View voice study statistics')
             .addUserOption(opt => opt
@@ -85,7 +92,7 @@ module.exports = {
         }
 
         const subcommand = interaction.options.getSubcommand();
-        if (subcommand === 'setup' || subcommand === 'disable') {
+        if (subcommand === 'setup' || subcommand === 'disable' || subcommand === 'dms') {
             if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
                 return interaction.reply({
                     embeds: [errorEmbed(t(language, 'missingPermissionTitle'), t(language, 'manageServerRequired'))],
@@ -96,6 +103,7 @@ module.exports = {
 
         if (subcommand === 'setup') return handleSetup(interaction, language);
         if (subcommand === 'disable') return handleDisable(interaction, language);
+        if (subcommand === 'dms') return handleDms(interaction, language);
         if (subcommand === 'settings') return handleSettings(interaction, language);
         if (subcommand === 'stats') return handleStats(interaction, language);
         if (subcommand === 'leaderboard') return handleLeaderboard(interaction, language);
@@ -180,6 +188,15 @@ async function handleDisable(interaction, language) {
     });
 }
 
+async function handleDms(interaction, language) {
+    const enabled = interaction.options.getBoolean('enabled', true);
+    getOrCreateGuildSettings(interaction.guildId);
+    updateGuildSettings(interaction.guildId, { voice_summary_dm: enabled ? 1 : 0 });
+    return interaction.reply({
+        embeds: [successEmbed(t(language, 'voiceDmsUpdatedTitle'), t(language, enabled ? 'voiceDmsOnBody' : 'voiceDmsOffBody'))],
+    });
+}
+
 async function handleSettings(interaction, language) {
     const settings = getOrCreateGuildSettings(interaction.guildId);
     const configured = isGuildConfigured(settings);
@@ -202,6 +219,7 @@ async function handleSettings(interaction, language) {
             { name: t(language, 'voiceSettingsMinimum'), value: `${settings.voice_min_minutes || 10} ${t(language, 'minutes')}`, inline: true },
             { name: t(language, 'voiceSettingsDailyCap'), value: `${settings.voice_daily_reward_cap || 240} ${t(language, 'minutes')}`, inline: true },
             { name: t(language, 'voiceSettingsAfk'), value: t(language, 'voiceSettingsAfkValue'), inline: true },
+            { name: t(language, 'voiceSettingsDms'), value: settings.voice_summary_dm === 0 ? t(language, 'disabled') : t(language, 'enabled'), inline: true },
         )
         .setTimestamp();
 

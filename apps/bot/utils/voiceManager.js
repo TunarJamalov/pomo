@@ -178,7 +178,10 @@ async function finishVoiceSession(client, userId, guildId, options = {}) {
         });
     }
 
-    if (options.notify !== false) {
+    // /voice dms off: the server asked for no DMs after voice sessions (summary or quests)
+    const serverAllowsDms = getVoiceSettings(guildId)?.voice_summary_dm !== 0;
+
+    if (options.notify !== false && serverAllowsDms) {
         await sendVoiceSummary(client, userId, {
             guildId,
             totalMinutes,
@@ -189,7 +192,7 @@ async function finishVoiceSession(client, userId, guildId, options = {}) {
         });
     }
 
-    if (creditedMinutes > 0) {
+    if (creditedMinutes > 0 && serverAllowsDms) {
         const { checkAndNotifyQuests } = require('../commands/quests');
         const { getGuildLanguage } = require('./i18n');
         const language = getGuildLanguage(guildId);

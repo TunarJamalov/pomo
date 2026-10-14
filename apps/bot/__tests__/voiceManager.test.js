@@ -40,6 +40,8 @@ beforeEach(() => {
         DELETE FROM guild_quest_claims;
         DELETE FROM guild_quest_contributions;
         DELETE FROM guild_quests;
+        DELETE FROM activity_rewards;
+        DELETE FROM settings;
         DELETE FROM voice_sessions;
         DELETE FROM study_sessions;
         DELETE FROM guild_settings;
@@ -107,6 +109,41 @@ describe('voice focus tracking', () => {
         expect(user.total_sessions).toBe(1);
         expect(user.water).toBe(2);
         expect(user.xp).toBe(20);
+    });
+
+    describe('summary DMs (/voice dms)', () => {
+        function fakeClient() {
+            const send = jest.fn().mockResolvedValue({});
+            const client = {
+                users: {
+                    fetch: jest.fn().mockResolvedValue({ send }),
+                    createDM: jest.fn().mockResolvedValue({ send }),
+                },
+            };
+            return { client, send };
+        }
+
+        test('members get a summary DM by default', async () => {
+            createBackdatedVoiceSession('voice_dm_on', '2026-06-06 10:00:00');
+            const { client, send } = fakeClient();
+
+            await finishVoiceSession(client, 'voice_dm_on', 'guild_voice', { endedAt: '2026-06-06 10:50:00' });
+
+            expect(send).toHaveBeenCalled();
+        });
+
+        test('no DMs at all when the server turned them off, but the time still counts', async () => {
+            updateGuildSettings('guild_voice', { voice_summary_dm: 0 });
+            createBackdatedVoiceSession('voice_dm_off', '2026-06-06 10:00:00');
+            const { client, send } = fakeClient();
+
+            const result = await finishVoiceSession(client, 'voice_dm_off', 'guild_voice', { endedAt: '2026-06-06 10:50:00' });
+
+            expect(send).not.toHaveBeenCalled();
+            expect(client.users.createDM).not.toHaveBeenCalled();
+            expect(result.creditedMinutes).toBe(50);
+            expect(getOrCreateUser('voice_dm_off').water).toBe(2);
+        });
     });
 
     test('subtracts overlapping solo timer minutes to prevent double rewards', async () => {

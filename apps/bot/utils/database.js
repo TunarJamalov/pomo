@@ -1043,6 +1043,8 @@ function initDatabase() {
     try { db.exec('ALTER TABLE guild_settings ADD COLUMN voice_rewards_enabled INTEGER DEFAULT 1'); } catch(_) {}
     try { db.exec('ALTER TABLE guild_settings ADD COLUMN voice_min_minutes INTEGER DEFAULT 10'); } catch(_) {}
     try { db.exec('ALTER TABLE guild_settings ADD COLUMN voice_daily_reward_cap INTEGER DEFAULT 240'); } catch(_) {}
+    // Admins can stop the DM members get after each voice session (/voice dms)
+    try { db.exec('ALTER TABLE guild_settings ADD COLUMN voice_summary_dm INTEGER DEFAULT 1'); } catch(_) {}
     try { db.exec('ALTER TABLE guild_settings ADD COLUMN goal_enabled INTEGER DEFAULT 0'); } catch(_) {}
     try { db.exec('ALTER TABLE guild_settings ADD COLUMN goal_target_minutes INTEGER DEFAULT 2500'); } catch(_) {}
     try { db.exec('ALTER TABLE guild_settings ADD COLUMN goal_channel_id TEXT DEFAULT NULL'); } catch(_) {}

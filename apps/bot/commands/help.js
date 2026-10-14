@@ -113,6 +113,7 @@ const categories = {
             { name: '/language [view/set/list]', desc: 'View or change this server language. Translations are being expanded gradually.' },
             { name: '/voice setup [target]', desc: 'Configure automatic voice focus tracking for a voice channel or category. Manage Server permission required.' },
             { name: '/voice settings', desc: 'View this server\'s voice tracking rules, reward cap, and selected target.' },
+            { name: '/voice dms [enabled]', desc: 'Turn off the DM members get after each voice session, for the whole server. Manage Server permission required.' },
             { name: '/voice disable', desc: 'Disable automatic voice focus tracking on this server. Manage Server permission required.' },
             { name: '/studyroom setup [category]', desc: 'Set the category where temporary study rooms are created. Admin only.' },
             { name: '/studyroom trigger [channel]', desc: 'Set a join-to-create trigger channel. Users joining auto-create a private voice room. Admin only.' },
