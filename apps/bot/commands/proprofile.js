@@ -1,18 +1,25 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const {
     Colors,
     ProProfileAccents,
     ProProfileBadges,
+    SessionCardThemes,
 } = require('../utils/constants');
 const {
     getOrCreateProProfileSettings,
     updateProProfileSettings,
+    setCardTheme,
 } = require('../utils/database');
-const { isPremium } = require('../utils/premiumCheck');
+const { isPremium, hasFullPro } = require('../utils/premiumCheck');
+const { generateSessionEndCard } = require('../utils/canvas');
 const { errorEmbed, successEmbed } = require('../utils/embeds');
 const { getInteractionLanguage, t } = require('../utils/i18n');
 
 const accentChoices = Object.entries(ProProfileAccents).map(([value, item]) => ({
+    name: item.name,
+    value,
+}));
+const themeChoices = Object.entries(SessionCardThemes).map(([value, item]) => ({
     name: item.name,
     value,
 }));
@@ -45,6 +52,14 @@ module.exports = {
                         .setDescription('Profile badge')
                         .setRequired(true)
                         .addChoices(...badgeChoices)))
+        .addSubcommand(sub =>
+            sub.setName('cardtheme')
+                .setDescription('Choose the look of your session complete card (Pomo Pro)')
+                .addStringOption(option =>
+                    option.setName('theme')
+                        .setDescription('Card theme')
+                        .setRequired(true)
+                        .addChoices(...themeChoices)))
         .addSubcommand(sub =>
             sub.setName('reset')
                 .setDescription('Reset your Pro profile style')),
@@ -88,6 +103,10 @@ module.exports = {
                 )],
                 flags: 64,
             });
+        }
+
+        if (subcommand === 'cardtheme') {
+            return setTheme(interaction, userId, language);
         }
 
         if (subcommand === 'badge') {
@@ -135,9 +154,44 @@ function buildSettingsEmbed(settings, language = 'en') {
         .addFields(
             { name: t(language, 'accentLabel'), value: accent.name, inline: true },
             { name: t(language, 'badgeLabel'), value: badge.name, inline: true },
+            { name: t(language, 'cardThemeLabel'), value: (SessionCardThemes[settings.card_theme] || SessionCardThemes.classic).name, inline: true },
         )
         .setDescription(t(language, 'proProfileHelpBody'))
         .setTimestamp();
+}
+
+/** Pro only (not in Plus): save the theme and show a preview card. */
+async function setTheme(interaction, userId, language) {
+    const themeKey = interaction.options.getString('theme');
+    await interaction.deferReply({ flags: 64 });
+    if (!await hasFullPro(interaction.client, userId)) {
+        return interaction.editReply({ embeds: [errorEmbed(t(language, 'proFeatureTitle'), t(language, 'cardThemeProOnly'))] });
+    }
+    setCardTheme(userId, themeKey);
+
+    const embed = successEmbed(
+        t(language, 'cardThemeUpdatedTitle'),
+        t(language, 'cardThemeUpdatedBody', { theme: SessionCardThemes[themeKey].name })
+    );
+    try {
+        const preview = await generateSessionEndCard({
+            username: interaction.user.displayName || interaction.user.username,
+            avatar: interaction.user.displayAvatarURL({ extension: 'png', size: 128 }),
+            duration: 25,
+            waterAwarded: 2,
+            xpAwarded: 30,
+            streak: 7,
+            title: 'Study Session',
+            leveledUp: false,
+            language,
+            theme: themeKey,
+        });
+        embed.setImage('attachment://card-preview.png');
+        return interaction.editReply({ embeds: [embed], files: [new AttachmentBuilder(preview, { name: 'card-preview.png' })] });
+    } catch (err) {
+        console.error('[PROPROFILE] Card preview failed:', err.message);
+        return interaction.editReply({ embeds: [embed] });
+    }
 }
 
 module.exports.buildSettingsEmbed = buildSettingsEmbed;

@@ -72,7 +72,7 @@ const categories = {
             { name: '/mygoal [setup/status/disable]', desc: 'Create and track a recurring weekly or monthly personal focus goal. Pomo Pro.' },
             { name: '/assistant [on/off/status]', desc: 'Your Pomo assistant: at most one DM a day at your best study hour, before exams and when you have been away. Pomo Pro.' },
             { name: '/dataexport [period]', desc: 'Privately export your completed solo, team, and voice focus history as CSV. Pomo Pro.' },
-            { name: '/proprofile [view/accent/badge/reset]', desc: 'Customize your profile accent and badge style. Pomo Pro.' },
+            { name: '/proprofile [view/accent/badge/cardtheme/reset]', desc: 'Customize your profile accent and badge. Card themes for your session complete card are Pomo Pro.' },
             { name: '/streak [status/recover/repair]', desc: 'View, restore, or repair a broken streak. Repair costs 50 Water (no Pro required).' },
             { name: '/premium [status/perks]', desc: 'Get Pomo Pro ($2.99/month or $19.99/year), see your status and manage your subscription.' },
             { name: '/leaderboard', desc: 'Server or global rankings by focus time: this week, today, season or all-time. Server weekly counts /study, /team and voice. Includes a Top Clans tab.' },

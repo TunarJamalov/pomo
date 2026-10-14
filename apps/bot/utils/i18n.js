@@ -13669,7 +13669,7 @@ Object.assign(Messages['en'], {
     "assistantProOnly": "The Pomo assistant is a Pomo Pro feature. See `/premium perks`.",
     "assistantStatusBody": "**Status:** {status}\n**Your best study hour:** {hour}\n**Upcoming exams:** {exams} (add one with `/exam`)",
     "assistantNeedData": "not enough sessions yet (5 needed in 30 days)",
-    "planProItems": "✨ **Everything in Plus**, and:\n🤖 **Pomo assistant**: reminders at your best hour, before exams and when you've been away (`/assistant`)\n🗓️ **15 habits**\n🛡️ **3 Streak Shields every month**, plus `/streak recover` once every 30 days\n📊 `/stats advanced` with insights (best hour, weekly pattern, trend), `/mygoal` and `/dataexport`\n🎭 Unlimited `/persona` switches\n🎧 **24/7 lofi radio** with `/lofi`\n💬 Priority help in the support server"
+    "planProItems": "✨ **Everything in Plus**, and:\n🤖 **Pomo assistant**: reminders at your best hour, before exams and when you've been away (`/assistant`)\n🗓️ **15 habits**\n🛡️ **3 Streak Shields every month**, plus `/streak recover` once every 30 days\n📊 `/stats advanced` with insights (best hour, weekly pattern, trend), `/mygoal` and `/dataexport`\n🎨 **Session card themes** (`/proprofile cardtheme`)\n🎭 Unlimited `/persona` switches\n🎧 **24/7 lofi radio** with `/lofi`\n💬 Priority help in the support server"
 });
 Object.assign(Messages['es'], {
     "assistantTitle": "🍅🤖 Asistente de Pomo",
@@ -13683,7 +13683,7 @@ Object.assign(Messages['es'], {
     "assistantProOnly": "El asistente de Pomo es una función de Pomo Pro. Mira `/premium perks`.",
     "assistantStatusBody": "**Estado:** {status}\n**Tu mejor hora de estudio:** {hour}\n**Próximos exámenes:** {exams} (añade uno con `/exam`)",
     "assistantNeedData": "aún no hay suficientes sesiones (hacen falta 5 en 30 días)",
-    "planProItems": "✨ **Todo lo de Plus**, y además:\n🤖 **Asistente de Pomo**: recordatorios a tu mejor hora, antes de exámenes y cuando te ausentas (`/assistant`)\n🗓️ **15 hábitos**\n🛡️ **3 escudos de racha al mes**, y `/streak recover` una vez cada 30 días\n📊 `/stats advanced` con análisis (mejor hora, patrón semanal, tendencia), `/mygoal` y `/dataexport`\n🎭 Cambios ilimitados de `/persona`\n🎧 **Radio lofi 24/7** con `/lofi`\n💬 Ayuda prioritaria en el servidor de soporte"
+    "planProItems": "✨ **Todo lo de Plus**, y además:\n🤖 **Asistente de Pomo**: recordatorios a tu mejor hora, antes de exámenes y cuando te ausentas (`/assistant`)\n🗓️ **15 hábitos**\n🛡️ **3 escudos de racha al mes**, y `/streak recover` una vez cada 30 días\n📊 `/stats advanced` con análisis (mejor hora, patrón semanal, tendencia), `/mygoal` y `/dataexport`\n🎨 **Temas para la tarjeta de sesión** (`/proprofile cardtheme`)\n🎭 Cambios ilimitados de `/persona`\n🎧 **Radio lofi 24/7** con `/lofi`\n💬 Ayuda prioritaria en el servidor de soporte"
 });
 Object.assign(Messages['fr'], {
     "assistantTitle": "🍅🤖 Assistant Pomo",
@@ -13697,7 +13697,7 @@ Object.assign(Messages['fr'], {
     "assistantProOnly": "L’assistant Pomo est une fonctionnalité Pomo Pro. Vois `/premium perks`.",
     "assistantStatusBody": "**Statut :** {status}\n**Ta meilleure heure d’étude :** {hour}\n**Examens à venir :** {exams} (ajoutes-en un avec `/exam`)",
     "assistantNeedData": "pas encore assez de sessions (5 nécessaires sur 30 jours)",
-    "planProItems": "✨ **Tout ce qu’offre Plus**, et en plus :\n🤖 **Assistant Pomo** : rappels à ta meilleure heure, avant les examens et quand tu t’absentes (`/assistant`)\n🗓️ **15 habitudes**\n🛡️ **3 boucliers de série par mois**, plus `/streak recover` une fois tous les 30 jours\n📊 `/stats advanced` avec analyse (meilleure heure, rythme de la semaine, tendance), `/mygoal` et `/dataexport`\n🎭 Changements de `/persona` illimités\n🎧 **Radio lofi 24h/24** avec `/lofi`\n💬 Aide prioritaire sur le serveur de support"
+    "planProItems": "✨ **Tout ce qu’offre Plus**, et en plus :\n🤖 **Assistant Pomo** : rappels à ta meilleure heure, avant les examens et quand tu t’absentes (`/assistant`)\n🗓️ **15 habitudes**\n🛡️ **3 boucliers de série par mois**, plus `/streak recover` une fois tous les 30 jours\n📊 `/stats advanced` avec analyse (meilleure heure, rythme de la semaine, tendance), `/mygoal` et `/dataexport`\n🎨 **Thèmes pour la carte de session** (`/proprofile cardtheme`)\n🎭 Changements de `/persona` illimités\n🎧 **Radio lofi 24h/24** avec `/lofi`\n💬 Aide prioritaire sur le serveur de support"
 });
 Object.assign(Messages['pt-BR'], {
     "assistantTitle": "🍅🤖 Assistente do Pomo",
@@ -13711,7 +13711,7 @@ Object.assign(Messages['pt-BR'], {
     "assistantProOnly": "O assistente do Pomo é um recurso do Pomo Pro. Veja `/premium perks`.",
     "assistantStatusBody": "**Status:** {status}\n**Seu melhor horário de estudo:** {hour}\n**Próximas provas:** {exams} (adicione uma com `/exam`)",
     "assistantNeedData": "ainda não há sessões suficientes (são necessárias 5 em 30 dias)",
-    "planProItems": "✨ **Tudo do Plus**, e mais:\n🤖 **Assistente do Pomo**: lembretes no seu melhor horário, antes de provas e quando você some (`/assistant`)\n🗓️ **15 hábitos**\n🛡️ **3 escudos de sequência por mês**, e `/streak recover` uma vez a cada 30 dias\n📊 `/stats advanced` com análise (melhor horário, padrão semanal, tendência), `/mygoal` e `/dataexport`\n🎭 Trocas ilimitadas de `/persona`\n🎧 **Rádio lofi 24/7** com `/lofi`\n💬 Ajuda prioritária no servidor de suporte"
+    "planProItems": "✨ **Tudo do Plus**, e mais:\n🤖 **Assistente do Pomo**: lembretes no seu melhor horário, antes de provas e quando você some (`/assistant`)\n🗓️ **15 hábitos**\n🛡️ **3 escudos de sequência por mês**, e `/streak recover` uma vez a cada 30 dias\n📊 `/stats advanced` com análise (melhor horário, padrão semanal, tendência), `/mygoal` e `/dataexport`\n🎨 **Temas para o cartão de sessão** (`/proprofile cardtheme`)\n🎭 Trocas ilimitadas de `/persona`\n🎧 **Rádio lofi 24/7** com `/lofi`\n💬 Ajuda prioritária no servidor de suporte"
 });
 Object.assign(Messages['ru'], {
     "assistantTitle": "🍅🤖 Помощник Pomo",
@@ -13725,7 +13725,7 @@ Object.assign(Messages['ru'], {
     "assistantProOnly": "Помощник Pomo — функция Pomo Pro. Смотри `/premium perks`.",
     "assistantStatusBody": "**Статус:** {status}\n**Твой лучший час для учёбы:** {hour}\n**Предстоящие экзамены:** {exams} (добавь через `/exam`)",
     "assistantNeedData": "пока мало сессий (нужно 5 за 30 дней)",
-    "planProItems": "✨ **Всё из Plus**, а также:\n🤖 **Помощник Pomo**: напоминания в твой лучший час, перед экзаменами и когда ты пропадаешь (`/assistant`)\n🗓️ **15 привычек**\n🛡️ **3 щита серии в месяц** и `/streak recover` раз в 30 дней\n📊 `/stats advanced` с анализом (лучший час, недельный ритм, динамика), `/mygoal` и `/dataexport`\n🎭 Безлимитная смена `/persona`\n🎧 **Lofi-радио 24/7** через `/lofi`\n💬 Приоритетная помощь на сервере поддержки"
+    "planProItems": "✨ **Всё из Plus**, а также:\n🤖 **Помощник Pomo**: напоминания в твой лучший час, перед экзаменами и когда ты пропадаешь (`/assistant`)\n🗓️ **15 привычек**\n🛡️ **3 щита серии в месяц** и `/streak recover` раз в 30 дней\n📊 `/stats advanced` с анализом (лучший час, недельный ритм, динамика), `/mygoal` и `/dataexport`\n🎨 **Темы карточки сессии** (`/proprofile cardtheme`)\n🎭 Безлимитная смена `/persona`\n🎧 **Lofi-радио 24/7** через `/lofi`\n💬 Приоритетная помощь на сервере поддержки"
 });
 Object.assign(Messages['tr'], {
     "assistantTitle": "🍅🤖 Pomo asistanı",
@@ -13739,7 +13739,7 @@ Object.assign(Messages['tr'], {
     "assistantProOnly": "Pomo asistanı bir Pomo Pro özelliğidir. `/premium perks` sayfasına bak.",
     "assistantStatusBody": "**Durum:** {status}\n**En iyi çalışma saatin:** {hour}\n**Yaklaşan sınavlar:** {exams} (`/exam` ile ekle)",
     "assistantNeedData": "henüz yeterli oturum yok (30 günde 5 gerekli)",
-    "planProItems": "✨ **Plus'taki her şey**, ayrıca:\n🤖 **Pomo asistanı**: en iyi saatinde, sınavlardan önce ve ara verdiğinde hatırlatmalar (`/assistant`)\n🗓️ **15 alışkanlık**\n🛡️ **Her ay 3 seri kalkanı**, ayrıca 30 günde bir `/streak recover`\n📊 Analizli `/stats advanced` (en iyi saat, haftalık düzen, eğilim), `/mygoal` ve `/dataexport`\n🎭 Sınırsız `/persona` değişimi\n🎧 `/lofi` ile **7/24 lofi radyo**\n💬 Destek sunucusunda öncelikli yardım"
+    "planProItems": "✨ **Plus'taki her şey**, ayrıca:\n🤖 **Pomo asistanı**: en iyi saatinde, sınavlardan önce ve ara verdiğinde hatırlatmalar (`/assistant`)\n🗓️ **15 alışkanlık**\n🛡️ **Her ay 3 seri kalkanı**, ayrıca 30 günde bir `/streak recover`\n📊 Analizli `/stats advanced` (en iyi saat, haftalık düzen, eğilim), `/mygoal` ve `/dataexport`\n🎨 **Seans kartı temaları** (`/proprofile cardtheme`)\n🎭 Sınırsız `/persona` değişimi\n🎧 `/lofi` ile **7/24 lofi radyo**\n💬 Destek sunucusunda öncelikli yardım"
 });
 Object.assign(Messages['az'], {
     "assistantTitle": "🍅🤖 Pomo köməkçisi",
@@ -13753,7 +13753,7 @@ Object.assign(Messages['az'], {
     "assistantProOnly": "Pomo köməkçisi Pomo Pro özəlliyidir. `/premium perks`-ə bax.",
     "assistantStatusBody": "**Vəziyyət:** {status}\n**Ən yaxşı oxuma saatın:** {hour}\n**Yaxınlaşan imtahanlar:** {exams} (`/exam` ilə əlavə et)",
     "assistantNeedData": "hələ kifayət qədər sessiya yoxdur (30 gündə 5 lazımdır)",
-    "planProItems": "✨ **Plus-dakı hər şey**, üstəlik:\n🤖 **Pomo köməkçisi**: ən yaxşı saatında, imtahanlardan əvvəl və ara verəndə xatırlatmalar (`/assistant`)\n🗓️ **15 vərdiş**\n🛡️ **Hər ay 3 seriya qalxanı**, üstəlik 30 gündə bir `/streak recover`\n📊 Analizli `/stats advanced` (ən yaxşı saat, həftəlik ritm, trend), `/mygoal` və `/dataexport`\n🎭 Limitsiz `/persona` dəyişimi\n🎧 `/lofi` ilə **24/7 lofi radio**\n💬 Dəstək serverində prioritet kömək"
+    "planProItems": "✨ **Plus-dakı hər şey**, üstəlik:\n🤖 **Pomo köməkçisi**: ən yaxşı saatında, imtahanlardan əvvəl və ara verəndə xatırlatmalar (`/assistant`)\n🗓️ **15 vərdiş**\n🛡️ **Hər ay 3 seriya qalxanı**, üstəlik 30 gündə bir `/streak recover`\n📊 Analizli `/stats advanced` (ən yaxşı saat, həftəlik ritm, trend), `/mygoal` və `/dataexport`\n🎨 **Sessiya kartı temaları** (`/proprofile cardtheme`)\n🎭 Limitsiz `/persona` dəyişimi\n🎧 `/lofi` ilə **24/7 lofi radio**\n💬 Dəstək serverində prioritet kömək"
 });
 Object.assign(Messages['ja'], {
     "assistantTitle": "🍅🤖 Pomoアシスタント",
@@ -13767,7 +13767,7 @@ Object.assign(Messages['ja'], {
     "assistantProOnly": "PomoアシスタントはPomo Proの機能です。`/premium perks` をご覧ください。",
     "assistantStatusBody": "**状態：** {status}\n**いちばん集中できる時間：** {hour}\n**今後の試験：** {exams}（`/exam` で追加）",
     "assistantNeedData": "まだセッションが足りません（30日で5回必要）",
-    "planProItems": "✨ **Plusのすべて**に加えて：\n🤖 **Pomoアシスタント**：集中できる時間、試験前、勉強が空いたときにリマインド（`/assistant`）\n🗓️ **習慣15個**\n🛡️ **毎月3つのストリークシールド**、30日に1回 `/streak recover`\n📊 インサイト付きの `/stats advanced`（ベストな時間帯・曜日の傾向・推移）、`/mygoal`、`/dataexport`\n🎭 `/persona` の切り替え無制限\n🎧 `/lofi` で **24時間lofiラジオ**\n💬 サポートサーバーでの優先サポート"
+    "planProItems": "✨ **Plusのすべて**に加えて：\n🤖 **Pomoアシスタント**：集中できる時間、試験前、勉強が空いたときにリマインド（`/assistant`）\n🗓️ **習慣15個**\n🛡️ **毎月3つのストリークシールド**、30日に1回 `/streak recover`\n📊 インサイト付きの `/stats advanced`（ベストな時間帯・曜日の傾向・推移）、`/mygoal`、`/dataexport`\n🎨 **セッションカードのテーマ**（`/proprofile cardtheme`）\n🎭 `/persona` の切り替え無制限\n🎧 `/lofi` で **24時間lofiラジオ**\n💬 サポートサーバーでの優先サポート"
 });
 Object.assign(Messages['ko'], {
     "assistantTitle": "🍅🤖 Pomo 어시스턴트",
@@ -13781,7 +13781,7 @@ Object.assign(Messages['ko'], {
     "assistantProOnly": "Pomo 어시스턴트는 Pomo Pro 기능이에요. `/premium perks`를 확인하세요.",
     "assistantStatusBody": "**상태:** {status}\n**가장 집중이 잘 되는 시간:** {hour}\n**다가오는 시험:** {exams}개 (`/exam`으로 추가)",
     "assistantNeedData": "아직 세션이 부족해요 (30일 동안 5회 필요)",
-    "planProItems": "✨ **Plus의 모든 혜택**에 더해:\n🤖 **Pomo 어시스턴트**: 가장 집중되는 시간, 시험 전, 쉬고 있을 때 알림 (`/assistant`)\n🗓️ **습관 15개**\n🛡️ **매달 스트릭 보호막 3개**, 30일마다 한 번 `/streak recover`\n📊 인사이트가 포함된 `/stats advanced` (최고의 시간대, 요일 패턴, 추세), `/mygoal`, `/dataexport`\n🎭 `/persona` 무제한 변경\n🎧 `/lofi`로 **24시간 lofi 라디오**\n💬 지원 서버 우선 도움"
+    "planProItems": "✨ **Plus의 모든 혜택**에 더해:\n🤖 **Pomo 어시스턴트**: 가장 집중되는 시간, 시험 전, 쉬고 있을 때 알림 (`/assistant`)\n🗓️ **습관 15개**\n🛡️ **매달 스트릭 보호막 3개**, 30일마다 한 번 `/streak recover`\n📊 인사이트가 포함된 `/stats advanced` (최고의 시간대, 요일 패턴, 추세), `/mygoal`, `/dataexport`\n🎨 **세션 카드 테마** (`/proprofile cardtheme`)\n🎭 `/persona` 무제한 변경\n🎧 `/lofi`로 **24시간 lofi 라디오**\n💬 지원 서버 우선 도움"
 });
 Object.assign(Messages['ar'], {
     "assistantTitle": "🍅🤖 مساعد Pomo",
@@ -13795,7 +13795,7 @@ Object.assign(Messages['ar'], {
     "assistantProOnly": "مساعد Pomo ميزة في Pomo Pro. اطّلع على `/premium perks`.",
     "assistantStatusBody": "**الحالة:** {status}\n**أفضل ساعة دراسة لديك:** {hour}\n**الامتحانات القادمة:** {exams} (أضف واحدًا عبر `/exam`)",
     "assistantNeedData": "لا توجد جلسات كافية بعد (يلزم 5 خلال 30 يومًا)",
-    "planProItems": "✨ **كل ما في Plus**، وأيضًا:\n🤖 **مساعد Pomo**: تذكيرات في أفضل ساعاتك وقبل الامتحانات وعند الانقطاع (`/assistant`)\n🗓️ **15 عادة**\n🛡️ **3 دروع للسلسلة كل شهر**، و`/streak recover` مرة كل 30 يومًا\n📊 `/stats advanced` مع التحليل (أفضل ساعة، نمط الأسبوع، الاتجاه) و`/mygoal` و`/dataexport`\n🎭 تبديل غير محدود لـ `/persona`\n🎧 **راديو lofi على مدار الساعة** عبر `/lofi`\n💬 مساعدة ذات أولوية في خادم الدعم"
+    "planProItems": "✨ **كل ما في Plus**، وأيضًا:\n🤖 **مساعد Pomo**: تذكيرات في أفضل ساعاتك وقبل الامتحانات وعند الانقطاع (`/assistant`)\n🗓️ **15 عادة**\n🛡️ **3 دروع للسلسلة كل شهر**، و`/streak recover` مرة كل 30 يومًا\n📊 `/stats advanced` مع التحليل (أفضل ساعة، نمط الأسبوع، الاتجاه) و`/mygoal` و`/dataexport`\n🎨 **سمات بطاقة الجلسة** (`/proprofile cardtheme`)\n🎭 تبديل غير محدود لـ `/persona`\n🎧 **راديو lofi على مدار الساعة** عبر `/lofi`\n💬 مساعدة ذات أولوية في خادم الدعم"
 });
 
 // Personal insights (Pro): utils/insights.js, shown under /stats advanced
@@ -13928,6 +13928,68 @@ Object.assign(Messages['ar'], {
     "insightsTrendNew": "📈 **الاتجاه:** لا شيء في الأيام الـ{days} السابقة للمقارنة",
     "insightsAvgSession": "⏱️ **متوسط الجلسة:** {minutes} دقيقة",
     "insightsFooter": "تظهر الأوقات بتوقيتك المحلي. تُحسب الأيام بتوقيت UTC."
+});
+
+// Session card themes (Pro): /proprofile cardtheme
+Object.assign(Messages['en'], {
+    "cardThemeLabel": "Card theme",
+    "cardThemeUpdatedTitle": "🎨 Card theme saved",
+    "cardThemeUpdatedBody": "Your session complete card now uses **{theme}**. Here's how it looks:",
+    "cardThemeProOnly": "Session card themes are a Pomo Pro feature. See `/premium perks`."
+});
+Object.assign(Messages['es'], {
+    "cardThemeLabel": "Tema de tarjeta",
+    "cardThemeUpdatedTitle": "🎨 Tema de tarjeta guardado",
+    "cardThemeUpdatedBody": "Tu tarjeta de sesión completada ahora usa **{theme}**. Así se ve:",
+    "cardThemeProOnly": "Los temas de la tarjeta de sesión son una función de Pomo Pro. Mira `/premium perks`."
+});
+Object.assign(Messages['fr'], {
+    "cardThemeLabel": "Thème de carte",
+    "cardThemeUpdatedTitle": "🎨 Thème de carte enregistré",
+    "cardThemeUpdatedBody": "Ta carte de session terminée utilise maintenant **{theme}**. Voici le rendu :",
+    "cardThemeProOnly": "Les thèmes de la carte de session sont une fonctionnalité Pomo Pro. Vois `/premium perks`."
+});
+Object.assign(Messages['pt-BR'], {
+    "cardThemeLabel": "Tema do cartão",
+    "cardThemeUpdatedTitle": "🎨 Tema do cartão salvo",
+    "cardThemeUpdatedBody": "Seu cartão de sessão concluída agora usa **{theme}**. Veja como fica:",
+    "cardThemeProOnly": "Os temas do cartão de sessão são um recurso do Pomo Pro. Veja `/premium perks`."
+});
+Object.assign(Messages['ru'], {
+    "cardThemeLabel": "Тема карточки",
+    "cardThemeUpdatedTitle": "🎨 Тема карточки сохранена",
+    "cardThemeUpdatedBody": "Твоя карточка завершённой сессии теперь в теме **{theme}**. Вот как она выглядит:",
+    "cardThemeProOnly": "Темы карточки сессии доступны в Pomo Pro. Смотри `/premium perks`."
+});
+Object.assign(Messages['tr'], {
+    "cardThemeLabel": "Kart teması",
+    "cardThemeUpdatedTitle": "🎨 Kart teması kaydedildi",
+    "cardThemeUpdatedBody": "Seans tamamlandı kartın artık **{theme}** temasını kullanıyor. İşte görünümü:",
+    "cardThemeProOnly": "Seans kartı temaları bir Pomo Pro özelliğidir. `/premium perks` sayfasına bak."
+});
+Object.assign(Messages['az'], {
+    "cardThemeLabel": "Kart teması",
+    "cardThemeUpdatedTitle": "🎨 Kart teması yadda saxlanıldı",
+    "cardThemeUpdatedBody": "Sessiya tamamlandı kartın artıq **{theme}** temasındadır. Belə görünür:",
+    "cardThemeProOnly": "Sessiya kartı temaları Pomo Pro özəlliyidir. `/premium perks`-ə bax."
+});
+Object.assign(Messages['ja'], {
+    "cardThemeLabel": "カードテーマ",
+    "cardThemeUpdatedTitle": "🎨 カードテーマを保存しました",
+    "cardThemeUpdatedBody": "セッション完了カードのテーマが **{theme}** になりました。プレビューはこちら：",
+    "cardThemeProOnly": "セッションカードのテーマはPomo Proの機能です。`/premium perks` をご覧ください。"
+});
+Object.assign(Messages['ko'], {
+    "cardThemeLabel": "카드 테마",
+    "cardThemeUpdatedTitle": "🎨 카드 테마 저장됨",
+    "cardThemeUpdatedBody": "세션 완료 카드가 이제 **{theme}** 테마를 사용해요. 미리보기:",
+    "cardThemeProOnly": "세션 카드 테마는 Pomo Pro 기능이에요. `/premium perks`를 확인하세요."
+});
+Object.assign(Messages['ar'], {
+    "cardThemeLabel": "سمة البطاقة",
+    "cardThemeUpdatedTitle": "🎨 تم حفظ سمة البطاقة",
+    "cardThemeUpdatedBody": "بطاقة اكتمال الجلسة تستخدم الآن سمة **{theme}**. هكذا تبدو:",
+    "cardThemeProOnly": "سمات بطاقة الجلسة ميزة في Pomo Pro. اطّلع على `/premium perks`."
 });
 
 module.exports = {

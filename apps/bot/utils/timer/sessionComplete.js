@@ -17,9 +17,11 @@ const {
     getOrCreateSettings,
     getOrCreateGuildSettings,
     recordGuildFocusProgress,
-    recordActivityReward
+    recordActivityReward,
+    getOrCreateProProfileSettings,
 } = require('../database');
 const { generateSessionEndCard } = require('../canvas');
+const { isFullPro } = require('../premiumManager');
 const { applyStudyStreak, recordSessionActivity } = require('../studyStreak');
 const { applyWaterDoubler } = require('../rewardBoosts');
 const { getTimeZoneParts } = require('../timezone');
@@ -383,6 +385,8 @@ async function handleSessionComplete(client, session, deps) {
                         newLevel,
                         persona: user.persona,
                         language,
+                        // Card themes are Pro only; the saved choice comes back if Pro returns
+                        theme: isFullPro(session.user_id) ? getOrCreateProProfileSettings(session.user_id).card_theme : 'classic',
                     });
                     const attachment = new AttachmentBuilder(cardBuffer, { name: 'session-complete.png' });
                     const payload = { content: `<@${session.user_id}>`, files: [attachment] };

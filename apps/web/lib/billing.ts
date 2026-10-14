@@ -28,6 +28,7 @@ export const PRO_TIERS = {
       ["15 habits", "The most habits you can track"],
       ["3 Streak Shields a month", "Plus /streak recover once every 30 days"],
       ["Personal insights", "/stats advanced shows your best hour, weekly pattern and trend, plus /mygoal and /dataexport"],
+      ["Session card themes", "7 looks for your session complete card"],
       ["Unlimited personas", "Switch /persona whenever you like"],
       ["24/7 lofi radio", "/lofi in your voice channel"],
       ["Priority help", "In the support server"],

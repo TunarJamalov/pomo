@@ -1,6 +1,6 @@
 const { createCanvas, loadImage } = require('@napi-rs/canvas');
 const path = require('path');
-const { Themes } = require('./constants');
+const { Themes, SessionCardThemes } = require('./constants');
 const { formatTime } = require('./embeds');
 const { normalizeLanguage, t } = require('./i18n');
 
@@ -213,8 +213,9 @@ async function generateGardenShareCard(plots, user, username, language = 'en') {
 // ─── Session End Card ─────────────────────────────────────────────────────────
 // Generates a compact "Session Complete" card posted in the channel when a
 // study session finishes. Designed to be eye-catching so server members feel FOMO.
-async function generateSessionEndCard({ username, avatar, duration, waterAwarded, xpAwarded, streak, title, leveledUp, newLevel, persona, language = 'en' }) {
+async function generateSessionEndCard({ username, avatar, duration, waterAwarded, xpAwarded, streak, title, leveledUp, newLevel, persona, language = 'en', theme = 'classic' }) {
     const lang = cardLanguage(language);
+    const look = SessionCardThemes[theme] || SessionCardThemes.classic;
     const CARD_W = 560;
     const CARD_H = 160;
     const PADDING = 20;
@@ -225,13 +226,24 @@ async function generateSessionEndCard({ username, avatar, duration, waterAwarded
 
     // ── Background ───────────────────────────────────────────────────────────
     const bgGrad = ctx.createLinearGradient(0, 0, CARD_W, CARD_H);
-    bgGrad.addColorStop(0, '#1a1f2e');
-    bgGrad.addColorStop(1, '#0f1117');
+    bgGrad.addColorStop(0, look.bg[0]);
+    bgGrad.addColorStop(1, look.bg[1]);
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, CARD_W, CARD_H);
 
-    // Left green accent bar
-    ctx.fillStyle = '#57f287';
+    // Themes add a soft glow in the top-right corner
+    if (look.glow) {
+        for (const [x, y, r] of [[CARD_W - 70, 10, 260], [60, CARD_H, 160]]) {
+            const glow = ctx.createRadialGradient(x, y, 0, x, y, r);
+            glow.addColorStop(0, look.glow);
+            glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = glow;
+            ctx.fillRect(0, 0, CARD_W, CARD_H);
+        }
+    }
+
+    // Left accent bar
+    ctx.fillStyle = look.accent;
     ctx.fillRect(0, 0, 4, CARD_H);
 
     // ── Avatar ───────────────────────────────────────────────────────────────
@@ -249,7 +261,7 @@ async function generateSessionEndCard({ username, avatar, duration, waterAwarded
             ctx.restore();
 
             // Avatar ring
-            ctx.strokeStyle = '#57f287';
+            ctx.strokeStyle = look.accent;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(avatarX + AVATAR_SIZE / 2, avatarY + AVATAR_SIZE / 2, AVATAR_SIZE / 2 + 1, 0, Math.PI * 2);
@@ -260,7 +272,7 @@ async function generateSessionEndCard({ username, avatar, duration, waterAwarded
             ctx.beginPath();
             ctx.arc(avatarX + AVATAR_SIZE / 2, avatarY + AVATAR_SIZE / 2, AVATAR_SIZE / 2, 0, Math.PI * 2);
             ctx.fill();
-            ctx.fillStyle = '#57f287';
+            ctx.fillStyle = look.accent;
             ctx.font = 'bold 24px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(username.charAt(0).toUpperCase(), avatarX + AVATAR_SIZE / 2, avatarY + AVATAR_SIZE / 2 + 9);
@@ -272,7 +284,7 @@ async function generateSessionEndCard({ username, avatar, duration, waterAwarded
     const maxTextW = CARD_W - textX - PADDING;
 
     // "✅ Session Complete!" header
-    ctx.fillStyle = '#57f287';
+    ctx.fillStyle = look.accent;
     ctx.font = 'bold 15px sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`\u2705 ${t(lang, 'cardSessionComplete')}`, textX, 42);

@@ -359,6 +359,17 @@ const ProProfileAccents = {
     violet: { name: 'Night Violet', color: '#B388FF' },
 };
 
+// Session end card looks (Pomo Pro). "classic" is what everyone else sees.
+const SessionCardThemes = {
+    classic: { name: 'Classic', bg: ['#1a1f2e', '#0f1117'], accent: '#57f287', glow: null },
+    sunset: { name: 'Sunset', bg: ['#3a1c32', '#1b0f1f'], accent: '#ff9f68', glow: 'rgba(255, 120, 90, 0.34)' },
+    ocean: { name: 'Ocean', bg: ['#0f2a3f', '#081521'], accent: '#5bc0eb', glow: 'rgba(91, 192, 235, 0.34)' },
+    forest: { name: 'Forest', bg: ['#16301f', '#0b1a10'], accent: '#8bd17c', glow: 'rgba(139, 209, 124, 0.34)' },
+    sakura: { name: 'Sakura', bg: ['#3b2232', '#1f1219'], accent: '#ffb7d5', glow: 'rgba(255, 183, 213, 0.34)' },
+    midnight: { name: 'Midnight Gold', bg: ['#14142b', '#07070f'], accent: '#f1c40f', glow: 'rgba(241, 196, 15, 0.34)' },
+    lavender: { name: 'Lavender', bg: ['#2a2140', '#140f22'], accent: '#b388ff', glow: 'rgba(179, 136, 255, 0.34)' },
+};
+
 const ProProfileBadges = {
     pomo_pro: { name: 'Pomo Pro', text: 'POMO PRO' },
     deep_work: { name: 'Deep Work', text: 'DEEP WORK' },
@@ -657,6 +668,7 @@ module.exports = {
     Themes,
     ProProfileAccents,
     ProProfileBadges,
+    SessionCardThemes,
     StudySnacks,
     TreeRequirements,
     GardenPlotLimits,

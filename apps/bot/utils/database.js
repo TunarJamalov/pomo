@@ -6,7 +6,7 @@
 const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
-const { ProProfileAccents, ProProfileBadges, Titles } = require('./constants');
+const { ProProfileAccents, ProProfileBadges, SessionCardThemes, Titles } = require('./constants');
 const { getWeekStart: getTimeZoneWeekStart, normalizeTimeZone } = require('./timezone');
 
 // Ensure /data directory exists
@@ -962,6 +962,7 @@ function initDatabase() {
         db.exec("ALTER TABLE settings ADD COLUMN notify_friends INTEGER DEFAULT 0;");
     } catch (_) {}
     try { db.exec("ALTER TABLE settings ADD COLUMN session_card_style TEXT DEFAULT 'image'"); } catch(_) {}
+    try { db.exec("ALTER TABLE pro_profile_settings ADD COLUMN card_theme TEXT DEFAULT 'classic'"); } catch(_) {}
     try { db.exec('ALTER TABLE settings ADD COLUMN morning_prompt INTEGER DEFAULT 0'); } catch(_) {}
     try { db.exec('ALTER TABLE settings ADD COLUMN evening_alert INTEGER DEFAULT 1'); } catch(_) {}
     try { db.exec('ALTER TABLE settings ADD COLUMN evening_reflection INTEGER DEFAULT 0'); } catch(_) {}
@@ -1327,6 +1328,13 @@ function getOrCreateProProfileSettings(userId) {
     return db.prepare(
         'SELECT * FROM pro_profile_settings WHERE user_id = ?'
     ).get(userId);
+}
+
+function setCardTheme(userId, themeKey) {
+    if (!SessionCardThemes[themeKey]) throw new RangeError('Invalid session card theme');
+    getOrCreateProProfileSettings(userId);
+    db.prepare("UPDATE pro_profile_settings SET card_theme = ?, updated_at = datetime('now') WHERE user_id = ?").run(themeKey, userId);
+    return getOrCreateProProfileSettings(userId);
 }
 
 function updateProProfileSettings(userId, { accentKey, badgeKey }) {
@@ -4622,6 +4630,7 @@ module.exports = {
     getPremiumEntitlement,
     getOrCreateProProfileSettings,
     updateProProfileSettings,
+    setCardTheme,
     recordStreakBreak,
     getStreakRecoveryStatus,
     recoverStreak,
