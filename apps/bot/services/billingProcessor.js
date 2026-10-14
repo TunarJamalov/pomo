@@ -1,5 +1,5 @@
 /**
- * Turns verified Lemon Squeezy webhooks into Pomo Pro.
+ * Turns verified Paddle webhooks into Pomo Pro.
  *
  * The website receives the webhook, checks its signature and stores it in
  * `billing_events`; this job works through that queue. Because the queue lives
@@ -7,17 +7,21 @@
  * as it comes back.
  *
  * Rules:
- *   active / on_trial / past_due  → Pro until renews_at (+ grace)
- *   cancelled                     → Pro until ends_at (+ grace), then it lapses on its own
- *   expired / unpaid / refunded   → Pro revoked, but only if it came from Lemon Squeezy
+ *   active / trialing / past_due  → Pro until the end of the current billing period (+ grace)
+ *   canceled / paused             → Pro revoked, but only if it came from Paddle
+ *   refund or chargeback approved → Pro revoked, but only if it came from Paddle
+ *
+ * A cancellation is scheduled for the end of the paid period, so Paddle sends
+ * `canceled` only once that period is over.
  */
 const { db, getPremiumEntitlement, extendPremiumUntil } = require('../utils/database');
 const { revokeProAccess, isProActive } = require('../utils/premiumManager');
 const { t, getUserLanguage } = require('../utils/i18n');
 const { PRO_STREAK_SHIELDS } = require('../utils/constants');
 
-const PROVIDER = 'lemonsqueezy';
-const SOURCE = 'lemonsqueezy';
+const PROVIDER = 'paddle';
+const SOURCE = 'paddle';
+const GRANTED_BY = 'PADDLE';
 const GRACE_DAYS = 2;
 const POLL_MS = 15 * 1000;
 const SNOWFLAKE = /^\d{17,20}$/;
@@ -27,16 +31,33 @@ function parseDate(value) {
     return d && !Number.isNaN(d.getTime()) ? d : null;
 }
 
+function isSandbox() {
+    return process.env.PADDLE_ENV !== 'production';
+}
+
+/** In sandbox only the listed Discord ids (the owner's test accounts) can get Pro from a payment. */
+function sandboxAllows(userId) {
+    const allowed = (process.env.PADDLE_TEST_DISCORD_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
+    return allowed.includes(String(userId));
+}
+
 function revokeIfOurs(userId, note) {
     const ent = getPremiumEntitlement(userId);
     if (ent?.status === 'active' && ent.source === SOURCE) {
-        revokeProAccess(userId, 'LEMONSQUEEZY', note);
+        revokeProAccess(userId, GRANTED_BY, note);
         return true;
     }
     return false;
 }
 
-function saveSubscription(subscriptionId, discordId, attrs, testMode) {
+function planName(sub) {
+    const cycle = sub.items?.[0]?.price?.billing_cycle;
+    if (cycle?.interval === 'year') return 'Yearly';
+    if (cycle?.interval === 'month') return 'Monthly';
+    return sub.items?.[0]?.price?.name || null;
+}
+
+function saveSubscription(sub, discordId) {
     db.prepare(`
         INSERT INTO billing_subscriptions (provider, subscription_id, discord_id, status, variant_name, renews_at, ends_at, customer_portal_url, test_mode, updated_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
@@ -49,72 +70,73 @@ function saveSubscription(subscriptionId, discordId, attrs, testMode) {
             customer_portal_url = COALESCE(excluded.customer_portal_url, billing_subscriptions.customer_portal_url),
             test_mode = excluded.test_mode,
             updated_at = datetime('now')
-    `).run(PROVIDER, subscriptionId, discordId, attrs.status || null, attrs.variant_name || null,
-        attrs.renews_at || null, attrs.ends_at || null, attrs.urls?.customer_portal || null, testMode ? 1 : 0);
+    `).run(PROVIDER, String(sub.id), discordId, sub.status || null, planName(sub),
+        sub.next_billed_at || null, sub.current_billing_period?.ends_at || null,
+        sub.management_urls?.cancel || null, isSandbox() ? 1 : 0);
 }
 
 function findSubscriptionOwner(subscriptionId) {
+    if (!subscriptionId) return null;
     return db.prepare('SELECT discord_id FROM billing_subscriptions WHERE provider = ? AND subscription_id = ?')
         .get(PROVIDER, String(subscriptionId))?.discord_id || null;
+}
+
+function claimedDiscordId(data) {
+    const id = String(data?.custom_data?.discord_id || '');
+    return SNOWFLAKE.test(id) ? id : null;
 }
 
 /**
  * Applies one webhook payload. Returns { result, userId?, change? } where change is
  * 'activated' | 'renewed' | 'ended' | 'unlinked' for side effects (DMs, logs).
  */
-function applyLemonSqueezyEvent(payload, { allowTest = process.env.LEMONSQUEEZY_ALLOW_TEST === 'true' } = {}) {
-    const meta = payload?.meta || {};
+function applyPaddleEvent(payload) {
+    const eventType = payload?.event_type || 'unknown';
     const data = payload?.data || {};
-    const attrs = data.attributes || {};
-    const eventName = meta.event_name || 'unknown';
-    const testMode = Boolean(meta.test_mode ?? attrs.test_mode);
-    if (testMode && !allowTest) return { result: `ignored test-mode ${eventName}` };
 
-    const custom = meta.custom_data || {};
-    const claimed = SNOWFLAKE.test(String(custom.discord_id || '')) ? String(custom.discord_id) : null;
+    if (eventType.startsWith('subscription.')) {
+        const userId = claimedDiscordId(data) || findSubscriptionOwner(data.id);
+        if (userId && isSandbox() && !sandboxAllows(userId)) {
+            return { result: `ignored sandbox ${eventType} for ${userId} (not a test account)` };
+        }
+        saveSubscription(data, userId);
+        if (!userId) return { result: `no discord id for subscription ${data.id}`, change: 'unlinked', customer: data.customer_id };
 
-    if (data.type === 'subscriptions') {
-        const subscriptionId = String(data.id);
-        const userId = claimed || findSubscriptionOwner(subscriptionId);
-        saveSubscription(subscriptionId, userId, attrs, testMode);
-        if (!userId) return { result: `no discord id for subscription ${subscriptionId}`, change: 'unlinked', email: attrs.user_email };
-
-        const status = attrs.status;
-        if (['active', 'on_trial', 'past_due', 'cancelled'].includes(status)) {
-            const end = parseDate(status === 'cancelled' ? attrs.ends_at : attrs.renews_at);
-            if (!end || end <= new Date()) return { result: `subscription ${subscriptionId} ${status} without a future date`, userId };
+        const status = data.status;
+        if (['active', 'trialing', 'past_due'].includes(status)) {
+            const end = parseDate(data.current_billing_period?.ends_at);
+            if (!end || end <= new Date()) return { result: `subscription ${data.id} ${status} without a future period end`, userId };
             const wasActive = isProActive(userId);
             const until = new Date(end.getTime() + GRACE_DAYS * 86400000);
+            const plan = planName(data) || 'Pro';
             extendPremiumUntil({
-                userId, until, grantedBy: 'LEMONSQUEEZY', source: SOURCE,
-                providerRef: subscriptionId, note: `${attrs.variant_name || 'Pro'} (${status})${testMode ? ' TEST' : ''}`,
+                userId, until, grantedBy: GRANTED_BY, source: SOURCE,
+                providerRef: String(data.id), note: `${plan} (${status})${isSandbox() ? ' SANDBOX' : ''}`,
             });
             if (!wasActive) {
                 db.prepare('UPDATE users SET streak_shields_remaining = ?, pro_shields_month = ? WHERE discord_id = ?')
                     .run(PRO_STREAK_SHIELDS, new Date().toISOString().slice(0, 7), userId);
             }
-            return { result: `pro until ${until.toISOString()} (${status})`, userId, change: wasActive ? 'renewed' : 'activated', plan: attrs.variant_name };
+            return { result: `pro until ${until.toISOString()} (${status})`, userId, change: wasActive ? 'renewed' : 'activated', plan };
         }
-        if (['expired', 'unpaid', 'paused'].includes(status)) {
+        if (['canceled', 'paused'].includes(status)) {
             const revoked = revokeIfOurs(userId, `subscription ${status}`);
             return { result: revoked ? `revoked (${status})` : `nothing to revoke (${status})`, userId, change: revoked ? 'ended' : undefined };
         }
         return { result: `ignored subscription status ${status}`, userId };
     }
 
-    if (data.type === 'subscription-invoices' && eventName === 'subscription_payment_refunded') {
-        const userId = claimed || findSubscriptionOwner(attrs.subscription_id);
-        if (!userId) return { result: 'refund for unknown subscription' };
-        const revoked = revokeIfOurs(userId, 'payment refunded');
-        return { result: revoked ? 'revoked (refund)' : 'refund, nothing to revoke', userId, change: revoked ? 'ended' : undefined };
+    if (eventType.startsWith('adjustment.')) {
+        // Refunds and chargebacks; credits and pending requests change nothing
+        const takesMoneyBack = ['refund', 'chargeback'].includes(data.action) && data.status === 'approved';
+        if (!takesMoneyBack) return { result: `ignored ${data.action || 'adjustment'} (${data.status || 'unknown'})` };
+        const userId = findSubscriptionOwner(data.subscription_id);
+        if (!userId) return { result: `${data.action} for unknown subscription ${data.subscription_id || '-'}` };
+        const revoked = revokeIfOurs(userId, `payment ${data.action}`);
+        return { result: revoked ? `revoked (${data.action})` : `${data.action}, nothing to revoke`, userId, change: revoked ? 'ended' : undefined };
     }
 
-    if (data.type === 'orders' && eventName === 'order_refunded' && claimed) {
-        const revoked = revokeIfOurs(claimed, 'order refunded');
-        return { result: revoked ? 'revoked (order refund)' : 'order refund, nothing to revoke', userId: claimed, change: revoked ? 'ended' : undefined };
-    }
-
-    return { result: `ignored ${eventName}` };
+    return { result: `ignored ${eventType}` };
 }
 
 async function notify(client, outcome) {
@@ -126,14 +148,14 @@ async function notify(client, outcome) {
         await channel?.send({ content: text, allowedMentions: { parse: [] } }).catch(() => {});
     };
     if (change === 'unlinked') {
-        await log(`⚠️ Lemon Squeezy payment without a Discord id (${outcome.email || 'no email'}). Grant it with \`/premiumadmin\`.`);
+        await log(`⚠️ Paddle subscription without a Discord id (customer ${outcome.customer || 'unknown'}). Grant it with \`/premiumadmin\`.`);
         return;
     }
     if (!userId || !change || change === 'renewed') return;
     if (change === 'activated') {
         require('../utils/premiumCheck').syncPremiumRole(client, userId, true).catch(() => {});
         await client.users.fetch(userId).then(u => u.send(t(getUserLanguage(userId), 'proActivatedDm'))).catch(() => {});
-        await log(`💰 New Pomo Pro: <@${userId}> (${outcome.plan || 'Pro'})`);
+        await log(`💰 New Pomo Pro: <@${userId}> (${outcome.plan || 'Pro'})${isSandbox() ? ' [sandbox]' : ''}`);
     } else if (change === 'ended') {
         require('../utils/premiumCheck').syncPremiumRole(client, userId, false).catch(() => {});
         await client.users.fetch(userId).then(u => u.send(t(getUserLanguage(userId), 'premiumExpiryDm'))).catch(() => {});
@@ -149,7 +171,7 @@ async function processQueue(client) {
     for (const row of rows) {
         let outcome;
         try {
-            outcome = applyLemonSqueezyEvent(JSON.parse(row.payload));
+            outcome = applyPaddleEvent(JSON.parse(row.payload));
         } catch (err) {
             outcome = { result: `error: ${err.message}` };
             console.error('[Billing] Event failed:', row.id, err);
@@ -171,7 +193,7 @@ function startBillingProcessor(client) {
     };
     tick();
     setInterval(tick, POLL_MS);
-    console.log('[Billing] Lemon Squeezy queue processor started.');
+    console.log(`[Billing] Paddle queue processor started (${isSandbox() ? 'sandbox' : 'production'}).`);
 }
 
-module.exports = { applyLemonSqueezyEvent, processQueue, startBillingProcessor };
+module.exports = { applyPaddleEvent, processQueue, startBillingProcessor };

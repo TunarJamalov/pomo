@@ -110,6 +110,7 @@ function formatPlan(planKey, language = 'en') {
 
 function formatSource(source, language = 'en') {
     const sources = {
+        paddle: t(language, 'proSourcePaid'),
         lemonsqueezy: t(language, 'proSourcePaid'),
         manual_beta: t(language, 'premiumSourceManualBeta'),
         discord_role: t(language, 'premiumSourceDiscordRole'),

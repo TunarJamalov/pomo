@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
-import { ArrowUpRight, Check, Crown } from "lucide-react";
+import { Check, Crown } from "lucide-react";
 import Footer from "@/components/Footer";
 import ProSignInButton from "@/components/site/ProSignInButton";
+import PaddleCheckoutButton from "@/components/site/PaddleCheckoutButton";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { SUPPORT_SERVER_URL } from "@/lib/links";
-import { checkoutUrl, PRO_PLANS, type ProPlan } from "@/lib/billing";
+import { canCheckout, paddleSetup, PRO_PLANS, type ProPlan } from "@/lib/billing";
 
 export const metadata: Metadata = {
   title: "Pricing",
@@ -50,16 +51,26 @@ const FAQ = [
   ["Who handles the payment?", "Paddle.com, our merchant of record. It processes the payment and handles sales tax, VAT and receipts."],
 ];
 
-export default async function PricingPage() {
+export default async function PricingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const session = await getServerSession(authOptions);
   const discordId = (session?.user as { id?: string } | undefined)?.id ?? null;
-  // A checkout without a Discord id can't be linked to anyone, so links are only built after sign-in
+  const query = await searchParams;
+  // Plan buttons in Discord link here with ?plan=; open that checkout once signed in
+  const wantedPlan = typeof query.plan === "string" ? query.plan : null;
+  const welcome = query.welcome === "1";
+
+  const setup = paddleSetup();
+  // A checkout without a Discord id can't be linked to anyone, so it only opens after sign-in
+  const checkout = canCheckout(setup, discordId) ? setup : null;
+  const salesOpen = setup?.environment === "production";
   const plans = (Object.keys(PRO_PLANS) as ProPlan[]).map(plan => ({
     plan,
     ...PRO_PLANS[plan],
     ...PLAN_COPY[plan],
-    configured: Boolean(checkoutUrl(plan)),
-    url: discordId ? checkoutUrl(plan, discordId) : null,
   }));
 
   return (
@@ -72,6 +83,12 @@ export default async function PricingPage() {
             A monthly or yearly subscription that unlocks extra features in the Pomo Discord bot and dashboard. The
             core timers, voice tracking and stats stay free.
           </p>
+          {welcome && (
+            <div className="panel mt-8 max-w-[600px] p-5 text-[15px] text-[var(--site-fg)]">
+              Thanks for subscribing! Pro turns on for your Discord account within a minute. Check it with{" "}
+              <code className="font-mono">/premium status</code>.
+            </div>
+          )}
         </div>
       </section>
 
@@ -94,13 +111,22 @@ export default async function PricingPage() {
                 </p>
                 <p className="mt-3 text-[14px] leading-relaxed text-[var(--site-muted)]">{p.note}</p>
               </div>
-              {p.url ? (
-                <a href={p.url} className={`btn h-11 w-full ${p.plan === "yearly" ? "btn-tomato" : "btn-outline"}`}>
-                  Get {p.title}
-                  <ArrowUpRight size={14} />
-                </a>
-              ) : p.configured && !discordId ? (
-                <ProSignInButton label="Sign in with Discord to subscribe" className={`btn h-11 w-full ${p.plan === "yearly" ? "btn-tomato" : "btn-outline"}`} />
+              {checkout && discordId ? (
+                <PaddleCheckoutButton
+                  environment={checkout.environment}
+                  token={checkout.token}
+                  priceId={checkout.prices[p.plan]}
+                  discordId={discordId}
+                  label={`Get ${p.title}`}
+                  autoOpen={wantedPlan === p.plan}
+                  className={`btn h-11 w-full ${p.plan === "yearly" ? "btn-tomato" : "btn-outline"}`}
+                />
+              ) : salesOpen && !discordId ? (
+                <ProSignInButton
+                  label="Sign in with Discord to subscribe"
+                  callbackUrl={`/pricing?plan=${p.plan}#pricing`}
+                  className={`btn h-11 w-full ${p.plan === "yearly" ? "btn-tomato" : "btn-outline"}`}
+                />
               ) : (
                 <span className="btn btn-outline h-11 w-full opacity-60">Coming soon</span>
               )}
