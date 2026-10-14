@@ -37,7 +37,7 @@ const COLUMNS: Array<{ title: string; links: Array<{ label: string; href: string
       { label: "Top.gg", href: TOPGG_URL, external: true },
       { label: "GitHub", href: GITHUB_URL, external: true },
       { label: "TikTok", href: TIKTOK_URL, external: true },
-      { label: "Pomo Pro", href: "/support" },
+      { label: "Pomo Pro", href: "/pricing" },
     ],
   },
   {

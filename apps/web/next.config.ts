@@ -16,6 +16,10 @@ const config: NextConfig = {
   outputFileTracingRoot: require("path").join(__dirname, "../../"),
   serverExternalPackages: ["better-sqlite3"],
   transpilePackages: ["@pomo/db"],
+  async redirects() {
+    // The pricing page used to live at /support; old links in DMs, posts and search results keep working
+    return [{ source: "/support", destination: "/pricing", permanent: true }];
+  },
   images: {
     remotePatterns: [
       {

@@ -46,7 +46,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-bold text-white mb-4">5. Pomo Pro subscriptions</h2>
             <p>
-              Pomo Pro is an optional subscription ($2.99 per month or $19.99 per year). Payments are processed by Lemon Squeezy, which acts as the merchant of record and handles sales tax and VAT. Subscriptions renew automatically until cancelled. You can cancel any time with <code>/premium status</code> in Discord or from the link in your receipt; Pro stays active until the end of the period you paid for.
+              Pomo Pro is an optional subscription ($2.99 per month or $19.99 per year). Payments are processed by our payment provider, which acts as the merchant of record and handles sales tax and VAT. Subscriptions renew automatically until cancelled. You can cancel any time with <code>/premium status</code> in Discord or from the link in your receipt; Pro stays active until the end of the period you paid for.
             </p>
             <p className="mt-3">
               <strong>Refunds:</strong> if something went wrong, contact us in the support server within 14 days of a payment and we will refund it. Pro perks are tied to the Discord account the purchase was made for and are not transferable. We may change the perks included in Pro; existing subscribers will be told in advance about price changes.

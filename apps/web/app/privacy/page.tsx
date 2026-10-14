@@ -49,7 +49,7 @@ export default function PrivacyPage() {
               We do not sell, trade, or transfer your personally identifiable information to outside parties. Your data is kept secure on our private servers and is only accessible through our secure API.
             </p>
             <p className="mt-3">
-              If you buy Pomo Pro, the payment is handled by Lemon Squeezy (our merchant of record), which processes your payment details and email under its own privacy policy. We only receive your Discord ID, subscription status, renewal date and the email on the receipt, and use them to turn Pro on and off.
+              If you buy Pomo Pro, the payment is handled by our payment provider (the merchant of record), which processes your payment details and email under its own privacy policy. We only receive your Discord ID, subscription status, renewal date and the email on the receipt, and use them to turn Pro on and off.
             </p>
           </section>
 

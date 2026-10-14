@@ -12,7 +12,7 @@ const PLANS = {
     monthly: { env: 'LEMONSQUEEZY_CHECKOUT_MONTHLY', price: '$2.99', labelKey: 'proBuyMonthly' },
     yearly: { env: 'LEMONSQUEEZY_CHECKOUT_YEARLY', price: '$19.99', labelKey: 'proBuyYearly' },
 };
-const PRICING_PAGE = 'https://pomofocus.online/support';
+const PRICING_PAGE = 'https://pomofocus.online/pricing';
 
 function checkoutUrl(plan, discordId) {
     const base = process.env[PLANS[plan]?.env];

@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { href: "/tutorials/commands", label: "Commands" },
   { href: "/desktop", label: "Desktop" },
   { href: SUPPORT_SERVER_URL, label: "Community", external: true },
-  { href: "/support", label: "Support" },
+  { href: "/pricing", label: "Pricing" },
 ];
 
 export default function Navbar() {

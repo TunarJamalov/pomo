@@ -16,7 +16,7 @@ const PAGES: Array<{ path: string; priority: number; changeFrequency: "weekly" |
   { path: "/tutorials/pets-market", priority: 0.5, changeFrequency: "monthly" },
   { path: "/tutorials/clans", priority: 0.5, changeFrequency: "monthly" },
   { path: "/desktop", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/support", priority: 0.4, changeFrequency: "monthly" },
+  { path: "/pricing", priority: 0.4, changeFrequency: "monthly" },
   { path: "/privacy", priority: 0.2, changeFrequency: "yearly" },
   { path: "/terms", priority: 0.2, changeFrequency: "yearly" },
 ];

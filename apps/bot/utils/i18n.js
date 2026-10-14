@@ -13299,7 +13299,7 @@ Object.assign(Messages['en'], {
     "proActivatedDm": "🎉 **Pomo Pro is active!** Thank you for supporting Pomo 🍅\n\nYour perks are on: 2x water, streak shields, a bigger garden, 15 habits, advanced stats and more.\nManage or cancel your subscription any time with `/premium status`.",
     "premiumInactiveBody": "You don't have Pomo Pro right now.\n\nGet it for **$2.99/month** or **$19.99/year** with the buttons below. Pro turns on automatically about a minute after you pay. See `/premium perks` for everything it includes.",
     "premiumPerksHowToBody": "Pick monthly or yearly below. Checkout opens in your browser (card or PayPal) and Pro turns on automatically within a minute. Cancel any time from `/premium status`.",
-    "premiumExpiryDm": "💔 **Your Pomo Pro has ended.**\n\nYour Pro perks are paused, but your XP, streak and garden are all safe.\n\nWant it back? Run `/premium perks` or visit <https://pomofocus.online/support>.",
+    "premiumExpiryDm": "💔 **Your Pomo Pro has ended.**\n\nYour Pro perks are paused, but your XP, streak and garden are all safe.\n\nWant it back? Run `/premium perks` or visit <https://pomofocus.online/pricing>.",
     "premiumPerksIntro": "Support Pomo and unlock perks that make studying even better!",
     "premiumPerksFooter": "Thank you for supporting Pomo! ❤️"
 });
@@ -13311,7 +13311,7 @@ Object.assign(Messages['es'], {
     "proActivatedDm": "🎉 **¡Pomo Pro está activo!** Gracias por apoyar a Pomo 🍅\n\nYa tienes tus ventajas: agua x2, escudos de racha, un jardín más grande, 15 hábitos, estadísticas avanzadas y más.\nGestiona o cancela tu suscripción cuando quieras con `/premium status`.",
     "premiumInactiveBody": "Ahora mismo no tienes Pomo Pro.\n\nConsíguelo por **$2.99/mes** o **$19.99/año** con los botones de abajo. Pro se activa solo un minuto después de pagar. Mira `/premium perks` para ver todo lo que incluye.",
     "premiumPerksHowToBody": "Elige mensual o anual abajo. El pago se abre en tu navegador (tarjeta o PayPal) y Pro se activa solo en un minuto. Cancela cuando quieras desde `/premium status`.",
-    "premiumExpiryDm": "💔 **Tu Pomo Pro ha terminado.**\n\nTus ventajas Pro están en pausa, pero tu XP, tu racha y tu jardín están a salvo.\n\n¿Lo quieres de vuelta? Usa `/premium perks` o visita <https://pomofocus.online/support>.",
+    "premiumExpiryDm": "💔 **Tu Pomo Pro ha terminado.**\n\nTus ventajas Pro están en pausa, pero tu XP, tu racha y tu jardín están a salvo.\n\n¿Lo quieres de vuelta? Usa `/premium perks` o visita <https://pomofocus.online/pricing>.",
     "premiumPerksIntro": "¡Apoya a Pomo y desbloquea ventajas que hacen el estudio aún mejor!",
     "premiumPerksFooter": "¡Gracias por apoyar a Pomo! ❤️"
 });
@@ -13323,7 +13323,7 @@ Object.assign(Messages['fr'], {
     "proActivatedDm": "🎉 **Pomo Pro est actif !** Merci de soutenir Pomo 🍅\n\nTes avantages sont activés : eau x2, boucliers de série, un jardin plus grand, 15 habitudes, statistiques avancées et plus.\nGère ou annule ton abonnement quand tu veux avec `/premium status`.",
     "premiumInactiveBody": "Tu n'as pas Pomo Pro pour le moment.\n\nObtiens-le pour **2,99 $/mois** ou **19,99 $/an** avec les boutons ci-dessous. Pro s'active tout seul environ une minute après le paiement. Vois `/premium perks` pour tout ce qu'il inclut.",
     "premiumPerksHowToBody": "Choisis mensuel ou annuel ci-dessous. Le paiement s'ouvre dans ton navigateur (carte ou PayPal) et Pro s'active tout seul en une minute. Annule quand tu veux depuis `/premium status`.",
-    "premiumExpiryDm": "💔 **Ton Pomo Pro est terminé.**\n\nTes avantages Pro sont en pause, mais ton XP, ta série et ton jardin sont en sécurité.\n\nTu le veux de nouveau ? Utilise `/premium perks` ou va sur <https://pomofocus.online/support>.",
+    "premiumExpiryDm": "💔 **Ton Pomo Pro est terminé.**\n\nTes avantages Pro sont en pause, mais ton XP, ta série et ton jardin sont en sécurité.\n\nTu le veux de nouveau ? Utilise `/premium perks` ou va sur <https://pomofocus.online/pricing>.",
     "premiumPerksIntro": "Soutiens Pomo et débloque des avantages qui rendent l'étude encore meilleure !",
     "premiumPerksFooter": "Merci de soutenir Pomo ! ❤️"
 });
@@ -13335,7 +13335,7 @@ Object.assign(Messages['pt-BR'], {
     "proActivatedDm": "🎉 **O Pomo Pro está ativo!** Obrigado por apoiar o Pomo 🍅\n\nSeus benefícios estão ligados: água 2x, escudos de sequência, um jardim maior, 15 hábitos, estatísticas avançadas e mais.\nGerencie ou cancele sua assinatura quando quiser com `/premium status`.",
     "premiumInactiveBody": "Você não tem o Pomo Pro agora.\n\nAssine por **$2.99/mês** ou **$19.99/ano** com os botões abaixo. O Pro é ativado sozinho cerca de um minuto depois do pagamento. Veja `/premium perks` para tudo o que está incluído.",
     "premiumPerksHowToBody": "Escolha mensal ou anual abaixo. O pagamento abre no seu navegador (cartão ou PayPal) e o Pro é ativado sozinho em um minuto. Cancele quando quiser em `/premium status`.",
-    "premiumExpiryDm": "💔 **Seu Pomo Pro terminou.**\n\nSeus benefícios Pro estão pausados, mas seu XP, sua sequência e seu jardim estão seguros.\n\nQuer de volta? Use `/premium perks` ou acesse <https://pomofocus.online/support>.",
+    "premiumExpiryDm": "💔 **Seu Pomo Pro terminou.**\n\nSeus benefícios Pro estão pausados, mas seu XP, sua sequência e seu jardim estão seguros.\n\nQuer de volta? Use `/premium perks` ou acesse <https://pomofocus.online/pricing>.",
     "premiumPerksIntro": "Apoie o Pomo e desbloqueie benefícios que deixam os estudos ainda melhores!",
     "premiumPerksFooter": "Obrigado por apoiar o Pomo! ❤️"
 });
@@ -13347,7 +13347,7 @@ Object.assign(Messages['ru'], {
     "proActivatedDm": "🎉 **Pomo Pro активирован!** Спасибо, что поддерживаешь Pomo 🍅\n\nПреимущества уже работают: вода x2, щиты серии, большой сад, 15 привычек, расширенная статистика и не только.\nУправлять подпиской или отменить её можно в любой момент через `/premium status`.",
     "premiumInactiveBody": "Сейчас у тебя нет Pomo Pro.\n\nОформи его за **$2.99/мес** или **$19.99/год** кнопками ниже. Pro включится автоматически примерно через минуту после оплаты. Всё, что входит в Pro: `/premium perks`.",
     "premiumPerksHowToBody": "Выбери месячный или годовой план ниже. Оплата откроется в браузере (карта или PayPal), а Pro включится автоматически в течение минуты. Отменить можно в любой момент через `/premium status`.",
-    "premiumExpiryDm": "💔 **Твой Pomo Pro закончился.**\n\nПреимущества Pro на паузе, но твой опыт, серия и сад в безопасности.\n\nХочешь вернуть? Используй `/premium perks` или зайди на <https://pomofocus.online/support>.",
+    "premiumExpiryDm": "💔 **Твой Pomo Pro закончился.**\n\nПреимущества Pro на паузе, но твой опыт, серия и сад в безопасности.\n\nХочешь вернуть? Используй `/premium perks` или зайди на <https://pomofocus.online/pricing>.",
     "premiumPerksIntro": "Поддержи Pomo и открой преимущества, с которыми учиться ещё приятнее!",
     "premiumPerksFooter": "Спасибо, что поддерживаешь Pomo! ❤️"
 });
@@ -13359,7 +13359,7 @@ Object.assign(Messages['tr'], {
     "proActivatedDm": "🎉 **Pomo Pro aktif!** Pomo'yu desteklediğin için teşekkürler 🍅\n\nAvantajların açık: 2x su, streak kalkanları, daha büyük bahçe, 15 alışkanlık, gelişmiş istatistikler ve daha fazlası.\nAboneliğini istediğin zaman `/premium status` ile yönetebilir veya iptal edebilirsin.",
     "premiumInactiveBody": "Şu anda Pomo Pro'n yok.\n\nAşağıdaki düğmelerle **$2.99/ay** veya **$19.99/yıl** karşılığında alabilirsin. Pro, ödemeden yaklaşık bir dakika sonra otomatik açılır. Tüm avantajlar için `/premium perks`.",
     "premiumPerksHowToBody": "Aşağıdan aylık veya yıllık planı seç. Ödeme tarayıcında açılır (kart veya PayPal) ve Pro bir dakika içinde otomatik açılır. İstediğin zaman `/premium status` üzerinden iptal edebilirsin.",
-    "premiumExpiryDm": "💔 **Pomo Pro'n sona erdi.**\n\nPro avantajların durduruldu ama XP'n, streak'in ve bahçen güvende.\n\nGeri ister misin? `/premium perks` kullan veya <https://pomofocus.online/support> adresine git.",
+    "premiumExpiryDm": "💔 **Pomo Pro'n sona erdi.**\n\nPro avantajların durduruldu ama XP'n, streak'in ve bahçen güvende.\n\nGeri ister misin? `/premium perks` kullan veya <https://pomofocus.online/pricing> adresine git.",
     "premiumPerksIntro": "Pomo'yu destekle ve çalışmayı daha da güzel yapan avantajları aç!",
     "premiumPerksFooter": "Pomo'yu desteklediğin için teşekkürler! ❤️"
 });
@@ -13371,7 +13371,7 @@ Object.assign(Messages['az'], {
     "proActivatedDm": "🎉 **Pomo Pro aktivdir!** Pomo-nu dəstəklədiyin üçün təşəkkürlər 🍅\n\nÜstünlüklərin açıqdır: 2x su, seriya qalxanları, daha böyük bağ, 15 vərdiş, geniş statistika və daha çox.\nAbunəliyini istədiyin vaxt `/premium status` ilə idarə edə və ya ləğv edə bilərsən.",
     "premiumInactiveBody": "Hazırda Pomo Pro-n yoxdur.\n\nAşağıdakı düymələrlə **$2.99/ay** və ya **$19.99/il** qiymətinə ala bilərsən. Ödənişdən təxminən bir dəqiqə sonra Pro avtomatik açılır. Pro-ya daxil olan hər şey: `/premium perks`.",
     "premiumPerksHowToBody": "Aşağıdan aylıq və ya illik planı seç. Ödəniş brauzerdə açılır (kart və ya PayPal), Pro isə bir dəqiqə ərzində avtomatik açılır. İstədiyin vaxt `/premium status`-dan ləğv edə bilərsən.",
-    "premiumExpiryDm": "💔 **Pomo Pro-n bitdi.**\n\nPro üstünlükləri dayandırılıb, amma XP-n, seriyan və bağın təhlükəsizdir.\n\nGeri qaytarmaq istəyirsən? `/premium perks` yaz və ya <https://pomofocus.online/support> səhifəsinə keç.",
+    "premiumExpiryDm": "💔 **Pomo Pro-n bitdi.**\n\nPro üstünlükləri dayandırılıb, amma XP-n, seriyan və bağın təhlükəsizdir.\n\nGeri qaytarmaq istəyirsən? `/premium perks` yaz və ya <https://pomofocus.online/pricing> səhifəsinə keç.",
     "premiumPerksIntro": "Pomo-nu dəstəklə və dərsi daha da gözəl edən üstünlükləri aç!",
     "premiumPerksFooter": "Pomo-nu dəstəklədiyin üçün təşəkkürlər! ❤️"
 });
@@ -13383,7 +13383,7 @@ Object.assign(Messages['ja'], {
     "proActivatedDm": "🎉 **Pomo Pro が有効になりました！** Pomo を応援してくれてありがとう 🍅\n\n特典が使えるようになりました：水2倍、ストリークシールド、広い庭、15個の習慣、詳しい統計など。\nサブスクリプションの管理・解約はいつでも `/premium status` から。",
     "premiumInactiveBody": "現在 Pomo Pro はありません。\n\n下のボタンから **$2.99/月** または **$19.99/年** で購入できます。お支払いの約1分後に Pro が自動で有効になります。特典の一覧は `/premium perks`。",
     "premiumPerksHowToBody": "下から月額か年額を選んでください。ブラウザで決済画面が開き（カードまたは PayPal）、1分以内に Pro が自動で有効になります。解約はいつでも `/premium status` から。",
-    "premiumExpiryDm": "💔 **Pomo Pro が終了しました。**\n\nPro の特典は一時停止中ですが、XP・ストリーク・庭はそのまま残っています。\n\nまた使いたいときは `/premium perks` か <https://pomofocus.online/support> へ。",
+    "premiumExpiryDm": "💔 **Pomo Pro が終了しました。**\n\nPro の特典は一時停止中ですが、XP・ストリーク・庭はそのまま残っています。\n\nまた使いたいときは `/premium perks` か <https://pomofocus.online/pricing> へ。",
     "premiumPerksIntro": "Pomo を応援して、勉強がもっと楽しくなる特典を手に入れよう！",
     "premiumPerksFooter": "Pomo を応援してくれてありがとう！❤️"
 });
@@ -13395,7 +13395,7 @@ Object.assign(Messages['ko'], {
     "proActivatedDm": "🎉 **Pomo Pro가 활성화됐어요!** Pomo를 응원해 줘서 고마워요 🍅\n\n혜택이 켜졌어요: 물 2배, 스트릭 실드, 더 넓은 정원, 습관 15개, 고급 통계 등.\n구독 관리나 해지는 언제든 `/premium status`에서 할 수 있어요.",
     "premiumInactiveBody": "지금은 Pomo Pro가 없어요.\n\n아래 버튼으로 **$2.99/월** 또는 **$19.99/년**에 구독할 수 있어요. 결제 후 약 1분 안에 Pro가 자동으로 켜져요. 포함된 혜택은 `/premium perks`에서 확인하세요.",
     "premiumPerksHowToBody": "아래에서 월간 또는 연간을 고르세요. 브라우저에서 결제 창이 열리고(카드 또는 PayPal) 1분 안에 Pro가 자동으로 켜져요. 해지는 언제든 `/premium status`에서.",
-    "premiumExpiryDm": "💔 **Pomo Pro가 끝났어요.**\n\nPro 혜택은 멈췄지만 XP, 스트릭, 정원은 모두 안전해요.\n\n다시 쓰고 싶다면 `/premium perks`를 쓰거나 <https://pomofocus.online/support>를 방문하세요.",
+    "premiumExpiryDm": "💔 **Pomo Pro가 끝났어요.**\n\nPro 혜택은 멈췄지만 XP, 스트릭, 정원은 모두 안전해요.\n\n다시 쓰고 싶다면 `/premium perks`를 쓰거나 <https://pomofocus.online/pricing>를 방문하세요.",
     "premiumPerksIntro": "Pomo를 응원하고 공부를 더 즐겁게 만드는 혜택을 열어 보세요!",
     "premiumPerksFooter": "Pomo를 응원해 줘서 고마워요! ❤️"
 });
@@ -13407,7 +13407,7 @@ Object.assign(Messages['ar'], {
     "proActivatedDm": "🎉 **تم تفعيل Pomo Pro!** شكرًا لدعمك Pomo 🍅\n\nمزاياك مفعّلة الآن: ماء مضاعف، دروع السلسلة، حديقة أكبر، 15 عادة، إحصاءات متقدمة والمزيد.\nيمكنك إدارة اشتراكك أو إلغاؤه في أي وقت عبر `/premium status`.",
     "premiumInactiveBody": "ليس لديك Pomo Pro حاليًا.\n\nاحصل عليه مقابل **$2.99 شهريًا** أو **$19.99 سنويًا** من الأزرار أدناه. يتفعّل Pro تلقائيًا بعد دقيقة تقريبًا من الدفع. اطّلع على كل ما يشمله عبر `/premium perks`.",
     "premiumPerksHowToBody": "اختر الخطة الشهرية أو السنوية أدناه. تُفتح صفحة الدفع في متصفحك (بطاقة أو PayPal) ويتفعّل Pro تلقائيًا خلال دقيقة. يمكنك الإلغاء في أي وقت من `/premium status`.",
-    "premiumExpiryDm": "💔 **انتهى Pomo Pro الخاص بك.**\n\nمزايا Pro متوقفة مؤقتًا، لكن نقاط خبرتك وسلسلتك وحديقتك محفوظة.\n\nتريد استعادته؟ استخدم `/premium perks` أو زر <https://pomofocus.online/support>.",
+    "premiumExpiryDm": "💔 **انتهى Pomo Pro الخاص بك.**\n\nمزايا Pro متوقفة مؤقتًا، لكن نقاط خبرتك وسلسلتك وحديقتك محفوظة.\n\nتريد استعادته؟ استخدم `/premium perks` أو زر <https://pomofocus.online/pricing>.",
     "premiumPerksIntro": "ادعم Pomo وافتح مزايا تجعل الدراسة أجمل!",
     "premiumPerksFooter": "شكرًا لدعمك Pomo! ❤️"
 });

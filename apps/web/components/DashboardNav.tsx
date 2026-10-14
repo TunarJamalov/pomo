@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { History, LayoutDashboard, Trophy, Leaf, CheckSquare, Clock, Users, PawPrint, UserCircle, Radio, Store, Heart, Flag, Monitor, ShieldAlert, BookOpen, FileText, Target, Folder, Server } from "lucide-react";
+import { History, LayoutDashboard, Trophy, Leaf, CheckSquare, Clock, Users, PawPrint, UserCircle, Radio, Store, Crown, Flag, Monitor, ShieldAlert, BookOpen, FileText, Target, Folder, Server } from "lucide-react";
 
 const personalWorkspace = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -68,11 +68,11 @@ export default function DashboardNav() {
 
       <div className="mt-4 border-t border-[var(--border)] pt-4">
         <Link
-          href="/support"
+          href="/pricing"
           className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-[15px] font-medium text-[var(--text-secondary)] transition-colors hover:bg-[#35373c] hover:text-[var(--text-primary)]"
         >
-          <Heart size={18} className="text-[var(--blurple)]" />
-          Support Pomo
+          <Crown size={18} className="text-[var(--blurple)]" />
+          Pomo Pro
         </Link>
       </div>
     </div>

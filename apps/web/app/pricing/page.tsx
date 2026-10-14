@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
-import { ArrowUpRight, Check, Crown, Server, Sparkles, Zap } from "lucide-react";
+import { ArrowUpRight, Check, Crown } from "lucide-react";
 import Footer from "@/components/Footer";
 import ProSignInButton from "@/components/site/ProSignInButton";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -8,9 +8,9 @@ import { SUPPORT_SERVER_URL } from "@/lib/links";
 import { checkoutUrl, PRO_PLANS, type ProPlan } from "@/lib/billing";
 
 export const metadata: Metadata = {
-  title: "Pomo Pro",
-  description: "Get Pomo Pro for $2.99/month or $19.99/year: 2x water, streak shields, a bigger garden, 15 habits, advanced stats and more.",
-  alternates: { canonical: "/support" },
+  title: "Pricing",
+  description: "Pomo Pro is a $2.99/month or $19.99/year subscription that unlocks extra features in the Pomo Discord bot: 2x water, streak shields, a bigger garden, 15 habits, advanced stats and more.",
+  alternates: { canonical: "/pricing" },
 };
 
 // Keep in sync with the bot's /premium perks (premiumPerksItems in apps/bot/utils/i18n.js)
@@ -32,20 +32,24 @@ const PLAN_COPY: Record<ProPlan, { title: string; note: string; badge?: string }
   yearly: { title: "Yearly", note: "One payment a year, about $1.67 a month.", badge: "Save 44%" },
 };
 
+// What every account gets without paying, so the line between Free and Pro is clear
+const FREE_FEATURES = [
+  "Focus timers: /study, /pomodoro and group /team sessions",
+  "Automatic voice study tracking",
+  "Garden with 6 plots, pets and the market",
+  "5 habits, streaks and server goals",
+  "Stats, weekly recaps and leaderboards",
+  "Web dashboard and the desktop app",
+];
+
 const FAQ = [
+  ["What do I get?", "A subscription for your Discord account. The Pro features above unlock in the Pomo bot and on the dashboard for as long as the subscription is active."],
   ["How does Pro turn on?", "Pay with the button on this page or with /premium in Discord. Pro is linked to your Discord account and turns on automatically about a minute later."],
   ["How do I cancel?", "Run /premium status in Discord and press Manage subscription, or use the link in your receipt email. You keep Pro until the end of the period you paid for."],
   ["Refunds", "If something went wrong, message us in the support server within 14 days of a payment and we will refund it."],
-  ["Payment methods", "Card or PayPal. Payments are processed by Lemon Squeezy, our merchant of record, which also handles sales tax and VAT."],
 ];
 
-const COSTS = [
-  { icon: Server, title: "Servers", body: "Hosting the Discord bot, the web dashboard and the databases 24/7." },
-  { icon: Zap, title: "Reliability", body: "Keeping everything fast and responsive during peak study hours." },
-  { icon: Sparkles, title: "New features", body: "Pro directly funds new study tools and quality-of-life improvements." },
-];
-
-export default async function SupportPage() {
+export default async function PricingPage() {
   const session = await getServerSession(authOptions);
   const discordId = (session?.user as { id?: string } | undefined)?.id ?? null;
   // A checkout without a Discord id can't be linked to anyone, so links are only built after sign-in
@@ -61,11 +65,11 @@ export default async function SupportPage() {
     <main className="site min-h-screen">
       <section className="pb-16 pt-28 md:pb-20 md:pt-36">
         <div className="site-container">
-          <p className="kicker mb-6">Pomo Pro</p>
-          <h1 className="site-heading max-w-[760px] text-[clamp(40px,6.5vw,72px)]">Study more. Keep the streak.</h1>
+          <p className="kicker mb-6">Pricing</p>
+          <h1 className="site-heading max-w-[760px] text-[clamp(40px,6.5vw,72px)]">Pomo Pro</h1>
           <p className="mt-6 max-w-[600px] text-[17px] leading-relaxed text-[var(--site-muted)]">
-            Pomo is built by a solo developer and kept online for study communities around the world. Pro unlocks extra
-            perks and keeps Pomo free for everyone else.
+            A monthly or yearly subscription that unlocks extra features in the Pomo Discord bot and dashboard. The
+            core timers, voice tracking and stats stay free.
           </p>
         </div>
       </section>
@@ -139,15 +143,16 @@ export default async function SupportPage() {
             </dl>
           </div>
           <div>
-            <p className="kicker mb-5">Where the money goes</p>
-            <div className="grid gap-4">
-              {COSTS.map(({ icon: Icon, title, body }) => (
-                <div key={title} className="panel p-6">
-                  <Icon size={18} className="text-[var(--site-fg-2)]" />
-                  <h3 className="mt-4 text-[16px] font-medium text-[var(--site-fg)]">{title}</h3>
-                  <p className="mt-2 text-[14px] leading-relaxed text-[var(--site-muted)]">{body}</p>
-                </div>
-              ))}
+            <p className="kicker mb-5">Free forever</p>
+            <div className="panel p-6 md:p-8">
+              <ul className="grid gap-3">
+                {FREE_FEATURES.map(feature => (
+                  <li key={feature} className="flex items-start gap-2 text-[14px] leading-relaxed text-[var(--site-fg-2)]">
+                    <Check size={13} className="mt-1 shrink-0 text-[var(--status-live)]" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
             </div>
             <p className="mt-8 text-[14px] text-[var(--site-muted)]">
               More questions?{" "}
