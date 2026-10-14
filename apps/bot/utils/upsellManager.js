@@ -6,7 +6,7 @@ const { Colors, GardenPlotLimits } = require('./constants');
 const { isProActive } = require('./premiumManager');
 const { t, getInteractionLanguage } = require('./i18n');
 
-const { buyButtons } = require('./billing');
+const { buyButtons, checkoutConfigured } = require('./billing');
 
 const UPSELL_COOLDOWNS = {
   GLOBAL_HOURS:   24,
@@ -32,6 +32,9 @@ async function triggerUpsell(interaction, upsellType) {
 
   // Check user is not already pro
   if (isProActive(userId)) return false;
+
+  // No checkout configured (no payment provider yet): nothing to sell, so stay quiet
+  if (!checkoutConfigured()) return false;
 
   // Global cooldown
   const lastAnyUpsell = db.prepare(

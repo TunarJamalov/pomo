@@ -27,6 +27,11 @@ function checkoutUrl(plan, discordId) {
 }
 
 /** Link buttons for the plans that are configured, or the pricing page. */
+/** True when at least one plan has a checkout link, i.e. Pro can actually be bought. */
+function checkoutConfigured() {
+    return Object.values(PLANS).some(plan => Boolean(process.env[plan.env]));
+}
+
 function buyButtons(language, discordId) {
     const buttons = Object.entries(PLANS)
         .map(([plan, info]) => {
@@ -55,4 +60,4 @@ function manageUrl(discordId) {
     `).get(String(discordId))?.customer_portal_url || null;
 }
 
-module.exports = { PLANS, PRICING_PAGE, checkoutUrl, buyButtons, buyRow, manageUrl };
+module.exports = { PLANS, PRICING_PAGE, checkoutConfigured, checkoutUrl, buyButtons, buyRow, manageUrl };

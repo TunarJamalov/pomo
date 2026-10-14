@@ -1,6 +1,7 @@
 const { initDatabase, db, getOrCreateUser, grantPremium, getPremiumEntitlement } = require('../utils/database');
 const { applyLemonSqueezyEvent } = require('../services/billingProcessor');
-const { checkoutUrl } = require('../utils/billing');
+const { checkoutUrl, checkoutConfigured } = require('../utils/billing');
+const { triggerUpsell } = require('../utils/upsellManager');
 
 beforeAll(() => initDatabase());
 beforeEach(() => db.exec("DELETE FROM billing_subscriptions; DELETE FROM premium_entitlements WHERE user_id LIKE '1000%'"));
@@ -86,5 +87,16 @@ describe('checkout links', () => {
         const url = new URL(checkoutUrl('monthly', USER));
         expect(url.searchParams.get('checkout[custom][discord_id]')).toBe(USER);
         expect(checkoutUrl('yearly', USER)).toBeNull();
+    });
+
+    test('no upsell when Pro cannot be bought', async () => {
+        delete process.env.LEMONSQUEEZY_CHECKOUT_MONTHLY;
+        delete process.env.LEMONSQUEEZY_CHECKOUT_YEARLY;
+        expect(checkoutConfigured()).toBe(false);
+
+        const reply = jest.fn();
+        const interaction = { user: { id: '1000999' }, locale: 'en', reply, followUp: reply };
+        expect(await triggerUpsell(interaction, 'GENERIC')).toBe(false);
+        expect(reply).not.toHaveBeenCalled();
     });
 });
