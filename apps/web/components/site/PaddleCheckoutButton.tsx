@@ -40,6 +40,17 @@ function loadPaddle(environment: string, token: string): Promise<PaddleGlobal> {
   return paddleReady;
 }
 
+/**
+ * Paddle sends customers here with ?_ptxn=txn_... (default payment link) to pay
+ * or update a card; Paddle.js opens that checkout by itself once it is loaded.
+ */
+export function PaddleTransactionOpener({ environment, token }: { environment: "sandbox" | "production"; token: string }) {
+  useEffect(() => {
+    void loadPaddle(environment, token).catch(() => {});
+  }, [environment, token]);
+  return null;
+}
+
 type Props = {
   environment: "sandbox" | "production";
   token: string;

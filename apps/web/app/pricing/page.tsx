@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { Check, Crown } from "lucide-react";
 import Footer from "@/components/Footer";
 import ProSignInButton from "@/components/site/ProSignInButton";
-import PaddleCheckoutButton from "@/components/site/PaddleCheckoutButton";
+import PaddleCheckoutButton, { PaddleTransactionOpener } from "@/components/site/PaddleCheckoutButton";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { SUPPORT_SERVER_URL } from "@/lib/links";
 import { canCheckout, paddleSetup, PRO_PLANS, type ProPlan } from "@/lib/billing";
@@ -62,6 +62,8 @@ export default async function PricingPage({
   // Plan buttons in Discord link here with ?plan=; open that checkout once signed in
   const wantedPlan = typeof query.plan === "string" ? query.plan : null;
   const welcome = query.welcome === "1";
+  // Payment links and card updates from Paddle's emails land here with ?_ptxn=
+  const paddleTransaction = typeof query._ptxn === "string";
 
   const setup = paddleSetup();
   // A checkout without a Discord id can't be linked to anyone, so it only opens after sign-in
@@ -75,6 +77,7 @@ export default async function PricingPage({
 
   return (
     <main className="site min-h-screen">
+      {paddleTransaction && setup && <PaddleTransactionOpener environment={setup.environment} token={setup.token} />}
       <section className="pb-16 pt-28 md:pb-20 md:pt-36">
         <div className="site-container">
           <p className="kicker mb-6">Pricing</p>
