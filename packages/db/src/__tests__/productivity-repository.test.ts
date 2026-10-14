@@ -9,6 +9,8 @@ describe('ProductivityRepository Foundation (SQLite)', () => {
 
     beforeEach(() => {
         db = new Database(':memory:');
+        // Production enforces foreign keys, so the test must too
+        db.pragma('foreign_keys = ON');
         db.exec(`
             CREATE TABLE users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +42,8 @@ describe('ProductivityRepository Foundation (SQLite)', () => {
         const createRes = await prodRepo.createTask(userId, 'Read a book');
         expect(createRes.success).toBe(true);
         const taskId = createRes.task!.id;
+        // Stored under the Discord id, which is how the bot reads todos
+        expect(db.prepare('SELECT user_id FROM todos WHERE id = ?').get(Number(taskId))).toEqual({ user_id: 'discord_123' });
 
         // List active
         const active = await prodRepo.listTasks(userId, true);

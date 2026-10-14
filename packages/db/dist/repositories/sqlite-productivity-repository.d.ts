@@ -5,6 +5,7 @@ export declare class SqliteProductivityRepository implements ProductivityReposit
     private db;
     private identityRepo;
     constructor(db: any, identityRepo: IdentityRepository);
+    private discordId;
     private mapRowToTask;
     createTask(userId: string, content: string, options?: any, ctx?: TransactionContext): Promise<{
         success: boolean;
