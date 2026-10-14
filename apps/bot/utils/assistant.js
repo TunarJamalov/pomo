@@ -132,6 +132,13 @@ function pickNudge(user, now = new Date()) {
     return null;
 }
 
+/** The next time the given UTC hour comes round, as a Discord timestamp (shown in the user's local time). */
+function nextOccurrence(utcHour, now = new Date()) {
+    const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), utcHour));
+    if (next <= now) next.setUTCDate(next.getUTCDate() + 1);
+    return `<t:${Math.floor(next.getTime() / 1000)}:t>`;
+}
+
 function markSent(user, nudge, now = new Date()) {
     const today = now.toISOString().slice(0, 10);
     const keys = (user.assistant_exam_alerts || '').split(',').filter(Boolean);
@@ -198,6 +205,7 @@ module.exports = {
     ensureAssistantSchema,
     getBestHour,
     getRhythm,
+    nextOccurrence,
     pickNudge,
     runAssistant,
     setAssistantEnabled,

@@ -12,6 +12,7 @@ const { getOrCreateUser, db } = require('../utils/database');
 const { hasFullPro } = require('../utils/premiumCheck');
 const { generateStatsDashboard } = require('../utils/canvas');
 const { getInteractionLanguage, t } = require('../utils/i18n');
+const { getInsights, buildInsightsEmbed } = require('../utils/insights');
 
 module.exports = {
     cooldown: 3,
@@ -100,7 +101,8 @@ async function sendAdvancedStats(interaction, userId, user, periodDays, language
         const attachment = new AttachmentBuilder(buffer, {
             name: `stats_advanced_${statsData.periodDays}d.png`,
         });
-        return interaction.editReply({ content: formatTopSubjects(userId, periodDays), files: [attachment] });
+        const insights = buildInsightsEmbed(language, getInsights(userId, statsData.periodDays));
+        return interaction.editReply({ content: formatTopSubjects(userId, periodDays), files: [attachment], embeds: [insights] });
     } catch (error) {
         console.error('[STATS] Canvas error:', error);
         return interaction.editReply({ content: t(language, 'statsAdvancedFailedBody') });

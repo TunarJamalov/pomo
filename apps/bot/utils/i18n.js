@@ -13669,7 +13669,7 @@ Object.assign(Messages['en'], {
     "assistantProOnly": "The Pomo assistant is a Pomo Pro feature. See `/premium perks`.",
     "assistantStatusBody": "**Status:** {status}\n**Your best study hour:** {hour}\n**Upcoming exams:** {exams} (add one with `/exam`)",
     "assistantNeedData": "not enough sessions yet (5 needed in 30 days)",
-    "planProItems": "✨ **Everything in Plus**, and:\n🤖 **Pomo assistant**: reminders at your best hour, before exams and when you've been away (`/assistant`)\n🗓️ **15 habits**\n🛡️ **3 Streak Shields every month**, plus `/streak recover` once every 30 days\n📊 `/stats advanced`, `/mygoal` and `/dataexport`\n🎭 Unlimited `/persona` switches\n🎧 **24/7 lofi radio** with `/lofi`\n💬 Priority help in the support server"
+    "planProItems": "✨ **Everything in Plus**, and:\n🤖 **Pomo assistant**: reminders at your best hour, before exams and when you've been away (`/assistant`)\n🗓️ **15 habits**\n🛡️ **3 Streak Shields every month**, plus `/streak recover` once every 30 days\n📊 `/stats advanced` with insights (best hour, weekly pattern, trend), `/mygoal` and `/dataexport`\n🎭 Unlimited `/persona` switches\n🎧 **24/7 lofi radio** with `/lofi`\n💬 Priority help in the support server"
 });
 Object.assign(Messages['es'], {
     "assistantTitle": "🍅🤖 Asistente de Pomo",
@@ -13683,7 +13683,7 @@ Object.assign(Messages['es'], {
     "assistantProOnly": "El asistente de Pomo es una función de Pomo Pro. Mira `/premium perks`.",
     "assistantStatusBody": "**Estado:** {status}\n**Tu mejor hora de estudio:** {hour}\n**Próximos exámenes:** {exams} (añade uno con `/exam`)",
     "assistantNeedData": "aún no hay suficientes sesiones (hacen falta 5 en 30 días)",
-    "planProItems": "✨ **Todo lo de Plus**, y además:\n🤖 **Asistente de Pomo**: recordatorios a tu mejor hora, antes de exámenes y cuando te ausentas (`/assistant`)\n🗓️ **15 hábitos**\n🛡️ **3 escudos de racha al mes**, y `/streak recover` una vez cada 30 días\n📊 `/stats advanced`, `/mygoal` y `/dataexport`\n🎭 Cambios ilimitados de `/persona`\n🎧 **Radio lofi 24/7** con `/lofi`\n💬 Ayuda prioritaria en el servidor de soporte"
+    "planProItems": "✨ **Todo lo de Plus**, y además:\n🤖 **Asistente de Pomo**: recordatorios a tu mejor hora, antes de exámenes y cuando te ausentas (`/assistant`)\n🗓️ **15 hábitos**\n🛡️ **3 escudos de racha al mes**, y `/streak recover` una vez cada 30 días\n📊 `/stats advanced` con análisis (mejor hora, patrón semanal, tendencia), `/mygoal` y `/dataexport`\n🎭 Cambios ilimitados de `/persona`\n🎧 **Radio lofi 24/7** con `/lofi`\n💬 Ayuda prioritaria en el servidor de soporte"
 });
 Object.assign(Messages['fr'], {
     "assistantTitle": "🍅🤖 Assistant Pomo",
@@ -13697,7 +13697,7 @@ Object.assign(Messages['fr'], {
     "assistantProOnly": "L’assistant Pomo est une fonctionnalité Pomo Pro. Vois `/premium perks`.",
     "assistantStatusBody": "**Statut :** {status}\n**Ta meilleure heure d’étude :** {hour}\n**Examens à venir :** {exams} (ajoutes-en un avec `/exam`)",
     "assistantNeedData": "pas encore assez de sessions (5 nécessaires sur 30 jours)",
-    "planProItems": "✨ **Tout ce qu’offre Plus**, et en plus :\n🤖 **Assistant Pomo** : rappels à ta meilleure heure, avant les examens et quand tu t’absentes (`/assistant`)\n🗓️ **15 habitudes**\n🛡️ **3 boucliers de série par mois**, plus `/streak recover` une fois tous les 30 jours\n📊 `/stats advanced`, `/mygoal` et `/dataexport`\n🎭 Changements de `/persona` illimités\n🎧 **Radio lofi 24h/24** avec `/lofi`\n💬 Aide prioritaire sur le serveur de support"
+    "planProItems": "✨ **Tout ce qu’offre Plus**, et en plus :\n🤖 **Assistant Pomo** : rappels à ta meilleure heure, avant les examens et quand tu t’absentes (`/assistant`)\n🗓️ **15 habitudes**\n🛡️ **3 boucliers de série par mois**, plus `/streak recover` une fois tous les 30 jours\n📊 `/stats advanced` avec analyse (meilleure heure, rythme de la semaine, tendance), `/mygoal` et `/dataexport`\n🎭 Changements de `/persona` illimités\n🎧 **Radio lofi 24h/24** avec `/lofi`\n💬 Aide prioritaire sur le serveur de support"
 });
 Object.assign(Messages['pt-BR'], {
     "assistantTitle": "🍅🤖 Assistente do Pomo",
@@ -13711,7 +13711,7 @@ Object.assign(Messages['pt-BR'], {
     "assistantProOnly": "O assistente do Pomo é um recurso do Pomo Pro. Veja `/premium perks`.",
     "assistantStatusBody": "**Status:** {status}\n**Seu melhor horário de estudo:** {hour}\n**Próximas provas:** {exams} (adicione uma com `/exam`)",
     "assistantNeedData": "ainda não há sessões suficientes (são necessárias 5 em 30 dias)",
-    "planProItems": "✨ **Tudo do Plus**, e mais:\n🤖 **Assistente do Pomo**: lembretes no seu melhor horário, antes de provas e quando você some (`/assistant`)\n🗓️ **15 hábitos**\n🛡️ **3 escudos de sequência por mês**, e `/streak recover` uma vez a cada 30 dias\n📊 `/stats advanced`, `/mygoal` e `/dataexport`\n🎭 Trocas ilimitadas de `/persona`\n🎧 **Rádio lofi 24/7** com `/lofi`\n💬 Ajuda prioritária no servidor de suporte"
+    "planProItems": "✨ **Tudo do Plus**, e mais:\n🤖 **Assistente do Pomo**: lembretes no seu melhor horário, antes de provas e quando você some (`/assistant`)\n🗓️ **15 hábitos**\n🛡️ **3 escudos de sequência por mês**, e `/streak recover` uma vez a cada 30 dias\n📊 `/stats advanced` com análise (melhor horário, padrão semanal, tendência), `/mygoal` e `/dataexport`\n🎭 Trocas ilimitadas de `/persona`\n🎧 **Rádio lofi 24/7** com `/lofi`\n💬 Ajuda prioritária no servidor de suporte"
 });
 Object.assign(Messages['ru'], {
     "assistantTitle": "🍅🤖 Помощник Pomo",
@@ -13725,7 +13725,7 @@ Object.assign(Messages['ru'], {
     "assistantProOnly": "Помощник Pomo — функция Pomo Pro. Смотри `/premium perks`.",
     "assistantStatusBody": "**Статус:** {status}\n**Твой лучший час для учёбы:** {hour}\n**Предстоящие экзамены:** {exams} (добавь через `/exam`)",
     "assistantNeedData": "пока мало сессий (нужно 5 за 30 дней)",
-    "planProItems": "✨ **Всё из Plus**, а также:\n🤖 **Помощник Pomo**: напоминания в твой лучший час, перед экзаменами и когда ты пропадаешь (`/assistant`)\n🗓️ **15 привычек**\n🛡️ **3 щита серии в месяц** и `/streak recover` раз в 30 дней\n📊 `/stats advanced`, `/mygoal` и `/dataexport`\n🎭 Безлимитная смена `/persona`\n🎧 **Lofi-радио 24/7** через `/lofi`\n💬 Приоритетная помощь на сервере поддержки"
+    "planProItems": "✨ **Всё из Plus**, а также:\n🤖 **Помощник Pomo**: напоминания в твой лучший час, перед экзаменами и когда ты пропадаешь (`/assistant`)\n🗓️ **15 привычек**\n🛡️ **3 щита серии в месяц** и `/streak recover` раз в 30 дней\n📊 `/stats advanced` с анализом (лучший час, недельный ритм, динамика), `/mygoal` и `/dataexport`\n🎭 Безлимитная смена `/persona`\n🎧 **Lofi-радио 24/7** через `/lofi`\n💬 Приоритетная помощь на сервере поддержки"
 });
 Object.assign(Messages['tr'], {
     "assistantTitle": "🍅🤖 Pomo asistanı",
@@ -13739,7 +13739,7 @@ Object.assign(Messages['tr'], {
     "assistantProOnly": "Pomo asistanı bir Pomo Pro özelliğidir. `/premium perks` sayfasına bak.",
     "assistantStatusBody": "**Durum:** {status}\n**En iyi çalışma saatin:** {hour}\n**Yaklaşan sınavlar:** {exams} (`/exam` ile ekle)",
     "assistantNeedData": "henüz yeterli oturum yok (30 günde 5 gerekli)",
-    "planProItems": "✨ **Plus'taki her şey**, ayrıca:\n🤖 **Pomo asistanı**: en iyi saatinde, sınavlardan önce ve ara verdiğinde hatırlatmalar (`/assistant`)\n🗓️ **15 alışkanlık**\n🛡️ **Her ay 3 seri kalkanı**, ayrıca 30 günde bir `/streak recover`\n📊 `/stats advanced`, `/mygoal` ve `/dataexport`\n🎭 Sınırsız `/persona` değişimi\n🎧 `/lofi` ile **7/24 lofi radyo**\n💬 Destek sunucusunda öncelikli yardım"
+    "planProItems": "✨ **Plus'taki her şey**, ayrıca:\n🤖 **Pomo asistanı**: en iyi saatinde, sınavlardan önce ve ara verdiğinde hatırlatmalar (`/assistant`)\n🗓️ **15 alışkanlık**\n🛡️ **Her ay 3 seri kalkanı**, ayrıca 30 günde bir `/streak recover`\n📊 Analizli `/stats advanced` (en iyi saat, haftalık düzen, eğilim), `/mygoal` ve `/dataexport`\n🎭 Sınırsız `/persona` değişimi\n🎧 `/lofi` ile **7/24 lofi radyo**\n💬 Destek sunucusunda öncelikli yardım"
 });
 Object.assign(Messages['az'], {
     "assistantTitle": "🍅🤖 Pomo köməkçisi",
@@ -13753,7 +13753,7 @@ Object.assign(Messages['az'], {
     "assistantProOnly": "Pomo köməkçisi Pomo Pro özəlliyidir. `/premium perks`-ə bax.",
     "assistantStatusBody": "**Vəziyyət:** {status}\n**Ən yaxşı oxuma saatın:** {hour}\n**Yaxınlaşan imtahanlar:** {exams} (`/exam` ilə əlavə et)",
     "assistantNeedData": "hələ kifayət qədər sessiya yoxdur (30 gündə 5 lazımdır)",
-    "planProItems": "✨ **Plus-dakı hər şey**, üstəlik:\n🤖 **Pomo köməkçisi**: ən yaxşı saatında, imtahanlardan əvvəl və ara verəndə xatırlatmalar (`/assistant`)\n🗓️ **15 vərdiş**\n🛡️ **Hər ay 3 seriya qalxanı**, üstəlik 30 gündə bir `/streak recover`\n📊 `/stats advanced`, `/mygoal` və `/dataexport`\n🎭 Limitsiz `/persona` dəyişimi\n🎧 `/lofi` ilə **24/7 lofi radio**\n💬 Dəstək serverində prioritet kömək"
+    "planProItems": "✨ **Plus-dakı hər şey**, üstəlik:\n🤖 **Pomo köməkçisi**: ən yaxşı saatında, imtahanlardan əvvəl və ara verəndə xatırlatmalar (`/assistant`)\n🗓️ **15 vərdiş**\n🛡️ **Hər ay 3 seriya qalxanı**, üstəlik 30 gündə bir `/streak recover`\n📊 Analizli `/stats advanced` (ən yaxşı saat, həftəlik ritm, trend), `/mygoal` və `/dataexport`\n🎭 Limitsiz `/persona` dəyişimi\n🎧 `/lofi` ilə **24/7 lofi radio**\n💬 Dəstək serverində prioritet kömək"
 });
 Object.assign(Messages['ja'], {
     "assistantTitle": "🍅🤖 Pomoアシスタント",
@@ -13767,7 +13767,7 @@ Object.assign(Messages['ja'], {
     "assistantProOnly": "PomoアシスタントはPomo Proの機能です。`/premium perks` をご覧ください。",
     "assistantStatusBody": "**状態：** {status}\n**いちばん集中できる時間：** {hour}\n**今後の試験：** {exams}（`/exam` で追加）",
     "assistantNeedData": "まだセッションが足りません（30日で5回必要）",
-    "planProItems": "✨ **Plusのすべて**に加えて：\n🤖 **Pomoアシスタント**：集中できる時間、試験前、勉強が空いたときにリマインド（`/assistant`）\n🗓️ **習慣15個**\n🛡️ **毎月3つのストリークシールド**、30日に1回 `/streak recover`\n📊 `/stats advanced`、`/mygoal`、`/dataexport`\n🎭 `/persona` の切り替え無制限\n🎧 `/lofi` で **24時間lofiラジオ**\n💬 サポートサーバーでの優先サポート"
+    "planProItems": "✨ **Plusのすべて**に加えて：\n🤖 **Pomoアシスタント**：集中できる時間、試験前、勉強が空いたときにリマインド（`/assistant`）\n🗓️ **習慣15個**\n🛡️ **毎月3つのストリークシールド**、30日に1回 `/streak recover`\n📊 インサイト付きの `/stats advanced`（ベストな時間帯・曜日の傾向・推移）、`/mygoal`、`/dataexport`\n🎭 `/persona` の切り替え無制限\n🎧 `/lofi` で **24時間lofiラジオ**\n💬 サポートサーバーでの優先サポート"
 });
 Object.assign(Messages['ko'], {
     "assistantTitle": "🍅🤖 Pomo 어시스턴트",
@@ -13781,7 +13781,7 @@ Object.assign(Messages['ko'], {
     "assistantProOnly": "Pomo 어시스턴트는 Pomo Pro 기능이에요. `/premium perks`를 확인하세요.",
     "assistantStatusBody": "**상태:** {status}\n**가장 집중이 잘 되는 시간:** {hour}\n**다가오는 시험:** {exams}개 (`/exam`으로 추가)",
     "assistantNeedData": "아직 세션이 부족해요 (30일 동안 5회 필요)",
-    "planProItems": "✨ **Plus의 모든 혜택**에 더해:\n🤖 **Pomo 어시스턴트**: 가장 집중되는 시간, 시험 전, 쉬고 있을 때 알림 (`/assistant`)\n🗓️ **습관 15개**\n🛡️ **매달 스트릭 보호막 3개**, 30일마다 한 번 `/streak recover`\n📊 `/stats advanced`, `/mygoal`, `/dataexport`\n🎭 `/persona` 무제한 변경\n🎧 `/lofi`로 **24시간 lofi 라디오**\n💬 지원 서버 우선 도움"
+    "planProItems": "✨ **Plus의 모든 혜택**에 더해:\n🤖 **Pomo 어시스턴트**: 가장 집중되는 시간, 시험 전, 쉬고 있을 때 알림 (`/assistant`)\n🗓️ **습관 15개**\n🛡️ **매달 스트릭 보호막 3개**, 30일마다 한 번 `/streak recover`\n📊 인사이트가 포함된 `/stats advanced` (최고의 시간대, 요일 패턴, 추세), `/mygoal`, `/dataexport`\n🎭 `/persona` 무제한 변경\n🎧 `/lofi`로 **24시간 lofi 라디오**\n💬 지원 서버 우선 도움"
 });
 Object.assign(Messages['ar'], {
     "assistantTitle": "🍅🤖 مساعد Pomo",
@@ -13795,7 +13795,139 @@ Object.assign(Messages['ar'], {
     "assistantProOnly": "مساعد Pomo ميزة في Pomo Pro. اطّلع على `/premium perks`.",
     "assistantStatusBody": "**الحالة:** {status}\n**أفضل ساعة دراسة لديك:** {hour}\n**الامتحانات القادمة:** {exams} (أضف واحدًا عبر `/exam`)",
     "assistantNeedData": "لا توجد جلسات كافية بعد (يلزم 5 خلال 30 يومًا)",
-    "planProItems": "✨ **كل ما في Plus**، وأيضًا:\n🤖 **مساعد Pomo**: تذكيرات في أفضل ساعاتك وقبل الامتحانات وعند الانقطاع (`/assistant`)\n🗓️ **15 عادة**\n🛡️ **3 دروع للسلسلة كل شهر**، و`/streak recover` مرة كل 30 يومًا\n📊 `/stats advanced` و`/mygoal` و`/dataexport`\n🎭 تبديل غير محدود لـ `/persona`\n🎧 **راديو lofi على مدار الساعة** عبر `/lofi`\n💬 مساعدة ذات أولوية في خادم الدعم"
+    "planProItems": "✨ **كل ما في Plus**، وأيضًا:\n🤖 **مساعد Pomo**: تذكيرات في أفضل ساعاتك وقبل الامتحانات وعند الانقطاع (`/assistant`)\n🗓️ **15 عادة**\n🛡️ **3 دروع للسلسلة كل شهر**، و`/streak recover` مرة كل 30 يومًا\n📊 `/stats advanced` مع التحليل (أفضل ساعة، نمط الأسبوع، الاتجاه) و`/mygoal` و`/dataexport`\n🎭 تبديل غير محدود لـ `/persona`\n🎧 **راديو lofi على مدار الساعة** عبر `/lofi`\n💬 مساعدة ذات أولوية في خادم الدعم"
+});
+
+// Personal insights (Pro): utils/insights.js, shown under /stats advanced
+Object.assign(Messages['en'], {
+    "insightsTitle": "🔍 Your study insights · last {days} days",
+    "insightsEmpty": "No focus sessions in the last {days} days yet. Start one with `/pomodoro`.",
+    "insightsBestHour": "🕐 **Best hour:** around {time}, {share}% of your focus time",
+    "insightsBestHourNone": "🕐 **Best hour:** not enough sessions yet (5 needed)",
+    "insightsWeekTitle": "📅 **Your week** (average focus per day)",
+    "insightsWeekSummary": "Strongest: **{best}** · Weakest: **{worst}**",
+    "insightsConsistency": "🔁 **Consistency:** {active} of {days} days ({pct}%), longest run {run} days, longest break {gap} days",
+    "insightsTrend": "📈 **Trend:** {change} vs the previous {days} days ({prev}h → {now}h)",
+    "insightsTrendNew": "📈 **Trend:** nothing in the previous {days} days to compare with",
+    "insightsAvgSession": "⏱️ **Average session:** {minutes} min",
+    "insightsFooter": "Times are shown in your local time. Days are counted in UTC."
+});
+Object.assign(Messages['es'], {
+    "insightsTitle": "🔍 Tu análisis de estudio · últimos {days} días",
+    "insightsEmpty": "Aún no hay sesiones de enfoque en los últimos {days} días. Empieza una con `/pomodoro`.",
+    "insightsBestHour": "🕐 **Mejor hora:** hacia las {time}, el {share}% de tu tiempo de enfoque",
+    "insightsBestHourNone": "🕐 **Mejor hora:** aún no hay suficientes sesiones (hacen falta 5)",
+    "insightsWeekTitle": "📅 **Tu semana** (enfoque medio por día)",
+    "insightsWeekSummary": "Más fuerte: **{best}** · Más débil: **{worst}**",
+    "insightsConsistency": "🔁 **Constancia:** {active} de {days} días ({pct}%), racha más larga {run} días, pausa más larga {gap} días",
+    "insightsTrend": "📈 **Tendencia:** {change} frente a los {days} días anteriores ({prev}h → {now}h)",
+    "insightsTrendNew": "📈 **Tendencia:** no hay nada en los {days} días anteriores para comparar",
+    "insightsAvgSession": "⏱️ **Sesión media:** {minutes} min",
+    "insightsFooter": "Las horas se muestran en tu hora local. Los días se cuentan en UTC."
+});
+Object.assign(Messages['fr'], {
+    "insightsTitle": "🔍 Ton analyse d'étude · {days} derniers jours",
+    "insightsEmpty": "Aucune session de concentration ces {days} derniers jours. Lance-en une avec `/pomodoro`.",
+    "insightsBestHour": "🕐 **Meilleure heure :** vers {time}, {share} % de ton temps de concentration",
+    "insightsBestHourNone": "🕐 **Meilleure heure :** pas encore assez de sessions (il en faut 5)",
+    "insightsWeekTitle": "📅 **Ta semaine** (concentration moyenne par jour)",
+    "insightsWeekSummary": "Le plus fort : **{best}** · Le plus faible : **{worst}**",
+    "insightsConsistency": "🔁 **Régularité :** {active} jours sur {days} ({pct} %), plus longue série {run} jours, plus longue pause {gap} jours",
+    "insightsTrend": "📈 **Tendance :** {change} par rapport aux {days} jours précédents ({prev} h → {now} h)",
+    "insightsTrendNew": "📈 **Tendance :** rien dans les {days} jours précédents pour comparer",
+    "insightsAvgSession": "⏱️ **Session moyenne :** {minutes} min",
+    "insightsFooter": "Les heures sont affichées dans ton heure locale. Les jours sont comptés en UTC."
+});
+Object.assign(Messages['pt-BR'], {
+    "insightsTitle": "🔍 Sua análise de estudo · últimos {days} dias",
+    "insightsEmpty": "Ainda não há sessões de foco nos últimos {days} dias. Comece uma com `/pomodoro`.",
+    "insightsBestHour": "🕐 **Melhor horário:** por volta das {time}, {share}% do seu tempo de foco",
+    "insightsBestHourNone": "🕐 **Melhor horário:** ainda não há sessões suficientes (são necessárias 5)",
+    "insightsWeekTitle": "📅 **Sua semana** (foco médio por dia)",
+    "insightsWeekSummary": "Mais forte: **{best}** · Mais fraco: **{worst}**",
+    "insightsConsistency": "🔁 **Constância:** {active} de {days} dias ({pct}%), maior sequência {run} dias, maior pausa {gap} dias",
+    "insightsTrend": "📈 **Tendência:** {change} em relação aos {days} dias anteriores ({prev}h → {now}h)",
+    "insightsTrendNew": "📈 **Tendência:** nada nos {days} dias anteriores para comparar",
+    "insightsAvgSession": "⏱️ **Sessão média:** {minutes} min",
+    "insightsFooter": "Os horários aparecem no seu horário local. Os dias são contados em UTC."
+});
+Object.assign(Messages['ru'], {
+    "insightsTitle": "🔍 Анализ твоей учёбы · последние {days} дн.",
+    "insightsEmpty": "За последние {days} дн. ещё нет сессий фокуса. Начни с `/pomodoro`.",
+    "insightsBestHour": "🕐 **Лучший час:** около {time}, {share}% твоего времени фокуса",
+    "insightsBestHourNone": "🕐 **Лучший час:** пока мало сессий (нужно 5)",
+    "insightsWeekTitle": "📅 **Твоя неделя** (средний фокус за день)",
+    "insightsWeekSummary": "Сильнее всего: **{best}** · Слабее всего: **{worst}**",
+    "insightsConsistency": "🔁 **Регулярность:** {active} из {days} дн. ({pct}%), самая длинная серия {run} дн., самый длинный перерыв {gap} дн.",
+    "insightsTrend": "📈 **Динамика:** {change} к предыдущим {days} дн. ({prev} ч → {now} ч)",
+    "insightsTrendNew": "📈 **Динамика:** в предыдущие {days} дн. нечего сравнивать",
+    "insightsAvgSession": "⏱️ **Средняя сессия:** {minutes} мин",
+    "insightsFooter": "Время показано в твоём часовом поясе. Дни считаются по UTC."
+});
+Object.assign(Messages['tr'], {
+    "insightsTitle": "🔍 Çalışma analizin · son {days} gün",
+    "insightsEmpty": "Son {days} günde henüz odak seansı yok. `/pomodoro` ile bir tane başlat.",
+    "insightsBestHour": "🕐 **En iyi saat:** {time} civarı, odak sürenin %{share}'i",
+    "insightsBestHourNone": "🕐 **En iyi saat:** henüz yeterli seans yok (5 gerekli)",
+    "insightsWeekTitle": "📅 **Haftan** (günlük ortalama odak)",
+    "insightsWeekSummary": "En güçlü: **{best}** · En zayıf: **{worst}**",
+    "insightsConsistency": "🔁 **Düzenlilik:** {days} günün {active}'i (%{pct}), en uzun seri {run} gün, en uzun ara {gap} gün",
+    "insightsTrend": "📈 **Eğilim:** önceki {days} güne göre {change} ({prev} sa → {now} sa)",
+    "insightsTrendNew": "📈 **Eğilim:** önceki {days} günde karşılaştıracak bir şey yok",
+    "insightsAvgSession": "⏱️ **Ortalama seans:** {minutes} dk",
+    "insightsFooter": "Saatler yerel saatinde gösterilir. Günler UTC'ye göre sayılır."
+});
+Object.assign(Messages['az'], {
+    "insightsTitle": "🔍 Dərs analizin · son {days} gün",
+    "insightsEmpty": "Son {days} gündə hələ fokus sessiyası yoxdur. `/pomodoro` ilə birini başlat.",
+    "insightsBestHour": "🕐 **Ən yaxşı saat:** təxminən {time}, fokus vaxtının {share}%-i",
+    "insightsBestHourNone": "🕐 **Ən yaxşı saat:** hələ kifayət qədər sessiya yoxdur (5 lazımdır)",
+    "insightsWeekTitle": "📅 **Həftən** (gündəlik orta fokus)",
+    "insightsWeekSummary": "Ən güclü: **{best}** · Ən zəif: **{worst}**",
+    "insightsConsistency": "🔁 **Ardıcıllıq:** {days} gündən {active}-i ({pct}%), ən uzun seriya {run} gün, ən uzun fasilə {gap} gün",
+    "insightsTrend": "📈 **Trend:** əvvəlki {days} günə görə {change} ({prev} saat → {now} saat)",
+    "insightsTrendNew": "📈 **Trend:** əvvəlki {days} gündə müqayisə üçün heç nə yoxdur",
+    "insightsAvgSession": "⏱️ **Orta sessiya:** {minutes} dəq",
+    "insightsFooter": "Saatlar sənin yerli vaxtınla göstərilir. Günlər UTC ilə sayılır."
+});
+Object.assign(Messages['ja'], {
+    "insightsTitle": "🔍 学習インサイト · 過去{days}日間",
+    "insightsEmpty": "過去{days}日間に集中セッションはまだありません。`/pomodoro` で始めましょう。",
+    "insightsBestHour": "🕐 **ベストな時間帯:** {time}ごろ（集中時間の{share}%）",
+    "insightsBestHourNone": "🕐 **ベストな時間帯:** セッションがまだ足りません（5回必要）",
+    "insightsWeekTitle": "📅 **あなたの1週間**（1日あたりの平均集中時間）",
+    "insightsWeekSummary": "いちばん強い曜日: **{best}** · いちばん弱い曜日: **{worst}**",
+    "insightsConsistency": "🔁 **継続性:** {days}日中{active}日（{pct}%）、最長連続 {run}日、最長の休み {gap}日",
+    "insightsTrend": "📈 **傾向:** 前の{days}日間と比べて {change}（{prev}時間 → {now}時間）",
+    "insightsTrendNew": "📈 **傾向:** 前の{days}日間に比較できるデータがありません",
+    "insightsAvgSession": "⏱️ **平均セッション:** {minutes}分",
+    "insightsFooter": "時刻はあなたの現地時間で表示されます。日付はUTCで数えます。"
+});
+Object.assign(Messages['ko'], {
+    "insightsTitle": "🔍 나의 공부 인사이트 · 최근 {days}일",
+    "insightsEmpty": "최근 {days}일 동안 집중 세션이 아직 없어요. `/pomodoro`로 시작해 보세요.",
+    "insightsBestHour": "🕐 **최고의 시간대:** {time}쯤, 전체 집중 시간의 {share}%",
+    "insightsBestHourNone": "🕐 **최고의 시간대:** 아직 세션이 부족해요 (5회 필요)",
+    "insightsWeekTitle": "📅 **나의 한 주** (하루 평균 집중 시간)",
+    "insightsWeekSummary": "가장 강한 요일: **{best}** · 가장 약한 요일: **{worst}**",
+    "insightsConsistency": "🔁 **꾸준함:** {days}일 중 {active}일 ({pct}%), 최장 연속 {run}일, 최장 휴식 {gap}일",
+    "insightsTrend": "📈 **추세:** 이전 {days}일 대비 {change} ({prev}시간 → {now}시간)",
+    "insightsTrendNew": "📈 **추세:** 이전 {days}일에는 비교할 기록이 없어요",
+    "insightsAvgSession": "⏱️ **평균 세션:** {minutes}분",
+    "insightsFooter": "시간은 현지 시간으로 표시됩니다. 날짜는 UTC 기준입니다."
+});
+Object.assign(Messages['ar'], {
+    "insightsTitle": "🔍 تحليل دراستك · آخر {days} يومًا",
+    "insightsEmpty": "لا توجد جلسات تركيز في آخر {days} يومًا بعد. ابدأ واحدة عبر `/pomodoro`.",
+    "insightsBestHour": "🕐 **أفضل ساعة:** نحو {time}، أي {share}% من وقت تركيزك",
+    "insightsBestHourNone": "🕐 **أفضل ساعة:** لا توجد جلسات كافية بعد (يلزم 5)",
+    "insightsWeekTitle": "📅 **أسبوعك** (متوسط التركيز في اليوم)",
+    "insightsWeekSummary": "الأقوى: **{best}** · الأضعف: **{worst}**",
+    "insightsConsistency": "🔁 **الانتظام:** {active} من {days} يومًا ({pct}%)، أطول سلسلة {run} يومًا، أطول انقطاع {gap} يومًا",
+    "insightsTrend": "📈 **الاتجاه:** {change} مقارنة بالأيام الـ{days} السابقة ({prev} س → {now} س)",
+    "insightsTrendNew": "📈 **الاتجاه:** لا شيء في الأيام الـ{days} السابقة للمقارنة",
+    "insightsAvgSession": "⏱️ **متوسط الجلسة:** {minutes} دقيقة",
+    "insightsFooter": "تظهر الأوقات بتوقيتك المحلي. تُحسب الأيام بتوقيت UTC."
 });
 
 module.exports = {

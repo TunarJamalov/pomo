@@ -1,17 +1,10 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { getOrCreateUser, db } = require('../utils/database');
 const { hasFullPro } = require('../utils/premiumCheck');
-const { getBestHour, setAssistantEnabled, isAssistantEnabled } = require('../utils/assistant');
+const { getBestHour, setAssistantEnabled, isAssistantEnabled, nextOccurrence } = require('../utils/assistant');
 const { Colors } = require('../utils/constants');
 const { errorEmbed, successEmbed } = require('../utils/embeds');
 const { getInteractionLanguage, t } = require('../utils/i18n');
-
-/** The next time the given UTC hour comes round, as a Discord timestamp (shown in the user's local time). */
-function nextOccurrence(utcHour, now = new Date()) {
-    const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), utcHour));
-    if (next <= now) next.setUTCDate(next.getUTCDate() + 1);
-    return `<t:${Math.floor(next.getTime() / 1000)}:t>`;
-}
 
 module.exports = {
     cooldown: 5,

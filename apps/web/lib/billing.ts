@@ -27,7 +27,7 @@ export const PRO_TIERS = {
       ["Pomo assistant", "Reminders at your best hour, before exams and when you've been away"],
       ["15 habits", "The most habits you can track"],
       ["3 Streak Shields a month", "Plus /streak recover once every 30 days"],
-      ["Deeper stats", "/stats advanced, /mygoal and /dataexport"],
+      ["Personal insights", "/stats advanced shows your best hour, weekly pattern and trend, plus /mygoal and /dataexport"],
       ["Unlimited personas", "Switch /persona whenever you like"],
       ["24/7 lofi radio", "/lofi in your voice channel"],
       ["Priority help", "In the support server"],
