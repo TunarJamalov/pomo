@@ -36,3 +36,8 @@ export const AZEDEV_URL = "https://azedev.com";
 export const GITHUB_URL = "https://github.com/TunarJamalov/pomo";
 
 export const TIKTOK_URL = "https://www.tiktok.com/@pomo.study";
+
+// Seller details shown in the legal pages; must match the Paddle account exactly
+export const LEGAL_NAME = "Tunar Camalov";
+
+export const CONTACT_EMAIL = "jamalovtunar@gmail.com";

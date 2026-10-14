@@ -46,7 +46,8 @@ const FAQ = [
   ["What do I get?", "A subscription for your Discord account. The Pro features above unlock in the Pomo bot and on the dashboard for as long as the subscription is active."],
   ["How does Pro turn on?", "Pay with the button on this page or with /premium in Discord. Pro is linked to your Discord account and turns on automatically about a minute later."],
   ["How do I cancel?", "Run /premium status in Discord and press Manage subscription, or use the link in your receipt email. You keep Pro until the end of the period you paid for."],
-  ["Refunds", "If something went wrong, message us in the support server within 14 days of a payment and we will refund it."],
+  ["Refunds", "Every payment has a 14-day money-back guarantee: ask within 14 days for a full refund, no questions asked."],
+  ["Who handles the payment?", "Paddle.com, our merchant of record. It processes the payment and handles sales tax, VAT and receipts."],
 ];
 
 export default async function PricingPage() {
