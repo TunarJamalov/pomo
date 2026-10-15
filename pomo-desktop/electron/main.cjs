@@ -36,9 +36,9 @@ function createWindow() {
     minWidth: 900,
     minHeight: 620,
     show: !shouldStartHidden(),
-    title: 'Pomo Desktop',
+    title: 'Pomo Focus',
     icon: APP_ICON,
-    backgroundColor: '#0d1218',
+    backgroundColor: '#1a1b1e',
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,

@@ -4,11 +4,10 @@ import {
   CheckCircle2,
   Clock3,
   Coffee,
-  ExternalLink,
   Flame,
   Gauge,
+  History,
   KeyRound,
-  Keyboard,
   LogIn,
   Maximize2,
   Minimize2,
@@ -19,10 +18,15 @@ import {
   Settings,
   ShieldAlert,
   Sprout,
-  Wifi
+  Timer,
+  UserRound,
+  Wifi,
+  WifiOff
 } from 'lucide-react';
+import logoUrl from '../assets/icon-128.png';
 
 type TimerMode = 'focus' | 'shortBreak' | 'longBreak';
+type View = 'timer' | 'history' | 'settings' | 'account';
 type TimerStatus = 'ready' | 'running' | 'paused' | 'finished';
 
 type TimerSettings = {
@@ -108,7 +112,7 @@ const MAX_RECENT_SESSIONS = 10;
 const CONNECT_URL = 'https://pomofocus.online/dashboard/desktop?from=app';
 
 const links = [
-  { label: 'Dashboard', href: 'https://pomofocus.online' },
+  { label: 'Dashboard', href: 'https://pomofocus.online/dashboard' },
   { label: 'Support', href: 'https://discord.gg/XEubrrkBmB' },
   { label: 'Top.gg', href: 'https://top.gg/bot/1443523945599860816' }
 ];
@@ -162,6 +166,7 @@ export function App() {
     message: 'Connect with Discord to sync completed focus sessions.'
   });
   const [compactMode, setCompactMode] = useState(false);
+  const [view, setView] = useState<View>('timer');
   const [startupEnabled, setStartupEnabled] = useState(false);
   const [idleGuardEnabled, setIdleGuardEnabled] = useState(() => loadIdleGuardSetting());
   const [pendingIdleSession, setPendingIdleSession] = useState<PendingIdleSession | null>(null);
@@ -173,6 +178,10 @@ export function App() {
   const progress = totalSeconds === 0 ? 0 : Math.min(100, (elapsedSeconds / totalSeconds) * 100);
   const modeLabel = modeMeta[mode].label;
   const isConnected = Boolean(syncSettings.token.trim() && connectedProfile);
+  // Before any sync this session, say where sessions go instead of the old "connect" hint
+  const syncMessage = isConnected && syncState.status === 'idle'
+    ? 'Connected. Finished sessions go to your Pomo profile.'
+    : syncState.message;
 
   useEffect(() => {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
@@ -216,6 +225,7 @@ export function App() {
         autoSync: true
       }));
       // Check the new connection right away so the profile shows without an extra click
+      setView('account');
       void testSync({ token, apiUrl: resolvedApiUrl });
     });
 
@@ -266,7 +276,7 @@ export function App() {
       document.title = `${formatTime(remainingSeconds)} - ${modeLabel}`;
       return;
     }
-    document.title = 'Pomo Desktop';
+    document.title = 'Pomo Focus';
   }, [remainingSeconds, status, modeLabel]);
 
   useEffect(() => {
@@ -620,346 +630,449 @@ export function App() {
     });
   }
 
+  const ringRadius = 132;
+  const ringLength = 2 * Math.PI * ringRadius;
+  const isBreak = mode !== 'focus';
+
+  const timerControls = (
+    <div className="timer-controls">
+      {status === 'running' ? (
+        <button className="btn btn-primary btn-lg" onClick={pauseTimer}><Pause size={18} /> Pause</button>
+      ) : (
+        <button className="btn btn-primary btn-lg" onClick={startTimer}>
+          <Play size={18} /> {status === 'paused' ? 'Resume' : status === 'finished' ? 'Again' : 'Start'}
+        </button>
+      )}
+      <button className="btn btn-ghost btn-lg" onClick={() => resetTimer()} title="Reset (R)"><RotateCcw size={18} /></button>
+      <button className="btn btn-ghost btn-lg" onClick={toggleCompactMode} title={compactMode ? 'Full window (M)' : 'Mini mode (M)'}>
+        {compactMode ? <Maximize2 size={18} /> : <Minimize2 size={18} />}
+      </button>
+    </div>
+  );
+
+  const timerRing = (
+    <div className={`timer-ring${isBreak ? ' is-break' : ''}`} aria-label={`${modeLabel} timer`}>
+      <svg viewBox="0 0 300 300" aria-hidden="true">
+        <circle className="ring-track" cx="150" cy="150" r={ringRadius} />
+        <circle
+          className="ring-progress"
+          cx="150"
+          cy="150"
+          r={ringRadius}
+          strokeDasharray={ringLength}
+          strokeDashoffset={ringLength * (1 - progress / 100)}
+        />
+      </svg>
+      <div className="ring-center">
+        <span className="ring-mode">{modeMeta[mode].icon} {modeLabel}</span>
+        <span className="ring-time">{formatTime(remainingSeconds)}</span>
+        <span className={`ring-status status-${status}`}>{statusText(status)}</span>
+      </div>
+    </div>
+  );
+
+  const idleCard = pendingIdleSession && (
+    <div className="notice notice-warn">
+      <div>
+        <strong>Idle Guard paused this session</strong>
+        <p>
+          Your computer was idle for {formatIdleDuration(pendingIdleSession.idleSeconds)}.
+          Credit it only if the focus session was still valid.
+        </p>
+      </div>
+      <div className="notice-actions">
+        <button className="btn btn-primary" onClick={confirmIdleSession}>Credit session</button>
+        <button className="btn btn-ghost" onClick={discardIdleSession}>Discard</button>
+      </div>
+    </div>
+  );
+
+  if (compactMode) {
+    return (
+      <main className="mini">
+        {timerRing}
+        {timerControls}
+        {idleCard}
+        {status === 'finished' && (
+          <button className="btn btn-outline" onClick={() => switchMode(nextMode)}>
+            Start {modeMeta[nextMode].label}
+          </button>
+        )}
+      </main>
+    );
+  }
+
+  const navItems: { id: View; label: string; icon: ReactNode }[] = [
+    { id: 'timer', label: 'Timer', icon: <Timer size={18} /> },
+    { id: 'history', label: 'History', icon: <History size={18} /> },
+    { id: 'settings', label: 'Settings', icon: <Settings size={18} /> },
+    { id: 'account', label: 'Account', icon: <UserRound size={18} /> }
+  ];
+
   return (
-    <main className={`app-shell${compactMode ? ' compact-mode' : ''}`}>
-      <section className="hero">
-        <div className="hero-copy-block">
-          <p className="eyebrow">Pomo Desktop</p>
-          <h1>Focus without typing a command.</h1>
-          <p className="hero-copy">
-            Start a focus session in one click and get notified when it ends.
-            {isConnected
-              ? ' Your sessions count toward your Pomo profile on Discord.'
-              : ' Connect your Discord account to earn water, keep your streak and see your stats in Pomo.'}
-          </p>
-          <div className="hero-actions">
-            <button className="primary-button" onClick={startTimer}>
-              <Play size={18} />
-              Start Focus
-            </button>
-            {isConnected ? (
-              <a className="secondary-button" href="https://pomofocus.online/dashboard" target="_blank" rel="noreferrer">
-                <LogIn size={18} />
-                Open Dashboard
-              </a>
-            ) : (
-              <a className="secondary-button" href={CONNECT_URL} target="_blank" rel="noreferrer">
-                <LogIn size={18} />
-                Connect with Discord
-              </a>
-            )}
-            <button className="secondary-button" onClick={toggleCompactMode}>
-              {compactMode ? <Maximize2 size={18} /> : <Minimize2 size={18} />}
-              {compactMode ? 'Full Mode' : 'Mini Mode'}
-            </button>
-          </div>
+    <div className="shell">
+      <aside className="sidebar">
+        <div className="brand">
+          <img src={logoUrl} alt="" />
+          <span>Pomo <em>Focus</em></span>
         </div>
 
-        <div className="timer-panel" aria-label="Focus timer">
-          <div className="timer-header">
-            <span>{modeMeta[mode].icon} {modeLabel}</span>
-            <button className="compact-toggle" onClick={toggleCompactMode}>
-              {compactMode ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
-              <span>{compactMode ? 'Full' : 'Mini'}</span>
+        <nav className="nav" aria-label="Sections">
+          {navItems.map(item => (
+            <button
+              key={item.id}
+              className={`nav-item${view === item.id ? ' active' : ''}`}
+              onClick={() => setView(item.id)}
+              aria-current={view === item.id ? 'page' : undefined}
+            >
+              {item.icon}
+              {item.label}
+              {item.id === 'timer' && status === 'running' && <span className="nav-live">{formatTime(remainingSeconds)}</span>}
             </button>
-          </div>
-          <div className={`status-dot status-${status}`}>{statusText(status)}</div>
+          ))}
+        </nav>
 
-          <div className="mode-tabs" role="tablist" aria-label="Timer mode">
-            {(['focus', 'shortBreak', 'longBreak'] as TimerMode[]).map(item => (
-              <button
-                key={item}
-                className={item === mode ? 'active' : ''}
-                onClick={() => switchMode(item)}
-                disabled={status === 'running'}
-              >
-                {modeMeta[item].label}
-              </button>
+        <div className="sidebar-foot">
+          {connectedProfile ? (
+            <button className="profile-chip" onClick={() => setView('account')}>
+              <Avatar profile={connectedProfile} />
+              <span>
+                <strong>{connectedProfile.username}</strong>
+                <small>Lv.{connectedProfile.level} · {connectedProfile.streak} day streak</small>
+              </span>
+            </button>
+          ) : (
+            <a className="btn btn-primary btn-block" href={CONNECT_URL} target="_blank" rel="noreferrer">
+              <LogIn size={16} /> Connect Discord
+            </a>
+          )}
+          <div className="sidebar-links">
+            {links.map(link => (
+              <a key={link.href} href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
             ))}
           </div>
-
-          <div className="session-fields">
-            <input
-              value={sessionTitle}
-              onChange={event => setSessionTitle(event.target.value)}
-              placeholder="Session title"
-              disabled={status === 'running'}
-            />
-            <select value={subject} onChange={event => setSubject(event.target.value)} disabled={status === 'running'}>
-              {subjectOptions.map(option => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="timer-value">{formatTime(remainingSeconds)}</div>
-          <div className="progress-track" aria-hidden="true">
-            <div style={{ width: `${progress}%` }} />
-          </div>
-
-          <div className="timer-controls">
-            {status === 'running' ? (
-              <button onClick={pauseTimer}><Pause size={18} /> Pause</button>
-            ) : (
-              <button onClick={startTimer}><Play size={18} /> {status === 'paused' ? 'Resume' : 'Start'}</button>
-            )}
-            <button onClick={() => resetTimer()}><RotateCcw size={18} /> Reset</button>
-          </div>
-
-          {pendingIdleSession && (
-            <div className="idle-guard-card">
-              <div>
-                <strong>Idle Guard paused this session</strong>
-                <p>
-                  Your computer was idle for {formatIdleDuration(pendingIdleSession.idleSeconds)}.
-                  Credit it only if the focus session was still valid.
-                </p>
-              </div>
-              <div className="idle-guard-actions">
-                <button onClick={confirmIdleSession}>Credit Session</button>
-                <button onClick={discardIdleSession}>Discard</button>
-              </div>
-            </div>
-          )}
-
-          {status === 'finished' && (
-            <button className="next-button" onClick={() => switchMode(nextMode)}>
-              Start {modeMeta[nextMode].label}
-            </button>
-          )}
         </div>
-      </section>
+      </aside>
 
-      <section className="dashboard-grid" aria-label="Desktop app controls">
-        <article className="stats-panel">
-          <PanelHeader icon={<Gauge size={18} />} title="Today" />
-          <div className="stat-row">
-            <span>Focus time</span>
-            <strong>{stats.focusMinutes}m</strong>
-          </div>
-          <div className="stat-row">
-            <span>Completed sessions</span>
-            <strong>{stats.sessions}</strong>
-          </div>
-          <div className="stat-row">
-            <span>Next suggested mode</span>
-            <strong>{modeMeta[nextMode].label}</strong>
-          </div>
-        </article>
+      <main className="content">
+        {view === 'timer' && (
+          <div className="timer-view">
+            <section className="timer-stage">
+              <div className="segmented" role="tablist" aria-label="Timer mode">
+                {(['focus', 'shortBreak', 'longBreak'] as TimerMode[]).map(item => (
+                  <button
+                    key={item}
+                    role="tab"
+                    aria-selected={item === mode}
+                    className={item === mode ? 'active' : ''}
+                    onClick={() => switchMode(item)}
+                    disabled={status === 'running'}
+                  >
+                    {modeMeta[item].label}
+                  </button>
+                ))}
+              </div>
 
-        <article className="settings-panel">
-          <PanelHeader icon={<Settings size={18} />} title="Timer Settings" />
-          <NumberSetting label="Focus" value={settings.focus} onChange={value => updateSetting('focus', value)} />
-          <NumberSetting label="Short break" value={settings.shortBreak} onChange={value => updateSetting('shortBreak', value)} />
-          <NumberSetting label="Long break" value={settings.longBreak} onChange={value => updateSetting('longBreak', value)} />
-        </article>
+              {timerRing}
 
-        <article className="settings-panel">
-          <PanelHeader icon={<Bell size={18} />} title="Notifications" />
-          <p className="panel-copy">
-            {notificationsEnabled
-              ? 'Desktop notifications are enabled.'
-              : 'Enable notifications so Pomo Desktop can remind you when a session ends.'}
-          </p>
-          <button className="wide-button" onClick={enableNotifications}>
-            {notificationsEnabled ? 'Send Test Notification' : 'Enable Notifications'}
-          </button>
-        </article>
+              <div className="session-fields">
+                <input
+                  value={sessionTitle}
+                  onChange={event => setSessionTitle(event.target.value)}
+                  placeholder="What are you working on?"
+                  disabled={status === 'running'}
+                  aria-label="Session title"
+                />
+                <select value={subject} onChange={event => setSubject(event.target.value)} disabled={status === 'running'} aria-label="Subject">
+                  {subjectOptions.map(option => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
 
-        <article className="settings-panel">
-          <PanelHeader icon={<Power size={18} />} title="Startup" />
-          <p className="panel-copy">
-            {startupEnabled
-              ? 'Pomo Desktop will open in the tray when you sign in.'
-              : 'Keep Pomo ready in the tray when your computer starts.'}
-          </p>
-          <label className="toggle-row startup-toggle">
-            <input
-              type="checkbox"
-              checked={startupEnabled}
-              onChange={event => void toggleStartup(event.target.checked)}
-            />
-            Launch on startup
-          </label>
-        </article>
+              {timerControls}
+              {idleCard}
+              {status === 'finished' && (
+                <button className="btn btn-outline" onClick={() => switchMode(nextMode)}>
+                  Start {modeMeta[nextMode].label}
+                </button>
+              )}
+            </section>
 
-        <article className="settings-panel">
-          <PanelHeader icon={<ShieldAlert size={18} />} title="Idle Guard" />
-          <p className="panel-copy">
-            {idleGuardEnabled
-              ? 'Sessions need confirmation if your computer is idle for 15 minutes or more.'
-              : 'Idle sessions will be credited without confirmation.'}
-          </p>
-          <label className="toggle-row startup-toggle">
-            <input
-              type="checkbox"
-              checked={idleGuardEnabled}
-              onChange={event => setIdleGuardEnabled(event.target.checked)}
-            />
-            Confirm long idle sessions
-          </label>
-        </article>
-
-        <article className="settings-panel">
-          <PanelHeader icon={<Keyboard size={18} />} title="Shortcuts" />
-          <div className="shortcut-list">
-            <div><kbd>Space</kbd><span>Start / Pause</span></div>
-            <div><kbd>R</kbd><span>Reset timer</span></div>
-            <div><kbd>M</kbd><span>Mini mode</span></div>
-          </div>
-        </article>
-      </section>
-
-      <section className="recent-panel">
-        <PanelHeader icon={<Clock3 size={18} />} title="Recent Sessions" />
-        {recentSessions.length > 0 ? (
-          <div className="recent-list">
-            {recentSessions.map(session => (
-              <article key={session.id} className="recent-session">
-                <div>
-                  <strong>{session.title}</strong>
-                  <span>{session.minutes}m • {subjectLabel(session.subject)} • {formatSessionTime(session.completedAt)}</span>
+            <aside className="rail">
+              <section className="card">
+                <h2 className="card-title">Today</h2>
+                <div className="stat-grid">
+                  <Stat label="Focus" value={formatMinutes(stats.focusMinutes)} />
+                  <Stat label="Sessions" value={String(stats.sessions)} />
+                  {connectedProfile && <Stat label="Streak" value={`${connectedProfile.streak}d`} />}
+                  {connectedProfile && <Stat label="Water" value={String(connectedProfile.water)} />}
                 </div>
-                <div className="recent-actions">
-                  <small className={`recent-status recent-${session.syncStatus}`}>{session.message}</small>
-                  {session.syncStatus !== 'synced' && session.syncStatus !== 'duplicate' && (
-                    <button onClick={() => retryRecentSession(session)}>Retry</button>
+                <p className="muted small">Up next: {modeMeta[nextMode].label}</p>
+              </section>
+
+              <section className="card">
+                <div className="card-head">
+                  <h2 className="card-title">Recent</h2>
+                  {recentSessions.length > 0 && (
+                    <button className="link-button" onClick={() => setView('history')}>See all</button>
                   )}
                 </div>
-              </article>
-            ))}
+                {recentSessions.length > 0 ? (
+                  <ul className="mini-list">
+                    {recentSessions.slice(0, 4).map(session => (
+                      <li key={session.id}>
+                        <span className={`dot dot-${session.syncStatus}`} aria-hidden="true" />
+                        <span className="mini-title">{session.title}</span>
+                        <span className="muted">{session.minutes}m</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="muted small">Finished focus sessions show up here.</p>
+                )}
+              </section>
+
+              <section className={`card sync-line sync-${syncState.status}`}>
+                {isConnected ? <Wifi size={16} /> : <WifiOff size={16} />}
+                <span>{isConnected ? syncMessage : 'Not connected. Sessions are saved on this computer only.'}</span>
+              </section>
+            </aside>
           </div>
-        ) : (
-          <p className="panel-copy compact-copy">Completed focus sessions will appear here.</p>
         )}
-      </section>
 
-      <section className="tray-panel">
-        <div>
-          <PanelHeader icon={<Clock3 size={18} />} title="Tray Mode" />
-          <p className="panel-copy">
-            Closing the desktop window now keeps Pomo running in the system tray. Open it again from the tray icon,
-            or use the tray menu to open the dashboard.
-          </p>
-        </div>
-        <div className="tray-preview">
-          <strong>{modeLabel}</strong>
-          <span>{formatTime(remainingSeconds)}</span>
-          <small>{statusText(status)}</small>
-        </div>
-      </section>
-
-      <section className="sync-panel">
-        <div>
-          <PanelHeader icon={<Wifi size={18} />} title="Pomo Sync" />
-          {isConnected ? (
-            <p className="panel-copy">
-              Completed focus sessions are sent to your Pomo profile automatically.
-            </p>
-          ) : (
-            <>
-              <p className="panel-copy">
-                Link this app to your Discord account in three steps. The app never sees your Discord password.
-              </p>
-              <ol className="connect-steps">
-                <li>Press <strong>Connect with Discord</strong> and sign in on the website.</li>
-                <li>Press <strong>Connect</strong> on that page.</li>
-                <li>Allow your browser to open Pomo Focus. Done!</li>
-              </ol>
-              <a className="primary-button connect-button" href={CONNECT_URL} target="_blank" rel="noreferrer">
-                <LogIn size={18} />
-                Connect with Discord
-              </a>
-            </>
-          )}
-          {connectedProfile && (
-            <div className="profile-preview">
-              {connectedProfile.avatar ? (
-                <img src={connectedProfile.avatar} alt="" />
-              ) : (
-                <span>{connectedProfile.username.slice(0, 2).toUpperCase()}</span>
-              )}
-              <div>
-                <strong>{connectedProfile.username}</strong>
-                <small>
-                  Lv.{connectedProfile.level} • {connectedProfile.water} water • {connectedProfile.streak} streak
-                </small>
+        {view === 'history' && (
+          <div className="page">
+            <PageHeader title="History" subtitle="Your last focus sessions on this computer and whether they reached your Pomo profile." />
+            {recentSessions.length > 0 ? (
+              <div className="card list-card">
+                {recentSessions.map(session => (
+                  <article key={session.id} className="history-row">
+                    <div className="history-main">
+                      <strong>{session.title}</strong>
+                      <span className="muted">
+                        {session.minutes}m · {subjectLabel(session.subject)} · {formatSessionTime(session.completedAt)}
+                      </span>
+                    </div>
+                    <span className={`badge badge-${session.syncStatus}`}>{session.message}</span>
+                    {session.syncStatus !== 'synced' && session.syncStatus !== 'duplicate' && (
+                      <button className="btn btn-ghost btn-sm" onClick={() => retryRecentSession(session)}>Retry</button>
+                    )}
+                  </article>
+                ))}
               </div>
-            </div>
-          )}
-        </div>
-        <div className="sync-form">
-          <label className="toggle-row">
-            <input
-              type="checkbox"
-              checked={syncSettings.autoSync}
-              onChange={event => setSyncSettings(current => ({ ...current, autoSync: event.target.checked }))}
-            />
-            Auto-sync completed focus sessions
-          </label>
-          <div className={`sync-status sync-${syncState.status}`}>
-            {syncState.status === 'synced' || syncState.status === 'duplicate'
-              ? <CheckCircle2 size={18} />
-              : <KeyRound size={18} />}
-            <span>{syncState.message}</span>
+            ) : (
+              <EmptyState icon={<Clock3 size={22} />} text="No sessions yet. Start a focus session and it will appear here." />
+            )}
           </div>
-          <button className="wide-button" onClick={() => testSync()}>
-            {isConnected ? 'Check connection' : 'Test Sync'}
-          </button>
-          {isConnected && (
-            <a className="reconnect-link" href={CONNECT_URL} target="_blank" rel="noreferrer">Reconnect another account</a>
-          )}
-          <details className="advanced-sync">
-            <summary>Advanced: connect manually</summary>
-            <label>
-              API URL
-              <input
-                value={syncSettings.apiUrl}
-                onChange={event => setSyncSettings(current => ({ ...current, apiUrl: event.target.value }))}
-              />
-            </label>
-            <label>
-              Desktop token
-              <input
-                type="password"
-                value={syncSettings.token}
-                onChange={event => setSyncSettings(current => ({ ...current, token: event.target.value }))}
-                placeholder="Paste token from pomofocus.online/dashboard/desktop"
-              />
-            </label>
-          </details>
-        </div>
-      </section>
+        )}
 
-      <section className="feature-grid" aria-label="Why connect">
-        <Feature icon={<Sprout />} title="Grow your garden" body="Every focus session earns water and XP for your Pomo garden and level." />
-        <Feature icon={<Flame />} title="Keep your streak" body="Desktop sessions count toward the same streak as /study on Discord." />
-        <Feature icon={<Gauge />} title="All your stats in one place" body="See desktop focus time in /stats, your weekly recap and on the dashboard." />
-      </section>
+        {view === 'settings' && (
+          <div className="page">
+            <PageHeader title="Settings" subtitle="Timer lengths and how Pomo behaves on this computer." />
 
-      <section className="links-panel">
-        <div>
-          <h2>Useful Links</h2>
-          <p>The desktop app keeps dashboard and support one click away.</p>
-        </div>
-        <div className="link-list">
-          {links.map(link => (
-            <a key={link.href} href={link.href} target="_blank" rel="noreferrer">
-              {link.label}
-              <ExternalLink size={16} />
-            </a>
-          ))}
-        </div>
-      </section>
-    </main>
+            <section className="card">
+              <h2 className="card-title">Timer</h2>
+              <NumberSetting label="Focus" value={settings.focus} onChange={value => updateSetting('focus', value)} />
+              <NumberSetting label="Short break" value={settings.shortBreak} onChange={value => updateSetting('shortBreak', value)} />
+              <NumberSetting label="Long break" value={settings.longBreak} onChange={value => updateSetting('longBreak', value)} />
+            </section>
+
+            <section className="card">
+              <h2 className="card-title">Behaviour</h2>
+              <SettingRow
+                icon={<Bell size={18} />}
+                title="Notifications"
+                body={notificationsEnabled ? 'On. Pomo tells you when a session ends.' : 'Get a reminder when a session ends.'}
+              >
+                <button className="btn btn-ghost btn-sm" onClick={enableNotifications}>
+                  {notificationsEnabled ? 'Send test' : 'Enable'}
+                </button>
+              </SettingRow>
+              <SettingRow
+                icon={<Power size={18} />}
+                title="Launch on startup"
+                body="Keep Pomo ready in the tray when your computer starts."
+              >
+                <Switch checked={startupEnabled} onChange={value => void toggleStartup(value)} label="Launch on startup" />
+              </SettingRow>
+              <SettingRow
+                icon={<ShieldAlert size={18} />}
+                title="Idle Guard"
+                body="Ask before counting a session if the computer was idle for 15 minutes or more."
+              >
+                <Switch checked={idleGuardEnabled} onChange={setIdleGuardEnabled} label="Idle Guard" />
+              </SettingRow>
+              <SettingRow
+                icon={<Clock3 size={18} />}
+                title="Tray"
+                body="Closing the window keeps Pomo running in the system tray. Open it again from the tray icon."
+              />
+            </section>
+
+            <section className="card">
+              <h2 className="card-title">Shortcuts</h2>
+              <div className="shortcut-list">
+                <div><kbd>Space</kbd><span>Start / pause</span></div>
+                <div><kbd>R</kbd><span>Reset timer</span></div>
+                <div><kbd>M</kbd><span>Mini mode</span></div>
+              </div>
+            </section>
+          </div>
+        )}
+
+        {view === 'account' && (
+          <div className="page">
+            <PageHeader title="Account" subtitle="Link the app to Pomo on Discord so desktop sessions earn water, XP and streak days." />
+
+            {connectedProfile ? (
+              <section className="card profile-card">
+                <Avatar profile={connectedProfile} large />
+                <div>
+                  <h2>{connectedProfile.username}</h2>
+                  <p className="muted">Level {connectedProfile.level}</p>
+                </div>
+                <div className="stat-grid wide">
+                  <Stat label="Streak" value={`${connectedProfile.streak}d`} />
+                  <Stat label="Water" value={String(connectedProfile.water)} />
+                  <Stat label="Focus total" value={formatMinutes(connectedProfile.totalFocusMinutes)} />
+                  <Stat label="Sessions" value={String(connectedProfile.totalSessions)} />
+                </div>
+              </section>
+            ) : (
+              <section className="card connect-card">
+                <h2 className="card-title">Connect with Discord</h2>
+                <ol className="connect-steps">
+                  <li>Press <strong>Connect with Discord</strong> and sign in on the website.</li>
+                  <li>Press <strong>Connect</strong> on that page.</li>
+                  <li>Allow your browser to open Pomo Focus. Done.</li>
+                </ol>
+                <p className="muted small">The app never sees your Discord password.</p>
+                <a className="btn btn-primary" href={CONNECT_URL} target="_blank" rel="noreferrer">
+                  <LogIn size={16} /> Connect with Discord
+                </a>
+              </section>
+            )}
+
+            <section className="card">
+              <h2 className="card-title">Sync</h2>
+              <SettingRow
+                icon={<Wifi size={18} />}
+                title="Auto-sync"
+                body="Send finished focus sessions to your Pomo profile."
+              >
+                <Switch
+                  checked={syncSettings.autoSync}
+                  onChange={value => setSyncSettings(current => ({ ...current, autoSync: value }))}
+                  label="Auto-sync"
+                />
+              </SettingRow>
+              <div className={`sync-line sync-${syncState.status}`}>
+                {syncState.status === 'synced' || syncState.status === 'duplicate' ? <CheckCircle2 size={16} /> : <KeyRound size={16} />}
+                <span>{syncMessage}</span>
+              </div>
+              <div className="row-actions">
+                <button className="btn btn-ghost" onClick={() => testSync()}>
+                  {isConnected ? 'Check connection' : 'Test sync'}
+                </button>
+                {isConnected && (
+                  <a className="link-button" href={CONNECT_URL} target="_blank" rel="noreferrer">Connect another account</a>
+                )}
+              </div>
+              <details className="advanced">
+                <summary>Advanced: connect manually</summary>
+                <label>
+                  API URL
+                  <input
+                    value={syncSettings.apiUrl}
+                    onChange={event => setSyncSettings(current => ({ ...current, apiUrl: event.target.value }))}
+                  />
+                </label>
+                <label>
+                  Desktop token
+                  <input
+                    type="password"
+                    value={syncSettings.token}
+                    onChange={event => setSyncSettings(current => ({ ...current, token: event.target.value }))}
+                    placeholder="Paste token from pomofocus.online/dashboard/desktop"
+                  />
+                </label>
+              </details>
+            </section>
+
+            {!connectedProfile && (
+              <section className="why-grid">
+                <Why icon={<Sprout size={18} />} title="Grow your garden" body="Every focus session earns water and XP." />
+                <Why icon={<Flame size={18} />} title="Keep your streak" body="Desktop sessions count like /study on Discord." />
+                <Why icon={<Gauge size={18} />} title="One set of stats" body="See them in /stats and on the dashboard." />
+              </section>
+            )}
+          </div>
+        )}
+      </main>
+    </div>
   );
 }
 
-function PanelHeader({ icon, title }: { icon: ReactNode; title: string }) {
+function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
-    <div className="panel-header">
-      <span>{icon}</span>
-      <h2>{title}</h2>
+    <header className="page-header">
+      <h1>{title}</h1>
+      <p>{subtitle}</p>
+    </header>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="stat">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function Avatar({ profile, large = false }: { profile: ConnectedProfile; large?: boolean }) {
+  return profile.avatar ? (
+    <img className={`avatar${large ? ' avatar-lg' : ''}`} src={profile.avatar} alt="" />
+  ) : (
+    <span className={`avatar${large ? ' avatar-lg' : ''}`}>{profile.username.slice(0, 2).toUpperCase()}</span>
+  );
+}
+
+function SettingRow({ icon, title, body, children }: { icon: ReactNode; title: string; body: string; children?: ReactNode }) {
+  return (
+    <div className="setting-row">
+      <span className="setting-icon">{icon}</span>
+      <div className="setting-text">
+        <strong>{title}</strong>
+        <span>{body}</span>
+      </div>
+      {children && <div className="setting-control">{children}</div>}
+    </div>
+  );
+}
+
+function Switch({ checked, onChange, label }: { checked: boolean; onChange: (value: boolean) => void; label: string }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      className={`switch${checked ? ' on' : ''}`}
+      onClick={() => onChange(!checked)}
+    >
+      <span />
+    </button>
+  );
+}
+
+function EmptyState({ icon, text }: { icon: ReactNode; text: string }) {
+  return (
+    <div className="card empty">
+      {icon}
+      <p>{text}</p>
     </div>
   );
 }
@@ -968,26 +1081,35 @@ function NumberSetting({ label, value, onChange }: { label: string; value: numbe
   return (
     <label className="number-setting">
       <span>{label}</span>
-      <input
-        type="number"
-        min={1}
-        max={100}
-        value={value}
-        onChange={event => onChange(Number(event.target.value))}
-      />
-      <small>min</small>
+      <span className="number-input">
+        <input
+          type="number"
+          min={1}
+          max={100}
+          value={value}
+          onChange={event => onChange(Number(event.target.value))}
+        />
+        <small>min</small>
+      </span>
     </label>
   );
 }
 
-function Feature({ icon, title, body }: { icon: ReactNode; title: string; body: string }) {
+function Why({ icon, title, body }: { icon: ReactNode; title: string; body: string }) {
   return (
-    <article className="feature-card">
-      <div className="feature-icon">{icon}</div>
-      <h2>{title}</h2>
+    <article className="why">
+      <span className="why-icon">{icon}</span>
+      <strong>{title}</strong>
       <p>{body}</p>
     </article>
   );
+}
+
+function formatMinutes(minutes: number) {
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  return rest ? `${hours}h ${rest}m` : `${hours}h`;
 }
 
 function createActiveSession(): ActiveSession {
