@@ -1,6 +1,7 @@
 # Builds the Rust version of Pomo Focus (pomo-desktop-rs) on GitHub machines.
 # Run it by hand (`gh workflow run desktop-rs-build.yml`), then download the artifacts.
 # Linux builds on Ubuntu 22.04 so the binary needs only glibc 2.35 and runs on older distros.
+# Windows gives the Store package (.appx), a Developer Mode test copy (.zip) and Pomo-Focus-Setup.exe.
 name: Desktop (Rust) build
 
 on:
@@ -35,5 +36,38 @@ jobs:
           path: |
             pomo-desktop-rs/dist/*.deb
             pomo-desktop-rs/dist/*.AppImage
+          if-no-files-found: error
+          retention-days: 14
+
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: pomo-desktop-rs
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: pomo-desktop-rs
+
+      - run: cargo build --release --locked
+
+      - name: NSIS
+        run: choco install nsis -y --no-progress
+
+      - name: Package .appx and installer
+        shell: pwsh
+        run: packaging/windows/build-windows.ps1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pomo-focus-windows
+          path: |
+            pomo-desktop-rs/dist/*.appx
+            pomo-desktop-rs/dist/*.zip
+            pomo-desktop-rs/dist/*.exe
           if-no-files-found: error
           retention-days: 14

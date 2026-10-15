@@ -394,6 +394,7 @@ fn refresh_all(ctx: &Shared) {
     ui.set_short_minutes(app.saved.settings.short_break as i32);
     ui.set_long_minutes(app.saved.settings.long_break as i32);
     ui.set_startup_on(app.startup_on);
+    ui.set_startup_in_settings(platform::startup_in_os_settings());
     ui.set_idle_guard_on(app.saved.idle_guard);
 }
 
@@ -841,6 +842,7 @@ fn main() -> Result<(), slint::PlatformError> {
     let snapshot_window: Option<()> = None;
 
     if snapshot_window.is_none() {
+        platform::init_identity();
         platform::register_protocol();
         idle::start();
         // Matches the .desktop file, so Wayland shows our icon and groups the window under it
@@ -1000,6 +1002,10 @@ fn main() -> Result<(), slint::PlatformError> {
     });
     let c = ctx.clone();
     ui.on_set_startup(move |enabled| {
+        if platform::startup_in_os_settings() {
+            platform::open_startup_settings();
+            return;
+        }
         let applied = platform::set_startup(enabled);
         c.app.borrow_mut().startup_on = applied;
         refresh_all(&c);

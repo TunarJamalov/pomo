@@ -39,11 +39,18 @@ wayland-client = "0.31"
 wayland-protocols = { version = "0.32", features = ["client", "staging"] }
 
 [target.'cfg(windows)'.dependencies]
-windows-sys = { version = "0.60", features = ["Win32_UI_Input_KeyboardAndMouse", "Win32_System_SystemInformation", "Win32_UI_WindowsAndMessaging"] }
+windows-sys = { version = "0.60", features = [
+    "Win32_Foundation",
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_System_SystemInformation",
+    "Win32_Storage_Packaging_Appx",
+    "Win32_UI_Shell",
+] }
 winreg = "0.55"
 
 [build-dependencies]
 slint-build = "1.18"
+winresource = "0.1"
 
 [profile.release]
 opt-level = "s"

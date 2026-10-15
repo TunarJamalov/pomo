@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Microsoft Store package. @VERSION@ is filled in by build-windows.ps1. The Identity,
+     Publisher and Application Id must stay as they are, or the Store treats it as a new app. -->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap desktop rescap">
+  <Identity Name="TunarJamalov.PomoFocus"
+    ProcessorArchitecture="x64"
+    Publisher="CN=7C2E844A-EDF5-457F-A6D2-E8EB405DD965"
+    Version="@VERSION@.0" />
+  <Properties>
+    <DisplayName>Pomo Focus</DisplayName>
+    <PublisherDisplayName>Tunar Jamalov</PublisherDisplayName>
+    <Description>Pomodoro focus timer for Pomo on Discord</Description>
+    <Logo>assets\StoreLogo.png</Logo>
+  </Properties>
+  <Resources>
+    <Resource Language="en-US" />
+  </Resources>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+  <Applications>
+    <Application Id="PomoFocus" Executable="pomo-focus.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        BackgroundColor="#1a1b1e"
+        DisplayName="Pomo Focus"
+        Square150x150Logo="assets\Square150x150Logo.png"
+        Square44x44Logo="assets\Square44x44Logo.png"
+        Description="Pomodoro focus timer for Pomo on Discord">
+        <uap:DefaultTile Wide310x150Logo="assets\Wide310x150Logo.png" Square310x310Logo="assets\LargeTile.png" Square71x71Logo="assets\SmallTile.png" />
+        <uap:SplashScreen Image="assets\SplashScreen.png" />
+      </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="pomo">
+            <uap:DisplayName>Pomo Focus</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
+        <desktop:Extension Category="windows.startupTask" Executable="pomo-focus.exe" EntryPoint="Windows.FullTrustApplication">
+          <desktop:StartupTask TaskId="PomoFocusStartup" Enabled="false" DisplayName="Pomo Focus" />
+        </desktop:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+</Package>

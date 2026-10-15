@@ -594,6 +594,7 @@ export component AppWindow inherits Window {
     in property <int> short-minutes: 5;
     in property <int> long-minutes: 15;
     in property <bool> startup-on;
+    in property <bool> startup-in-settings; // Store version: Windows Settings decides
     in property <bool> idle-guard-on: true;
 
     callback start-timer();
@@ -1061,8 +1062,16 @@ export component AppWindow inherits Window {
                             SettingRow {
                                 icon: @image-url("icons/power.svg");
                                 title: "Launch on startup";
-                                body: "Keep Pomo ready in the tray when your computer starts.";
-                                Switch { checked: root.startup-on; toggled(v) => { root.set-startup(v); } }
+                                body: root.startup-in-settings
+                                    ? "Turn Pomo Focus on in Windows Settings, under Apps and Startup."
+                                    : "Keep Pomo ready in the tray when your computer starts.";
+                                if root.startup-in-settings: Button {
+                                    text: "Open settings";
+                                    button-height: 32px;
+                                    font-size: 13px;
+                                    clicked => { root.set-startup(true); }
+                                }
+                                if !root.startup-in-settings: Switch { checked: root.startup-on; toggled(v) => { root.set-startup(v); } }
                             }
                             SettingRow {
                                 icon: @image-url("icons/shield.svg");

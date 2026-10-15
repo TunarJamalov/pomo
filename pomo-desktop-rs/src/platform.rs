@@ -20,12 +20,15 @@ pub fn open_url(url: &str) {
 pub fn notify(title: &str, body: &str) {
     let (title, body) = (title.to_string(), body.to_string());
     std::thread::spawn(move || {
-        let _ = notify_rust::Notification::new()
+        let mut notification = notify_rust::Notification::new();
+        notification
             .appname("Pomo Focus")
             .summary(&title)
             .body(&body)
-            .icon("pomo-focus")
-            .show();
+            .icon("pomo-focus");
+        #[cfg(windows)]
+        notification.app_id(&windows::notification_app_id());
+        let _ = notification.show();
     });
 }
 
@@ -146,6 +149,71 @@ mod windows {
 
     const RUN_KEY: &str = r"Software\Microsoft\Windows\CurrentVersion\Run";
     const VALUE: &str = "Pomo Focus";
+    /// Identity for notifications and the taskbar when installed with Pomo-Focus-Setup.exe
+    pub const AUMID: &str = "online.pomofocus.desktop";
+    const ICON: &[u8] = include_bytes!("../assets/icon-128.png");
+
+    fn wide(text: &str) -> Vec<u16> {
+        text.encode_utf16().chain(std::iter::once(0)).collect()
+    }
+
+    /// True when running from the Microsoft Store (MSIX) package.
+    pub fn packaged() -> bool {
+        use windows_sys::Win32::Storage::Packaging::Appx::GetCurrentPackageFullName;
+        let mut len: u32 = 0;
+        // SAFETY: asking for the length only; a package exists when the buffer is too small (122)
+        unsafe { GetCurrentPackageFullName(&mut len, std::ptr::null_mut()) == 122 }
+    }
+
+    /// The package's own identity, which Windows needs to show its notifications.
+    fn package_aumid() -> Option<String> {
+        use windows_sys::Win32::Storage::Packaging::Appx::GetCurrentApplicationUserModelId;
+        let mut len: u32 = 0;
+        // SAFETY: the first call reports the length, the second fills a buffer of that length
+        unsafe {
+            GetCurrentApplicationUserModelId(&mut len, std::ptr::null_mut());
+            if len == 0 {
+                return None;
+            }
+            let mut buffer = vec![0u16; len as usize];
+            if GetCurrentApplicationUserModelId(&mut len, buffer.as_mut_ptr()) != 0 {
+                return None;
+            }
+            Some(String::from_utf16_lossy(&buffer[..len.saturating_sub(1) as usize]))
+        }
+    }
+
+    /// Who notifications come from. The installer version registers its name and icon first.
+    pub fn notification_app_id() -> String {
+        if packaged() {
+            return package_aumid().unwrap_or_else(|| AUMID.into());
+        }
+        let icon = crate::state::data_dir().join("icon.png");
+        if !icon.exists() {
+            let _ = std::fs::create_dir_all(crate::state::data_dir());
+            let _ = std::fs::write(&icon, ICON);
+        }
+        if let Ok((key, _)) =
+            RegKey::predef(HKEY_CURRENT_USER).create_subkey(format!(r"Software\Classes\AppUserModelId\{AUMID}"))
+        {
+            let _ = key.set_value("DisplayName", &"Pomo Focus");
+            let _ = key.set_value("IconUri", &icon.display().to_string());
+        }
+        AUMID.into()
+    }
+
+    /// Groups the window and tray under Pomo Focus instead of a generic program.
+    pub fn set_app_identity() {
+        if packaged() {
+            return;
+        }
+        use windows_sys::Win32::UI::Shell::SetCurrentProcessExplicitAppUserModelID;
+        let id = wide(AUMID);
+        // SAFETY: id is a valid, NUL-terminated UTF-16 string that outlives the call
+        unsafe {
+            SetCurrentProcessExplicitAppUserModelID(id.as_ptr());
+        }
+    }
 
     pub fn startup_enabled() -> bool {
         RegKey::predef(HKEY_CURRENT_USER)
@@ -166,12 +234,12 @@ mod windows {
         startup_enabled()
     }
 
-    /// The Store package registers pomo:// in its manifest; the plain installer does it here.
+    /// The Store package registers pomo:// in its manifest; the installer version does it here.
     pub fn register_protocol() {
-        let exe = super::launch_target();
-        if exe.contains(r"\WindowsApps\") {
+        if packaged() {
             return;
         }
+        let exe = super::launch_target();
         let Ok((key, _)) = RegKey::predef(HKEY_CURRENT_USER).create_subkey(r"Software\Classes\pomo") else {
             return;
         };
@@ -181,6 +249,28 @@ mod windows {
             let _ = command.set_value("", &format!("\"{exe}\" \"%1\""));
         }
     }
+}
+
+/// In the Microsoft Store version, Windows itself decides what starts at sign-in
+/// (Settings, Apps, Startup); the app can only open that page.
+pub fn startup_in_os_settings() -> bool {
+    #[cfg(windows)]
+    return windows::packaged();
+    #[allow(unreachable_code)]
+    false
+}
+
+pub fn open_startup_settings() {
+    #[cfg(windows)]
+    let _ = std::process::Command::new("rundll32")
+        .args(["url.dll,FileProtocolHandler", "ms-settings:startupapps"])
+        .spawn();
+}
+
+/// Sets up the app's identity with the system. Call once at startup, before any window.
+pub fn init_identity() {
+    #[cfg(windows)]
+    windows::set_app_identity();
 }
 
 pub fn startup_enabled() -> bool {
