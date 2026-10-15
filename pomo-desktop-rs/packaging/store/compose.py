@@ -11,7 +11,9 @@ Then run this from $OUT with the repo root in POMO_REPO. Needs ImageMagick 7.
 """
 import os
 import subprocess
-F = "pomo-desktop-rs/ui/fonts"
+REPO = os.environ.get("POMO_REPO", ".")
+F = f"{REPO}/pomo-desktop-rs/ui/fonts"
+LOGO = f"{REPO}/apps/web/public/logo.png"
 def run(*a): subprocess.run(["magick",*a],check=True)
 
 def background(out):
