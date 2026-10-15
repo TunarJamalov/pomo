@@ -38,6 +38,6 @@ export const GITHUB_URL = "https://github.com/TunarJamalov/pomo";
 export const TIKTOK_URL = "https://www.tiktok.com/@pomo.study";
 
 // Seller shown in the legal pages; must match the Epoint merchant (the VÖEN holder) exactly
-export const LEGAL_NAME = "Tunar Camalov";
+export const LEGAL_NAME = "AzeDev";
 
 export const CONTACT_EMAIL = "jamalovtunar@gmail.com";
