@@ -10,4 +10,4 @@
 
 - [ ] Database changes (if any) are additive only: no dropped, renamed or rewritten columns
 - [ ] No secrets, `.env` files or database files are included
-- [ ] I have read the [Pomo CLA](../blob/main/CLA.md) and I agree to it
+- [ ] I have read the [Pomo CLA](https://github.com/TunarJamalov/pomo/blob/main/CLA.md) and I agree to it
