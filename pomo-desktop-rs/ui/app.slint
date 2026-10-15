@@ -1,0 +1,1250 @@
+// Pomo Focus desktop. Colors and type follow pomofocus.online (apps/web/app/globals.css).
+import { ScrollView } from "std-widgets.slint";
+
+import "fonts/Figtree-400.ttf";
+import "fonts/Figtree-500.ttf";
+import "fonts/Figtree-600.ttf";
+import "fonts/Figtree-700.ttf";
+import "fonts/BricolageGrotesque-700.ttf";
+import "fonts/JetBrainsMono-500.ttf";
+
+export global Theme {
+    out property <color> bg: #1a1b1e;
+    out property <color> sidebar: #1e1f22;
+    out property <color> surface: #232428;
+    out property <color> surface-2: #2b2d31;
+    out property <color> surface-3: #313338;
+    out property <color> fg: #f2f3f5;
+    out property <color> fg-2: #dbdee1;
+    out property <color> muted: #b5bac1;
+    out property <color> subtle: #80848e;
+    out property <color> line: #ffffff12;
+    out property <color> line-strong: #ffffff21;
+    out property <color> tomato: #f0533f;
+    out property <color> tomato-deep: #c93a28;
+    out property <color> tomato-soft: #f0533f24;
+    out property <color> green: #23a55a;
+    out property <color> green-text: #4ccf83;
+    out property <color> green-soft: #23a55a29;
+    out property <color> amber: #f0b232;
+    out property <color> amber-soft: #f0b23224;
+    out property <color> error-text: #ff8a7a;
+    out property <string> display: "Bricolage Grotesque";
+    out property <string> code: "JetBrains Mono";
+}
+
+export struct SessionItem {
+    id: string,
+    title: string,
+    meta: string,
+    sync-status: string,
+    message: string,
+    can-retry: bool,
+}
+
+// ─── Small building blocks ────────────────────────────────
+
+component Button inherits Rectangle {
+    in property <string> text;
+    in property <image> icon;
+    in property <bool> has-icon: false;
+    in property <string> kind: "ghost"; // primary | ghost | outline
+    in property <length> button-height: 40px;
+    in property <length> font-size: 14px;
+    in property <bool> enabled: true;
+    callback clicked();
+
+    height: button-height;
+    border-radius: 8px;
+    border-width: kind == "outline" ? 1px : 0;
+    border-color: Theme.line-strong;
+    background: kind == "primary"
+        ? (touch.has-hover && enabled ? Theme.tomato-deep : Theme.tomato)
+        : kind == "outline"
+            ? (touch.has-hover && enabled ? #ffffff0d : transparent)
+            : (touch.has-hover && enabled ? Theme.surface-3 : Theme.surface-2);
+    opacity: enabled ? 1 : 0.5;
+    accessible-role: button;
+    accessible-label: text;
+
+    HorizontalLayout {
+        padding-left: text == "" ? 0 : 16px;
+        padding-right: text == "" ? 0 : 16px;
+        spacing: 8px;
+        alignment: center;
+        if has-icon: Image {
+            source: icon;
+            width: 18px;
+            height: 18px;
+            y: (parent.height - self.height) / 2;
+            colorize: kind == "primary" ? white : Theme.fg-2;
+        }
+        if text != "": Text {
+            text: text;
+            color: kind == "primary" ? white : (kind == "outline" ? Theme.fg : Theme.fg-2);
+            font-size: font-size;
+            font-weight: 600;
+            vertical-alignment: center;
+        }
+    }
+
+    touch := TouchArea {
+        mouse-cursor: enabled ? pointer : not-allowed;
+        clicked => {
+            if (enabled) {
+                root.clicked();
+            }
+        }
+    }
+}
+
+component Card inherits Rectangle {
+    background: Theme.surface;
+    border-radius: 14px;
+    border-width: 1px;
+    border-color: Theme.line;
+}
+
+component CardTitle inherits Text {
+    color: Theme.subtle;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+}
+
+component Switch inherits Rectangle {
+    in property <bool> checked;
+    callback toggled(bool);
+    width: 42px;
+    height: 24px;
+    border-radius: 12px;
+    background: checked ? Theme.green : Theme.surface-3;
+    animate background { duration: 150ms; }
+    accessible-role: switch;
+    accessible-checked: checked;
+
+    Rectangle {
+        width: 18px;
+        height: 18px;
+        y: 3px;
+        x: checked ? 21px : 3px;
+        border-radius: 9px;
+        background: white;
+        animate x { duration: 150ms; }
+    }
+
+    TouchArea {
+        mouse-cursor: pointer;
+        clicked => {
+            root.toggled(!root.checked);
+        }
+    }
+}
+
+component Stat inherits Rectangle {
+    in property <string> label;
+    in property <string> value;
+    background: Theme.surface-2;
+    border-radius: 10px;
+    min-height: 62px;
+    VerticalLayout {
+        padding: 10px;
+        padding-left: 12px;
+        spacing: 2px;
+        Text { text: label; color: Theme.subtle; font-size: 12px; }
+        Text { text: value; color: Theme.fg; font-family: Theme.display; font-size: 22px; font-weight: 700; }
+    }
+}
+
+component Dot inherits Rectangle {
+    in property <string> kind;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: kind == "synced" || kind == "duplicate" ? Theme.green
+        : kind == "syncing" ? Theme.amber
+        : kind == "error" ? Theme.tomato
+        : Theme.subtle;
+}
+
+component Badge inherits Rectangle {
+    in property <string> kind;
+    in property <string> text;
+    height: 24px;
+    border-radius: 12px;
+    background: kind == "synced" || kind == "duplicate" ? Theme.green-soft
+        : kind == "syncing" ? Theme.amber-soft
+        : kind == "error" ? Theme.tomato-soft
+        : Theme.surface-2;
+    HorizontalLayout {
+        padding-left: 10px;
+        padding-right: 10px;
+        Text {
+            text: text;
+            font-size: 12px;
+            vertical-alignment: center;
+            overflow: elide;
+            color: kind == "synced" || kind == "duplicate" ? Theme.green-text
+                : kind == "syncing" ? Theme.amber
+                : kind == "error" ? Theme.error-text
+                : Theme.muted;
+        }
+    }
+}
+
+component NavItem inherits Rectangle {
+    in property <string> label;
+    in property <image> icon;
+    in property <bool> active;
+    in property <string> live;
+    callback clicked();
+    height: 40px;
+    border-radius: 8px;
+    background: active ? Theme.surface-3 : (touch.has-hover ? #ffffff0a : transparent);
+    accessible-role: tab;
+    accessible-label: label;
+    HorizontalLayout {
+        padding-left: 12px;
+        padding-right: 10px;
+        spacing: 12px;
+        Image {
+            source: icon;
+            width: 18px;
+            height: 18px;
+            y: (parent.height - self.height) / 2;
+            colorize: active ? Theme.tomato : (touch.has-hover ? Theme.fg-2 : Theme.muted);
+        }
+        Text {
+            text: label;
+            vertical-alignment: center;
+            font-size: 15px;
+            font-weight: 500;
+            color: active ? Theme.fg : (touch.has-hover ? Theme.fg-2 : Theme.muted);
+            horizontal-stretch: 1;
+        }
+        if live != "": Rectangle {
+            y: (parent.height - self.height) / 2;
+            height: 20px;
+            width: live-text.preferred-width + 14px;
+            border-radius: 10px;
+            background: Theme.tomato-soft;
+            live-text := Text {
+                text: live;
+                font-family: Theme.code;
+                font-size: 11px;
+                color: Theme.tomato;
+            }
+        }
+    }
+    touch := TouchArea {
+        mouse-cursor: pointer;
+        clicked => {
+            root.clicked();
+        }
+    }
+}
+
+component Field inherits Rectangle {
+    in-out property <string> text;
+    in property <string> placeholder;
+    in property <bool> enabled: true;
+    in property <bool> password: false;
+    callback edited(string);
+    height: 40px;
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: input.has-focus ? Theme.tomato : Theme.line-strong;
+    background: Theme.surface;
+    opacity: enabled ? 1 : 0.6;
+    if root.text == "" && !input.has-focus: Text {
+        x: 12px;
+        text: root.placeholder;
+        color: Theme.subtle;
+        font-size: 14px;
+        height: parent.height;
+        vertical-alignment: center;
+    }
+    HorizontalLayout {
+        padding-left: 12px;
+        padding-right: 12px;
+        input := TextInput {
+            text <=> root.text;
+            enabled: root.enabled;
+            input-type: root.password ? InputType.password : InputType.text;
+            color: Theme.fg;
+            font-size: 14px;
+            vertical-alignment: center;
+            single-line: true;
+            selection-background-color: Theme.tomato-soft;
+            edited => {
+                root.edited(self.text);
+            }
+        }
+    }
+}
+
+component Chip inherits Rectangle {
+    in property <string> label;
+    in property <bool> selected;
+    in property <bool> enabled: true;
+    callback clicked();
+    height: 30px;
+    width: chip-text.preferred-width + 24px;
+    border-radius: 15px;
+    border-width: 1px;
+    border-color: selected ? Theme.tomato : Theme.line-strong;
+    background: selected ? Theme.tomato-soft : (touch.has-hover && enabled ? #ffffff0a : transparent);
+    opacity: enabled || selected ? 1 : 0.5;
+    chip-text := Text {
+        text: label;
+        font-size: 13px;
+        font-weight: 600;
+        color: selected ? Theme.tomato : Theme.muted;
+    }
+    touch := TouchArea {
+        mouse-cursor: enabled ? pointer : not-allowed;
+        clicked => {
+            if (enabled) {
+                root.clicked();
+            }
+        }
+    }
+}
+
+component SettingRow inherits Rectangle {
+    in property <image> icon;
+    in property <string> title;
+    in property <string> body;
+    in property <bool> last: false;
+    min-height: 64px;
+    HorizontalLayout {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        spacing: 14px;
+        Rectangle {
+            width: 36px;
+            height: 36px;
+            y: (parent.height - self.height) / 2;
+            border-radius: 9px;
+            background: Theme.surface-2;
+            Image { source: root.icon; width: 18px; height: 18px; colorize: Theme.muted; }
+        }
+        VerticalLayout {
+            alignment: center;
+            spacing: 2px;
+            horizontal-stretch: 1;
+            Text { text: root.title; color: Theme.fg; font-weight: 600; font-size: 14px; }
+            Text { text: root.body; color: Theme.muted; font-size: 13px; wrap: word-wrap; }
+        }
+        VerticalLayout {
+            alignment: center;
+            @children
+        }
+    }
+    if !root.last: Rectangle {
+        y: parent.height - 1px;
+        height: 1px;
+        background: Theme.line;
+    }
+}
+
+component NumberRow inherits Rectangle {
+    in property <string> label;
+    in property <int> value;
+    in property <bool> last: false;
+    callback changed(int);
+    height: 56px;
+    HorizontalLayout {
+        spacing: 8px;
+        Text { text: root.label; color: Theme.fg; font-size: 14px; vertical-alignment: center; horizontal-stretch: 1; }
+        VerticalLayout {
+            alignment: center;
+            Button { has-icon: true; icon: @image-url("icons/minus.svg"); button-height: 34px; width: 34px; clicked => { root.changed(root.value - 1); } }
+        }
+        VerticalLayout {
+            alignment: center;
+            Rectangle {
+                width: 56px;
+                height: 34px;
+                border-radius: 8px;
+                border-width: 1px;
+                border-color: Theme.line-strong;
+                Text { text: root.value; color: Theme.fg; font-size: 14px; font-weight: 600; }
+            }
+        }
+        VerticalLayout {
+            alignment: center;
+            Button { has-icon: true; icon: @image-url("icons/plus.svg"); button-height: 34px; width: 34px; clicked => { root.changed(root.value + 1); } }
+        }
+        Text { text: "min"; color: Theme.subtle; font-size: 13px; vertical-alignment: center; width: 28px; }
+    }
+    if !root.last: Rectangle {
+        y: parent.height - 1px;
+        height: 1px;
+        background: Theme.line;
+    }
+}
+
+component Avatar inherits Rectangle {
+    in property <image> picture;
+    in property <bool> has-picture;
+    in property <string> initials;
+    in property <length> size: 34px;
+    width: size;
+    height: size;
+    border-radius: size / 2;
+    background: Theme.tomato-soft;
+    clip: true;
+    if root.has-picture: Image { source: root.picture; width: parent.width; height: parent.height; image-fit: cover; }
+    if !root.has-picture: Text { text: root.initials; color: Theme.tomato; font-size: root.size * 0.35; font-weight: 700; }
+}
+
+// ─── The timer ring ───────────────────────────────────────
+
+component TimerRing inherits Rectangle {
+    in property <float> progress; // 0..1
+    in property <bool> is-break;
+    in property <string> time-text;
+    in property <string> mode-label;
+    in property <string> status-text;
+    in property <string> status-kind; // ready | running | paused | finished
+    in property <length> time-size: 80px;
+
+    property <float> p: min(max(progress, 0), 0.9999);
+    property <angle> sweep-angle: 360deg * p;
+    property <color> ring-color: is-break ? Theme.green : Theme.tomato;
+
+    // Track
+    Rectangle {
+        width: parent.width * 0.91;
+        height: self.width;
+        border-radius: self.width / 2;
+        border-width: parent.width * 0.03;
+        border-color: Theme.surface-2;
+    }
+
+    if root.progress > 0.001: Path {
+        width: parent.width;
+        height: parent.height;
+        viewbox-width: 300;
+        viewbox-height: 300;
+        stroke: root.ring-color;
+        stroke-width: parent.width * 0.03;
+        stroke-line-cap: round;
+        MoveTo { x: 150; y: 18; }
+        ArcTo {
+            x: 150 + 132 * sin(root.sweep-angle);
+            y: 150 - 132 * cos(root.sweep-angle);
+            radius-x: 132;
+            radius-y: 132;
+            large-arc: root.p > 0.5;
+            sweep: true;
+        }
+    }
+
+    VerticalLayout {
+        alignment: center;
+        spacing: 6px;
+        Text { text: root.mode-label; color: Theme.muted; font-size: 14px; font-weight: 600; horizontal-alignment: center; }
+        Text {
+            text: root.time-text;
+            color: Theme.fg;
+            font-family: Theme.display;
+            font-size: root.time-size;
+            font-weight: 700;
+            horizontal-alignment: center;
+        }
+        HorizontalLayout {
+            alignment: center;
+            Rectangle {
+                height: 22px;
+                width: status-label.preferred-width + 20px;
+                border-radius: 11px;
+                background: root.status-kind == "running" ? (root.is-break ? Theme.green-soft : Theme.tomato-soft)
+                    : root.status-kind == "paused" ? Theme.amber-soft
+                    : root.status-kind == "finished" ? Theme.green-soft
+                    : Theme.surface-2;
+                status-label := Text {
+                    text: root.status-text;
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: root.status-kind == "running" ? (root.is-break ? Theme.green : Theme.tomato)
+                        : root.status-kind == "paused" ? Theme.amber
+                        : root.status-kind == "finished" ? Theme.green
+                        : Theme.muted;
+                }
+            }
+        }
+    }
+}
+
+component PageHeader inherits VerticalLayout {
+    in property <string> title;
+    in property <string> subtitle;
+    spacing: 6px;
+    padding-bottom: 8px;
+    Text { text: root.title; color: Theme.fg; font-family: Theme.display; font-size: 32px; font-weight: 700; }
+    Text { text: root.subtitle; color: Theme.muted; font-size: 15px; wrap: word-wrap; }
+}
+
+component Page inherits ScrollView {
+    in property <string> title;
+    in property <string> subtitle;
+    in property <length> page-width: 760px;
+    HorizontalLayout {
+        padding: 28px;
+        alignment: center;
+        VerticalLayout {
+            width: min(root.page-width, root.width - 56px);
+            spacing: 14px;
+            alignment: start;
+            PageHeader { title: root.title; subtitle: root.subtitle; }
+            @children
+        }
+    }
+}
+
+// ─── Tray ─────────────────────────────────────────────────
+
+export component Tray inherits SystemTrayIcon {
+    in property <string> summary: "Pomo Focus";
+    in property <string> primary-label: "Start Timer";
+    in property <bool> compact;
+    callback toggle-timer();
+    callback reset-timer();
+    callback show-window();
+    callback toggle-compact();
+    callback open-dashboard();
+    callback quit();
+
+    icon: @image-url("../assets/icon-32.png");
+    tooltip: root.summary;
+    title: "Pomo Focus";
+    clicked => {
+        root.show-window();
+    }
+
+    Menu {
+        MenuItem { title: root.summary; enabled: false; }
+        MenuSeparator {}
+        MenuItem { title: root.primary-label; activated => { root.toggle-timer(); } }
+        MenuItem { title: "Reset Timer"; activated => { root.reset-timer(); } }
+        MenuSeparator {}
+        MenuItem { title: "Show Pomo Focus"; activated => { root.show-window(); } }
+        MenuItem { title: root.compact ? "Exit Mini Mode" : "Enter Mini Mode"; activated => { root.toggle-compact(); } }
+        MenuItem { title: "Open Dashboard"; activated => { root.open-dashboard(); } }
+        MenuSeparator {}
+        MenuItem { title: "Quit"; activated => { root.quit(); } }
+    }
+}
+
+// ─── Main window ──────────────────────────────────────────
+
+export component AppWindow inherits Window {
+    title: "Pomo Focus";
+    icon: @image-url("../assets/icon-128.png");
+    background: Theme.bg;
+    default-font-family: "Figtree";
+    default-font-size: 15px;
+    always-on-top: root.compact;
+    min-width: root.compact ? 320px : 1000px;
+    min-height: root.compact ? 380px : 640px;
+
+    in-out property <bool> compact;
+    in-out property <string> view: "timer"; // timer | history | settings | account
+
+    // Timer
+    in property <int> mode: 0; // 0 focus, 1 short break, 2 long break
+    in property <string> status: "ready";
+    in property <string> status-text: "Ready";
+    in property <string> time-text: "25:00";
+    in property <float> progress;
+    in property <string> mode-label: "Focus";
+    in property <string> next-mode-label: "Short Break";
+    in-out property <string> session-title: "Desktop Focus";
+    in property <int> subject;
+    in property <bool> idle-pending;
+    in property <string> idle-text;
+
+    // Today and history
+    in property <string> today-focus: "0m";
+    in property <string> today-sessions: "0";
+    in property <[SessionItem]> sessions;
+
+    // Account
+    in property <bool> connected;
+    in property <bool> has-profile;
+    in property <string> username;
+    in property <string> initials;
+    in property <image> avatar;
+    in property <bool> has-avatar;
+    in property <string> level: "1";
+    in property <string> streak: "0d";
+    in property <string> water: "0";
+    in property <string> total-focus: "0m";
+    in property <string> total-sessions: "0";
+    in property <string> sync-status: "idle";
+    in property <string> sync-message;
+    in property <bool> auto-sync: true;
+    in-out property <string> api-url;
+    in-out property <string> token;
+
+    // Settings
+    in property <int> focus-minutes: 25;
+    in property <int> short-minutes: 5;
+    in property <int> long-minutes: 15;
+    in property <bool> startup-on;
+    in property <bool> idle-guard-on: true;
+
+    callback start-timer();
+    callback pause-timer();
+    callback reset-timer();
+    callback toggle-compact();
+    callback switch-mode(int);
+    callback set-subject(int);
+    callback title-edited();
+    callback confirm-idle();
+    callback discard-idle();
+    callback start-next();
+    callback retry(string);
+    callback set-minutes(int, int);
+    callback set-startup(bool);
+    callback set-idle-guard(bool);
+    callback set-auto-sync(bool);
+    callback test-notification();
+    callback test-sync();
+    callback open-url(string);
+    callback connect();
+    callback manual-changed();
+
+    out property <[string]> subjects: ["General", "Math", "Language", "Coding", "Reading", "Exam"];
+    property <bool> running: root.status == "running";
+    property <bool> is-break: root.mode != 0;
+
+    public function focus-shortcuts() {
+        keys.focus();
+    }
+
+    keys := FocusScope {
+        key-pressed(event) => {
+            if (event.text == " ") {
+                if (root.running) {
+                    root.pause-timer();
+                } else {
+                    root.start-timer();
+                }
+                return accept;
+            }
+            if (event.text == "r" || event.text == "R") {
+                root.reset-timer();
+                return accept;
+            }
+            if (event.text == "m" || event.text == "M") {
+                root.toggle-compact();
+                return accept;
+            }
+            reject
+        }
+
+        // Clicking empty space gives the shortcuts their focus back after typing
+        TouchArea {
+            clicked => {
+                keys.focus();
+            }
+        }
+
+        if root.compact: VerticalLayout {
+            alignment: center;
+            padding: 16px;
+            spacing: 16px;
+            HorizontalLayout {
+                alignment: center;
+                TimerRing {
+                    width: 250px;
+                    height: 250px;
+                    progress: root.progress;
+                    is-break: root.is-break;
+                    time-text: root.time-text;
+                    mode-label: root.mode-label;
+                    status-text: root.status-text;
+                    status-kind: root.status;
+                    time-size: 56px;
+                }
+            }
+            HorizontalLayout {
+                alignment: center;
+                spacing: 8px;
+                Button {
+                    kind: "primary";
+                    width: 130px;
+                    button-height: 48px;
+                    font-size: 15px;
+                    has-icon: true;
+                    icon: root.running ? @image-url("icons/pause.svg") : @image-url("icons/play.svg");
+                    text: root.running ? "Pause" : root.status == "paused" ? "Resume" : "Start";
+                    clicked => {
+                        if (root.running) {
+                            root.pause-timer();
+                        } else {
+                            root.start-timer();
+                        }
+                    }
+                }
+                Button { has-icon: true; icon: @image-url("icons/rotate-ccw.svg"); button-height: 48px; width: 52px; clicked => { root.reset-timer(); } }
+                Button { has-icon: true; icon: @image-url("icons/maximize.svg"); button-height: 48px; width: 52px; clicked => { root.toggle-compact(); } }
+            }
+            if root.status == "finished": HorizontalLayout {
+                alignment: center;
+                Button { kind: "outline"; text: "Start " + root.next-mode-label; clicked => { root.start-next(); } }
+            }
+        }
+
+        if !root.compact: HorizontalLayout {
+            // ── Sidebar
+            Rectangle {
+                width: 228px;
+                background: Theme.sidebar;
+                Rectangle { x: parent.width - 1px; width: 1px; background: Theme.line; }
+                VerticalLayout {
+                    padding: 14px;
+                    padding-top: 20px;
+                    padding-bottom: 20px;
+                    spacing: 2px;
+                    HorizontalLayout {
+                        padding-left: 8px;
+                        padding-bottom: 22px;
+                        spacing: 10px;
+                        Image { source: @image-url("../assets/icon-128.png"); width: 32px; height: 32px; }
+                        Text { text: "Pomo"; color: Theme.fg; font-family: Theme.display; font-size: 19px; font-weight: 700; vertical-alignment: center; }
+                        Text { text: "Focus"; color: Theme.tomato; font-family: Theme.display; font-size: 19px; font-weight: 700; vertical-alignment: center; horizontal-stretch: 1; }
+                    }
+                    NavItem { label: "Timer"; icon: @image-url("icons/timer.svg"); active: root.view == "timer"; live: root.running ? root.time-text : ""; clicked => { root.view = "timer"; } }
+                    NavItem { label: "History"; icon: @image-url("icons/history.svg"); active: root.view == "history"; clicked => { root.view = "history"; } }
+                    NavItem { label: "Settings"; icon: @image-url("icons/settings.svg"); active: root.view == "settings"; clicked => { root.view = "settings"; } }
+                    NavItem { label: "Account"; icon: @image-url("icons/user.svg"); active: root.view == "account"; clicked => { root.view = "account"; } }
+                    Rectangle { vertical-stretch: 1; }
+
+                    if root.has-profile: Rectangle {
+                        height: 54px;
+                        border-radius: 10px;
+                        border-width: 1px;
+                        border-color: Theme.line;
+                        background: chip-touch.has-hover ? Theme.surface-2 : Theme.surface;
+                        HorizontalLayout {
+                            padding: 8px;
+                            spacing: 10px;
+                            VerticalLayout {
+                                alignment: center;
+                                Avatar { picture: root.avatar; has-picture: root.has-avatar; initials: root.initials; }
+                            }
+                            VerticalLayout {
+                                alignment: center;
+                                Text { text: root.username; color: Theme.fg; font-size: 14px; font-weight: 700; overflow: elide; }
+                                Text { text: "Lv." + root.level + " · " + root.streak + " streak"; color: Theme.subtle; font-size: 12px; overflow: elide; }
+                            }
+                        }
+                        chip-touch := TouchArea { mouse-cursor: pointer; clicked => { root.view = "account"; } }
+                    }
+                    if !root.has-profile: Button {
+                        kind: "primary";
+                        text: "Connect Discord";
+                        has-icon: true;
+                        icon: @image-url("icons/log-in.svg");
+                        clicked => { root.connect(); }
+                    }
+                    HorizontalLayout {
+                        padding-top: 12px;
+                        padding-left: 8px;
+                        spacing: 14px;
+                        for link in [
+                            { label: "Dashboard", url: "https://pomofocus.online/dashboard" },
+                            { label: "Support", url: "https://discord.gg/XEubrrkBmB" },
+                            { label: "Top.gg", url: "https://top.gg/bot/1443523945599860816" },
+                        ]: Text {
+                            text: link.label;
+                            font-size: 12px;
+                            color: link-touch.has-hover ? Theme.fg-2 : Theme.subtle;
+                            link-touch := TouchArea { mouse-cursor: pointer; clicked => { root.open-url(link.url); } }
+                        }
+                        Rectangle { horizontal-stretch: 1; }
+                    }
+                }
+            }
+
+            // ── Content
+            Rectangle {
+                horizontal-stretch: 1;
+
+                // Timer page
+                if root.view == "timer": HorizontalLayout {
+                    padding: 28px;
+                    padding-left: 32px;
+                    padding-right: 32px;
+                    spacing: 28px;
+
+                    VerticalLayout {
+                        horizontal-stretch: 1;
+                        alignment: center;
+                        spacing: 22px;
+
+                        HorizontalLayout {
+                            alignment: center;
+                            Rectangle {
+                                height: 44px;
+                                width: tabs.preferred-width;
+                                border-radius: 10px;
+                                border-width: 1px;
+                                border-color: Theme.line;
+                                background: Theme.surface;
+                                tabs := HorizontalLayout {
+                                    padding: 4px;
+                                    for label[i] in ["Focus", "Short Break", "Long Break"]: Rectangle {
+                                        width: tab-text.preferred-width + 32px;
+                                        border-radius: 7px;
+                                        background: i == root.mode ? Theme.surface-3 : transparent;
+                                        opacity: root.running && i != root.mode ? 0.4 : 1;
+                                        tab-text := Text {
+                                            text: label;
+                                            font-size: 14px;
+                                            font-weight: 600;
+                                            color: i == root.mode || tab-touch.has-hover ? Theme.fg : Theme.muted;
+                                        }
+                                        tab-touch := TouchArea {
+                                            mouse-cursor: root.running ? not-allowed : pointer;
+                                            clicked => {
+                                                if (!root.running) {
+                                                    root.switch-mode(i);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        HorizontalLayout {
+                            alignment: center;
+                            TimerRing {
+                                width: min(340px, root.height * 0.45);
+                                height: self.width;
+                                progress: root.progress;
+                                is-break: root.is-break;
+                                time-text: root.time-text;
+                                mode-label: root.mode-label;
+                                status-text: root.status-text;
+                                status-kind: root.status;
+                                time-size: self.width * 0.24;
+                            }
+                        }
+
+                        HorizontalLayout {
+                            alignment: center;
+                            Field {
+                                width: 440px;
+                                text <=> root.session-title;
+                                placeholder: "What are you working on?";
+                                enabled: !root.running;
+                                edited => { root.title-edited(); }
+                            }
+                        }
+
+                        HorizontalLayout {
+                            alignment: center;
+                            spacing: 6px;
+                            for name[i] in root.subjects: Chip {
+                                label: name;
+                                selected: i == root.subject;
+                                enabled: !root.running;
+                                clicked => { root.set-subject(i); }
+                            }
+                        }
+
+                        HorizontalLayout {
+                            alignment: center;
+                            spacing: 8px;
+                            Button {
+                                kind: "primary";
+                                width: 150px;
+                                button-height: 48px;
+                                font-size: 15px;
+                                has-icon: true;
+                                icon: root.running ? @image-url("icons/pause.svg") : @image-url("icons/play.svg");
+                                text: root.running ? "Pause" : root.status == "paused" ? "Resume" : root.status == "finished" ? "Again" : "Start";
+                                clicked => {
+                                    if (root.running) {
+                                        root.pause-timer();
+                                    } else {
+                                        root.start-timer();
+                                    }
+                                }
+                            }
+                            Button { has-icon: true; icon: @image-url("icons/rotate-ccw.svg"); button-height: 48px; width: 52px; clicked => { root.reset-timer(); } }
+                            Button { has-icon: true; icon: @image-url("icons/minimize.svg"); button-height: 48px; width: 52px; clicked => { root.toggle-compact(); } }
+                        }
+
+                        if root.idle-pending: HorizontalLayout {
+                            alignment: center;
+                            Rectangle {
+                                width: 440px;
+                                border-radius: 10px;
+                                border-width: 1px;
+                                border-color: #f0b23266;
+                                background: Theme.amber-soft;
+                                VerticalLayout {
+                                    padding: 14px;
+                                    padding-left: 16px;
+                                    padding-right: 16px;
+                                    spacing: 10px;
+                                    Text { text: "Idle Guard paused this session"; color: Theme.fg; font-weight: 700; }
+                                    Text { text: root.idle-text; color: Theme.fg-2; font-size: 13px; wrap: word-wrap; }
+                                    HorizontalLayout {
+                                        spacing: 8px;
+                                        alignment: start;
+                                        Button { kind: "primary"; text: "Credit session"; clicked => { root.confirm-idle(); } }
+                                        Button { text: "Discard"; clicked => { root.discard-idle(); } }
+                                    }
+                                }
+                            }
+                        }
+
+                        if root.status == "finished": HorizontalLayout {
+                            alignment: center;
+                            Button { kind: "outline"; text: "Start " + root.next-mode-label; clicked => { root.start-next(); } }
+                        }
+                    }
+
+                    // Right rail
+                    VerticalLayout {
+                        width: root.width > 1080px ? 300px : 240px;
+                        alignment: start;
+                        spacing: 12px;
+
+                        Card {
+                            VerticalLayout {
+                                padding: 18px;
+                                spacing: 12px;
+                                CardTitle { text: "TODAY"; }
+                                HorizontalLayout {
+                                    spacing: 8px;
+                                    Stat { label: "Focus"; value: root.today-focus; }
+                                    Stat { label: "Sessions"; value: root.today-sessions; }
+                                }
+                                if root.has-profile: HorizontalLayout {
+                                    spacing: 8px;
+                                    Stat { label: "Streak"; value: root.streak; }
+                                    Stat { label: "Water"; value: root.water; }
+                                }
+                                Text { text: "Up next: " + root.next-mode-label; color: Theme.muted; font-size: 13px; }
+                            }
+                        }
+
+                        Card {
+                            VerticalLayout {
+                                padding: 18px;
+                                spacing: 10px;
+                                HorizontalLayout {
+                                    CardTitle { text: "RECENT"; horizontal-stretch: 1; }
+                                    if root.sessions.length > 0: Text {
+                                        text: "See all";
+                                        font-size: 13px;
+                                        font-weight: 600;
+                                        color: see-all.has-hover ? Theme.fg : Theme.muted;
+                                        see-all := TouchArea { mouse-cursor: pointer; clicked => { root.view = "history"; } }
+                                    }
+                                }
+                                if root.sessions.length == 0: Text {
+                                    text: "Finished focus sessions show up here.";
+                                    color: Theme.muted;
+                                    font-size: 13px;
+                                    wrap: word-wrap;
+                                }
+                                for s[i] in root.sessions: HorizontalLayout {
+                                    visible: i < 4;
+                                    height: i < 4 ? 28px : 0px;
+                                    spacing: 10px;
+                                    VerticalLayout { alignment: center; Dot { kind: s.sync-status; } }
+                                    Text { text: s.title; color: Theme.fg; font-size: 14px; overflow: elide; horizontal-stretch: 1; vertical-alignment: center; }
+                                    Text { text: s.meta; color: Theme.muted; font-size: 13px; vertical-alignment: center; }
+                                }
+                            }
+                        }
+
+                        Card {
+                            HorizontalLayout {
+                                padding: 18px;
+                                spacing: 10px;
+                                Image {
+                                    source: root.connected ? @image-url("icons/wifi.svg") : @image-url("icons/wifi-off.svg");
+                                    width: 16px;
+                                    height: 16px;
+                                    colorize: root.sync-status == "synced" || root.sync-status == "duplicate" ? Theme.green
+                                        : root.sync-status == "syncing" ? Theme.amber
+                                        : Theme.muted;
+                                }
+                                Text {
+                                    text: root.connected ? root.sync-message : "Not connected. Sessions are saved on this computer only.";
+                                    color: root.sync-status == "error" ? Theme.error-text : Theme.muted;
+                                    font-size: 13px;
+                                    wrap: word-wrap;
+                                    horizontal-stretch: 1;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // History page
+                if root.view == "history": Page {
+                    title: "History";
+                    subtitle: "Your last focus sessions on this computer and whether they reached your Pomo profile.";
+                    if root.sessions.length == 0: Card {
+                        height: 140px;
+                        Text { text: "No sessions yet. Start a focus session and it will appear here."; color: Theme.subtle; }
+                    }
+                    if root.sessions.length > 0: Card {
+                        VerticalLayout {
+                            padding-left: 18px;
+                            padding-right: 18px;
+                            padding-top: 4px;
+                            padding-bottom: 4px;
+                            for s[i] in root.sessions: Rectangle {
+                                height: 66px;
+                                HorizontalLayout {
+                                    spacing: 14px;
+                                    VerticalLayout {
+                                        alignment: center;
+                                        spacing: 3px;
+                                        horizontal-stretch: 1;
+                                        Text { text: s.title; color: Theme.fg; font-weight: 700; overflow: elide; }
+                                        Text { text: s.meta; color: Theme.muted; font-size: 13px; }
+                                    }
+                                    VerticalLayout {
+                                        alignment: center;
+                                        Badge { kind: s.sync-status; text: s.message; max-width: 260px; }
+                                    }
+                                    if s.can-retry: VerticalLayout {
+                                        alignment: center;
+                                        Button { text: "Retry"; button-height: 32px; font-size: 13px; clicked => { root.retry(s.id); } }
+                                    }
+                                }
+                                if i < root.sessions.length - 1: Rectangle { y: parent.height - 1px; height: 1px; background: Theme.line; }
+                            }
+                        }
+                    }
+                }
+
+                // Settings page
+                if root.view == "settings": Page {
+                    title: "Settings";
+                    subtitle: "Timer lengths and how Pomo behaves on this computer.";
+                    Card {
+                        VerticalLayout {
+                            padding: 18px;
+                            padding-bottom: 6px;
+                            CardTitle { text: "TIMER"; }
+                            NumberRow { label: "Focus"; value: root.focus-minutes; changed(v) => { root.set-minutes(0, v); } }
+                            NumberRow { label: "Short break"; value: root.short-minutes; changed(v) => { root.set-minutes(1, v); } }
+                            NumberRow { label: "Long break"; value: root.long-minutes; last: true; changed(v) => { root.set-minutes(2, v); } }
+                        }
+                    }
+                    Card {
+                        VerticalLayout {
+                            padding: 18px;
+                            padding-bottom: 6px;
+                            CardTitle { text: "BEHAVIOUR"; }
+                            SettingRow {
+                                icon: @image-url("icons/bell.svg");
+                                title: "Notifications";
+                                body: "Pomo tells you when a session ends.";
+                                Button { text: "Send test"; button-height: 32px; font-size: 13px; clicked => { root.test-notification(); } }
+                            }
+                            SettingRow {
+                                icon: @image-url("icons/power.svg");
+                                title: "Launch on startup";
+                                body: "Keep Pomo ready in the tray when your computer starts.";
+                                Switch { checked: root.startup-on; toggled(v) => { root.set-startup(v); } }
+                            }
+                            SettingRow {
+                                icon: @image-url("icons/shield.svg");
+                                title: "Idle Guard";
+                                body: "Ask before counting a session if the computer was idle for 15 minutes or more.";
+                                Switch { checked: root.idle-guard-on; toggled(v) => { root.set-idle-guard(v); } }
+                            }
+                            SettingRow {
+                                icon: @image-url("icons/clock.svg");
+                                title: "Tray";
+                                body: "Closing the window keeps Pomo running in the system tray. Open it again from the tray icon.";
+                                last: true;
+                            }
+                        }
+                    }
+                    Card {
+                        VerticalLayout {
+                            padding: 18px;
+                            spacing: 10px;
+                            CardTitle { text: "SHORTCUTS"; }
+                            for row in [
+                                { key: "Space", action: "Start / pause" },
+                                { key: "R", action: "Reset timer" },
+                                { key: "M", action: "Mini mode" },
+                            ]: HorizontalLayout {
+                                spacing: 12px;
+                                Rectangle {
+                                    width: 56px;
+                                    height: 26px;
+                                    border-radius: 6px;
+                                    border-width: 1px;
+                                    border-color: Theme.line-strong;
+                                    background: Theme.surface-2;
+                                    Text { text: row.key; font-family: Theme.code; font-size: 12px; color: Theme.fg-2; }
+                                }
+                                Text { text: row.action; color: Theme.fg-2; font-size: 14px; vertical-alignment: center; }
+                            }
+                        }
+                    }
+                }
+
+                // Account page
+                if root.view == "account": Page {
+                    title: "Account";
+                    subtitle: "Link the app to Pomo on Discord so desktop sessions earn water, XP and streak days.";
+
+                    if root.has-profile: Card {
+                        VerticalLayout {
+                            padding: 18px;
+                            spacing: 16px;
+                            HorizontalLayout {
+                                spacing: 18px;
+                                Avatar { picture: root.avatar; has-picture: root.has-avatar; initials: root.initials; size: 64px; }
+                                VerticalLayout {
+                                    alignment: center;
+                                    Text { text: root.username; color: Theme.fg; font-family: Theme.display; font-size: 22px; font-weight: 700; }
+                                    Text { text: "Level " + root.level; color: Theme.muted; }
+                                }
+                            }
+                            HorizontalLayout {
+                                spacing: 8px;
+                                Stat { label: "Streak"; value: root.streak; }
+                                Stat { label: "Water"; value: root.water; }
+                                Stat { label: "Focus total"; value: root.total-focus; }
+                                Stat { label: "Sessions"; value: root.total-sessions; }
+                            }
+                        }
+                    }
+
+                    if !root.has-profile: Card {
+                        VerticalLayout {
+                            padding: 18px;
+                            spacing: 12px;
+                            CardTitle { text: "CONNECT WITH DISCORD"; }
+                            for step[i] in [
+                                "Press Connect with Discord and sign in on the website.",
+                                "Press Connect on that page.",
+                                "Allow your browser to open Pomo Focus. Done.",
+                            ]: HorizontalLayout {
+                                spacing: 8px;
+                                Text { text: (i + 1) + "."; color: Theme.fg; font-weight: 700; width: 16px; }
+                                Text { text: step; color: Theme.fg-2; wrap: word-wrap; horizontal-stretch: 1; }
+                            }
+                            Text { text: "The app never sees your Discord password."; color: Theme.muted; font-size: 13px; }
+                            HorizontalLayout {
+                                alignment: start;
+                                Button { kind: "primary"; text: "Connect with Discord"; has-icon: true; icon: @image-url("icons/log-in.svg"); clicked => { root.connect(); } }
+                            }
+                        }
+                    }
+
+                    Card {
+                        VerticalLayout {
+                            padding: 18px;
+                            spacing: 6px;
+                            CardTitle { text: "SYNC"; }
+                            SettingRow {
+                                icon: @image-url("icons/wifi.svg");
+                                title: "Auto-sync";
+                                body: "Send finished focus sessions to your Pomo profile.";
+                                last: true;
+                                Switch { checked: root.auto-sync; toggled(v) => { root.set-auto-sync(v); } }
+                            }
+                            HorizontalLayout {
+                                spacing: 10px;
+                                Image {
+                                    source: root.sync-status == "synced" || root.sync-status == "duplicate" ? @image-url("icons/check.svg") : @image-url("icons/key.svg");
+                                    width: 16px;
+                                    height: 16px;
+                                    colorize: root.sync-status == "synced" || root.sync-status == "duplicate" ? Theme.green : Theme.muted;
+                                }
+                                Text {
+                                    text: root.sync-message;
+                                    color: root.sync-status == "error" ? Theme.error-text : Theme.muted;
+                                    font-size: 13px;
+                                    wrap: word-wrap;
+                                    horizontal-stretch: 1;
+                                }
+                            }
+                            HorizontalLayout {
+                                padding-top: 10px;
+                                spacing: 16px;
+                                alignment: start;
+                                Button { text: root.connected ? "Check connection" : "Test sync"; clicked => { root.test-sync(); } }
+                                if root.connected: Text {
+                                    text: "Connect another account";
+                                    font-size: 13px;
+                                    font-weight: 600;
+                                    vertical-alignment: center;
+                                    color: other.has-hover ? Theme.fg : Theme.muted;
+                                    other := TouchArea { mouse-cursor: pointer; clicked => { root.connect(); } }
+                                }
+                            }
+                            Rectangle { height: 14px; }
+                            Rectangle { height: 1px; background: Theme.line; }
+                            Rectangle { height: 8px; }
+                            advanced-toggle := Text {
+                                property <bool> open: false;
+                                text: (self.open ? "▾ " : "▸ ") + "Advanced: connect manually";
+                                color: Theme.muted;
+                                font-size: 13px;
+                                font-weight: 600;
+                                TouchArea { mouse-cursor: pointer; clicked => { advanced-toggle.open = !advanced-toggle.open; } }
+                            }
+                            if advanced-toggle.open: VerticalLayout {
+                                spacing: 6px;
+                                padding-top: 6px;
+                                Text { text: "API URL"; color: Theme.muted; font-size: 13px; }
+                                Field { text <=> root.api-url; edited => { root.manual-changed(); } }
+                                Text { text: "Desktop token"; color: Theme.muted; font-size: 13px; }
+                                Field { text <=> root.token; password: true; placeholder: "Paste token from pomofocus.online/dashboard/desktop"; edited => { root.manual-changed(); } }
+                            }
+                        }
+                    }
+
+                    if !root.has-profile: HorizontalLayout {
+                        spacing: 12px;
+                        for why in [
+                            { icon: @image-url("icons/sprout.svg"), title: "Grow your garden", body: "Every focus session earns water and XP." },
+                            { icon: @image-url("icons/flame.svg"), title: "Keep your streak", body: "Desktop sessions count like /study on Discord." },
+                            { icon: @image-url("icons/gauge.svg"), title: "One set of stats", body: "See them in /stats and on the dashboard." },
+                        ]: Rectangle {
+                            border-radius: 14px;
+                            border-width: 1px;
+                            border-color: Theme.line;
+                            VerticalLayout {
+                                padding: 16px;
+                                spacing: 6px;
+                                Rectangle {
+                                    width: 34px;
+                                    height: 34px;
+                                    border-radius: 9px;
+                                    background: Theme.tomato-soft;
+                                    Image { source: why.icon; width: 18px; height: 18px; colorize: Theme.tomato; }
+                                }
+                                Text { text: why.title; color: Theme.fg; font-weight: 700; }
+                                Text { text: why.body; color: Theme.muted; font-size: 13px; wrap: word-wrap; }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
