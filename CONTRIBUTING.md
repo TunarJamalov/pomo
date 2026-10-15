@@ -29,6 +29,13 @@ fixes from native speakers are very welcome.
 2. Run the bot tests: `cd apps/bot && npm test`.
 3. If you touched the website, run `cd apps/web && npx tsc --noEmit`.
 4. Describe what changed and how you tested it. Screenshots help for UI changes.
+5. Sign the [Contributor License Agreement](CLA.md) by ticking the box in the
+   pull request template. You only do this once.
 
-By contributing you agree that your contribution is licensed under the
-AGPL-3.0, the same license as the project.
+## License of contributions
+
+Pomo is released under the AGPL-3.0. Before a pull request can be merged, its
+author needs to agree to the [Pomo CLA](CLA.md). You keep the copyright to your
+work; the CLA lets the maintainer run the hosted Pomo service, offer paid plans
+and, if ever needed, release future versions under other licenses. Versions
+already published under the AGPL-3.0 always stay available under it.
