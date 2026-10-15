@@ -26,8 +26,11 @@ pub fn notify(title: &str, body: &str) {
             .summary(&title)
             .body(&body)
             .icon("pomo-focus");
+        // Without a sound name, the Windows toast library asks for a silent notification
         #[cfg(windows)]
-        notification.app_id(&windows::notification_app_id());
+        notification
+            .app_id(&windows::notification_app_id())
+            .sound_name("Default");
         let _ = notification.show();
     });
 }

@@ -280,12 +280,18 @@ fn refresh_timer(ctx: &Shared) {
     ui.set_mode_label(app.mode.label().into());
     ui.set_next_mode_label(app.next_mode().label().into());
 
-    let summary = format!(
-        "{} {} ({})",
-        app.mode.label(),
-        format_clock(remaining),
-        app.status.label()
-    );
+    // The tray tooltip names the end time rather than a countdown: Windows does not
+    // redraw a tooltip while it is showing, so a countdown there looks frozen
+    let summary = match app.status {
+        Status::Running => {
+            let ends = OffsetDateTime::now_utc().to_offset(app.local_offset) + remaining;
+            let clock = ends.format(&format_description!("[hour]:[minute]")).unwrap_or_default();
+            format!("{} · ends at {clock}", app.mode.label())
+        }
+        Status::Paused => format!("{} · paused, {} left", app.mode.label(), format_clock(remaining)),
+        Status::Finished => format!("{} · finished", app.mode.label()),
+        Status::Ready => format!("{} · {} · ready", app.mode.label(), format_clock(remaining)),
+    };
     if *ctx.last_tray_summary.borrow() != summary {
         if let Some(tray) = ctx.tray.borrow().as_ref() {
             tray.set_summary(summary.clone().into());
