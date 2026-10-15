@@ -33,12 +33,19 @@ pub fn install() -> Rc<MinimalSoftwareWindow> {
 }
 
 pub fn render(window: &MinimalSoftwareWindow, path: &str, width: u32, height: u32) {
+    // POMO_SCALE=2 renders a sharp, double-size image (for Store screenshots)
+    let scale: f32 = std::env::var("POMO_SCALE")
+        .ok()
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(1.0);
+    window.dispatch_event(slint::platform::WindowEvent::ScaleFactorChanged { scale_factor: scale });
+    let (width, height) = ((width as f32 * scale) as u32, (height as f32 * scale) as u32);
     window.set_size(PhysicalSize::new(width, height));
     slint::platform::update_timers_and_animations();
     let mut buffer = vec![slint::Rgb8Pixel::default(); (width * height) as usize];
     // Draw twice so layouts that depend on a first pass settle
     window.dispatch_event(slint::platform::WindowEvent::Resized {
-        size: slint::LogicalSize::new(width as f32, height as f32),
+        size: slint::LogicalSize::new(width as f32 / scale, height as f32 / scale),
     });
     let mut drawn = false;
     for _ in 0..2 {
