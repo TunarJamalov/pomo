@@ -24,16 +24,39 @@ mod wayland {
     struct State;
 
     impl Dispatch<wl_registry::WlRegistry, GlobalListContents> for State {
-        fn event(_: &mut Self, _: &wl_registry::WlRegistry, _: wl_registry::Event, _: &GlobalListContents, _: &Connection, _: &QueueHandle<Self>) {}
+        fn event(
+            _: &mut Self,
+            _: &wl_registry::WlRegistry,
+            _: wl_registry::Event,
+            _: &GlobalListContents,
+            _: &Connection,
+            _: &QueueHandle<Self>,
+        ) {
+        }
     }
     impl Dispatch<wl_seat::WlSeat, ()> for State {
         fn event(_: &mut Self, _: &wl_seat::WlSeat, _: wl_seat::Event, _: &(), _: &Connection, _: &QueueHandle<Self>) {}
     }
     impl Dispatch<ExtIdleNotifierV1, ()> for State {
-        fn event(_: &mut Self, _: &ExtIdleNotifierV1, _: <ExtIdleNotifierV1 as wayland_client::Proxy>::Event, _: &(), _: &Connection, _: &QueueHandle<Self>) {}
+        fn event(
+            _: &mut Self,
+            _: &ExtIdleNotifierV1,
+            _: <ExtIdleNotifierV1 as wayland_client::Proxy>::Event,
+            _: &(),
+            _: &Connection,
+            _: &QueueHandle<Self>,
+        ) {
+        }
     }
     impl Dispatch<ExtIdleNotificationV1, ()> for State {
-        fn event(_: &mut Self, _: &ExtIdleNotificationV1, event: ext_idle_notification_v1::Event, _: &(), _: &Connection, _: &QueueHandle<Self>) {
+        fn event(
+            _: &mut Self,
+            _: &ExtIdleNotificationV1,
+            event: ext_idle_notification_v1::Event,
+            _: &(),
+            _: &Connection,
+            _: &QueueHandle<Self>,
+        ) {
             let mut since = IDLE_SINCE.lock().unwrap();
             match event {
                 ext_idle_notification_v1::Event::Idled => *since = Instant::now().checked_sub(STEP),
@@ -46,10 +69,16 @@ mod wayland {
     pub fn start() {
         std::thread::spawn(|| {
             let Ok(conn) = Connection::connect_to_env() else { return };
-            let Ok((globals, mut queue)) = registry_queue_init::<State>(&conn) else { return };
+            let Ok((globals, mut queue)) = registry_queue_init::<State>(&conn) else {
+                return;
+            };
             let qh = queue.handle();
-            let Ok(notifier) = globals.bind::<ExtIdleNotifierV1, _, _>(&qh, 1..=1, ()) else { return };
-            let Ok(seat) = globals.bind::<wl_seat::WlSeat, _, _>(&qh, 1..=1, ()) else { return };
+            let Ok(notifier) = globals.bind::<ExtIdleNotifierV1, _, _>(&qh, 1..=1, ()) else {
+                return;
+            };
+            let Ok(seat) = globals.bind::<wl_seat::WlSeat, _, _>(&qh, 1..=1, ()) else {
+                return;
+            };
             let _notification = notifier.get_idle_notification(STEP.as_millis() as u32, &seat, &qh, ());
             *AVAILABLE.lock().unwrap() = true;
             let mut state = State;
@@ -97,7 +126,11 @@ pub fn idle_seconds() -> u64 {
     #[cfg(target_os = "linux")]
     {
         if *wayland::AVAILABLE.lock().unwrap() {
-            return wayland::IDLE_SINCE.lock().unwrap().map(|since| since.elapsed().as_secs()).unwrap_or(0);
+            return wayland::IDLE_SINCE
+                .lock()
+                .unwrap()
+                .map(|since| since.elapsed().as_secs())
+                .unwrap_or(0);
         }
         dbus_idle_seconds().unwrap_or(0)
     }
@@ -105,7 +138,10 @@ pub fn idle_seconds() -> u64 {
     {
         use windows_sys::Win32::System::SystemInformation::GetTickCount;
         use windows_sys::Win32::UI::Input::KeyboardAndMouse::{GetLastInputInfo, LASTINPUTINFO};
-        let mut info = LASTINPUTINFO { cbSize: std::mem::size_of::<LASTINPUTINFO>() as u32, dwTime: 0 };
+        let mut info = LASTINPUTINFO {
+            cbSize: std::mem::size_of::<LASTINPUTINFO>() as u32,
+            dwTime: 0,
+        };
         // SAFETY: info is a valid, correctly sized LASTINPUTINFO
         unsafe {
             if GetLastInputInfo(&mut info) != 0 {

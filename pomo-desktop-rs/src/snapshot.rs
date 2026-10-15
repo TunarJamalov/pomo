@@ -24,8 +24,11 @@ impl Platform for SnapshotPlatform {
 /// Installs the off-screen platform. Must run before any window is created.
 pub fn install() -> Rc<MinimalSoftwareWindow> {
     let window = MinimalSoftwareWindow::new(RepaintBufferType::NewBuffer);
-    slint::platform::set_platform(Box::new(SnapshotPlatform { window: window.clone(), start: Instant::now() }))
-        .expect("platform already set");
+    slint::platform::set_platform(Box::new(SnapshotPlatform {
+        window: window.clone(),
+        start: Instant::now(),
+    }))
+    .expect("platform already set");
     window
 }
 
@@ -34,7 +37,9 @@ pub fn render(window: &MinimalSoftwareWindow, path: &str, width: u32, height: u3
     slint::platform::update_timers_and_animations();
     let mut buffer = vec![slint::Rgb8Pixel::default(); (width * height) as usize];
     // Draw twice so layouts that depend on a first pass settle
-    window.dispatch_event(slint::platform::WindowEvent::Resized { size: slint::LogicalSize::new(width as f32, height as f32) });
+    window.dispatch_event(slint::platform::WindowEvent::Resized {
+        size: slint::LogicalSize::new(width as f32, height as f32),
+    });
     let mut drawn = false;
     for _ in 0..2 {
         slint::platform::update_timers_and_animations();

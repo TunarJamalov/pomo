@@ -20,8 +20,16 @@ fn electron_storage_dirs() -> Vec<PathBuf> {
     if let Some(local) = dirs::data_local_dir() {
         if let Ok(entries) = std::fs::read_dir(local.join("Packages")) {
             for entry in entries.flatten() {
-                if entry.file_name().to_string_lossy().starts_with("TunarJamalov.PomoFocus_") {
-                    dirs.push(entry.path().join(r"LocalCache\Roaming\Pomo Focus\Local Storage\leveldb"));
+                if entry
+                    .file_name()
+                    .to_string_lossy()
+                    .starts_with("TunarJamalov.PomoFocus_")
+                {
+                    dirs.push(
+                        entry
+                            .path()
+                            .join(r"LocalCache\Roaming\Pomo Focus\Local Storage\leveldb"),
+                    );
                 }
             }
         }
@@ -64,13 +72,24 @@ fn read_dir_bytes(dir: &PathBuf) -> Option<Vec<u8>> {
 pub fn from_electron(saved: &mut Saved) -> bool {
     for dir in electron_storage_dirs() {
         let Some(data) = read_dir_bytes(&dir) else { continue };
-        let Some(sync) = last_object(&data, br#"{"apiUrl":"#) else { continue };
-        let token = sync.get("token").and_then(Value::as_str).unwrap_or("").trim().to_string();
+        let Some(sync) = last_object(&data, br#"{"apiUrl":"#) else {
+            continue;
+        };
+        let token = sync
+            .get("token")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .trim()
+            .to_string();
         if token.is_empty() {
             continue;
         }
         saved.sync.token = token;
-        if let Some(url) = sync.get("apiUrl").and_then(Value::as_str).filter(|u| u.starts_with("https://pomofocus.online/")) {
+        if let Some(url) = sync
+            .get("apiUrl")
+            .and_then(Value::as_str)
+            .filter(|u| u.starts_with("https://pomofocus.online/"))
+        {
             saved.sync.api_url = url.to_string();
         }
         saved.sync.auto_sync = sync.get("autoSync").and_then(Value::as_bool).unwrap_or(true);

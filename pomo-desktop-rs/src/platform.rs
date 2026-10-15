@@ -12,7 +12,9 @@ pub fn open_url(url: &str) {
     #[cfg(target_os = "linux")]
     let _ = std::process::Command::new("xdg-open").arg(url).spawn();
     #[cfg(windows)]
-    let _ = std::process::Command::new("rundll32").args(["url.dll,FileProtocolHandler", url]).spawn();
+    let _ = std::process::Command::new("rundll32")
+        .args(["url.dll,FileProtocolHandler", url])
+        .spawn();
 }
 
 pub fn notify(title: &str, body: &str) {
@@ -56,7 +58,13 @@ mod linux {
     fn quote(value: &str) -> String {
         let escaped: String = value
             .chars()
-            .flat_map(|c| if matches!(c, '"' | '`' | '$' | '\\') { vec!['\\', c] } else { vec![c] })
+            .flat_map(|c| {
+                if matches!(c, '"' | '`' | '$' | '\\') {
+                    vec!['\\', c]
+                } else {
+                    vec![c]
+                }
+            })
             .collect();
         format!("\"{escaped}\"")
     }
@@ -117,8 +125,12 @@ mod linux {
         let file = data_home().join("applications").join(name);
         let exec = format!("{} %U", quote(&super::launch_target()));
         if write_if_changed(&file, &entry(&exec, &["MimeType=x-scheme-handler/pomo;"])) {
-            let _ = std::process::Command::new("xdg-mime").args(["default", name, "x-scheme-handler/pomo"]).status();
-            let _ = std::process::Command::new("update-desktop-database").arg(data_home().join("applications")).status();
+            let _ = std::process::Command::new("xdg-mime")
+                .args(["default", name, "x-scheme-handler/pomo"])
+                .status();
+            let _ = std::process::Command::new("update-desktop-database")
+                .arg(data_home().join("applications"))
+                .status();
         }
         // A moved or updated AppImage would leave launch on startup pointing at the old file
         if autostart_file().exists() {
@@ -143,7 +155,9 @@ mod windows {
     }
 
     pub fn set_startup(enabled: bool) -> bool {
-        let Ok((key, _)) = RegKey::predef(HKEY_CURRENT_USER).create_subkey(RUN_KEY) else { return false };
+        let Ok((key, _)) = RegKey::predef(HKEY_CURRENT_USER).create_subkey(RUN_KEY) else {
+            return false;
+        };
         if enabled {
             let _ = key.set_value(VALUE, &format!("\"{}\" {}", super::launch_target(), super::HIDDEN_ARG));
         } else {
@@ -158,7 +172,9 @@ mod windows {
         if exe.contains(r"\WindowsApps\") {
             return;
         }
-        let Ok((key, _)) = RegKey::predef(HKEY_CURRENT_USER).create_subkey(r"Software\Classes\pomo") else { return };
+        let Ok((key, _)) = RegKey::predef(HKEY_CURRENT_USER).create_subkey(r"Software\Classes\pomo") else {
+            return;
+        };
         let _ = key.set_value("", &"URL:Pomo Focus");
         let _ = key.set_value("URL Protocol", &"");
         if let Ok((command, _)) = key.create_subkey(r"shell\open\command") {
@@ -198,7 +214,9 @@ pub fn register_protocol() {
 /// Hands `message` to an already running copy. Returns false when this is the only one.
 pub fn forward_to_running(message: &str) -> bool {
     use interprocess::local_socket::{GenericNamespaced, Stream, ToNsName, traits::Stream as _};
-    let Ok(name) = SOCKET_NAME.to_ns_name::<GenericNamespaced>() else { return false };
+    let Ok(name) = SOCKET_NAME.to_ns_name::<GenericNamespaced>() else {
+        return false;
+    };
     match Stream::connect(name) {
         Ok(mut stream) => {
             let _ = stream.write_all(format!("{message}\n").as_bytes());
@@ -213,8 +231,12 @@ pub fn forward_to_running(message: &str) -> bool {
 pub fn listen(on_message: impl Fn(String) + Send + 'static) {
     use interprocess::local_socket::{GenericNamespaced, ListenerOptions, ToNsName, traits::ListenerExt as _};
     std::thread::spawn(move || {
-        let Ok(name) = SOCKET_NAME.to_ns_name::<GenericNamespaced>() else { return };
-        let Ok(listener) = ListenerOptions::new().name(name).create_sync() else { return };
+        let Ok(name) = SOCKET_NAME.to_ns_name::<GenericNamespaced>() else {
+            return;
+        };
+        let Ok(listener) = ListenerOptions::new().name(name).create_sync() else {
+            return;
+        };
         for stream in listener.incoming().filter_map(Result::ok) {
             let mut line = String::new();
             if BufReader::new(stream).read_line(&mut line).is_ok() {

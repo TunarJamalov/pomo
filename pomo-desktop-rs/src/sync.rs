@@ -11,7 +11,12 @@ fn agent() -> ureq::Agent {
 }
 
 fn describe_failure(status: u16, data: &Value) -> String {
-    let raw = data.get("error").and_then(Value::as_str).unwrap_or("").trim().to_string();
+    let raw = data
+        .get("error")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .trim()
+        .to_string();
     match status {
         401 | 403 => "Your connection expired. Press \"Connect with Discord\" to link the app again.".into(),
         404 => "Sync endpoint was not found. Check the API URL.".into(),
@@ -69,5 +74,10 @@ pub fn download(url: &str) -> Option<Vec<u8>> {
     if !response.status().is_success() {
         return None;
     }
-    response.body_mut().with_config().limit(2 * 1024 * 1024).read_to_vec().ok()
+    response
+        .body_mut()
+        .with_config()
+        .limit(2 * 1024 * 1024)
+        .read_to_vec()
+        .ok()
 }

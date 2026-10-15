@@ -61,7 +61,10 @@ impl Mode {
     }
     fn complete_message(self) -> (&'static str, &'static str) {
         match self {
-            Mode::Focus => ("Focus session complete", "Nice work. Take a short break before the next round."),
+            Mode::Focus => (
+                "Focus session complete",
+                "Nice work. Take a short break before the next round.",
+            ),
             Mode::ShortBreak => ("Break complete", "Ready for another focus session?"),
             Mode::LongBreak => ("Long break complete", "You are reset and ready to study again."),
         }
@@ -152,11 +155,19 @@ impl App {
             return Mode::Focus;
         }
         let sessions = self.today().sessions;
-        if sessions > 0 && sessions.is_multiple_of(4) { Mode::LongBreak } else { Mode::ShortBreak }
+        if sessions > 0 && sessions.is_multiple_of(4) {
+            Mode::LongBreak
+        } else {
+            Mode::ShortBreak
+        }
     }
 
     fn today(&self) -> state::DailyStats {
-        if self.saved.today.date == today_key() { self.saved.today.clone() } else { Default::default() }
+        if self.saved.today.date == today_key() {
+            self.saved.today.clone()
+        } else {
+            Default::default()
+        }
     }
 
     fn connected(&self) -> bool {
@@ -218,7 +229,11 @@ fn format_minutes(minutes: u64) -> String {
         return format!("{minutes}m");
     }
     let (hours, rest) = (minutes / 60, minutes % 60);
-    if rest == 0 { format!("{hours}h") } else { format!("{hours}h {rest}m") }
+    if rest == 0 {
+        format!("{hours}h")
+    } else {
+        format!("{hours}h {rest}m")
+    }
 }
 
 fn format_idle(seconds: u64) -> String {
@@ -226,7 +241,11 @@ fn format_idle(seconds: u64) -> String {
 }
 
 fn subject_label(value: &str) -> &'static str {
-    SUBJECTS.iter().find(|(key, _)| *key == value).map(|(_, label)| *label).unwrap_or("General")
+    SUBJECTS
+        .iter()
+        .find(|(key, _)| *key == value)
+        .map(|(_, label)| *label)
+        .unwrap_or("General")
 }
 
 fn session_time(iso: &str, offset: UtcOffset) -> String {
@@ -240,7 +259,10 @@ fn session_time(iso: &str, offset: UtcOffset) -> String {
 fn new_session() -> ActiveSession {
     let millis = OffsetDateTime::now_utc().unix_timestamp_nanos() / 1_000_000;
     let random: String = rand::random::<u64>().to_string().chars().take(8).collect();
-    ActiveSession { id: format!("desktop_{millis}_{random}"), started_at: now_iso() }
+    ActiveSession {
+        id: format!("desktop_{millis}_{random}"),
+        started_at: now_iso(),
+    }
 }
 
 // ─── Pushing state into the UI ────────────────────────────
@@ -258,7 +280,12 @@ fn refresh_timer(ctx: &Shared) {
     ui.set_mode_label(app.mode.label().into());
     ui.set_next_mode_label(app.next_mode().label().into());
 
-    let summary = format!("{} {} ({})", app.mode.label(), format_clock(remaining), app.status.label());
+    let summary = format!(
+        "{} {} ({})",
+        app.mode.label(),
+        format_clock(remaining),
+        app.status.label()
+    );
     if *ctx.last_tray_summary.borrow() != summary {
         if let Some(tray) = ctx.tray.borrow().as_ref() {
             tray.set_summary(summary.clone().into());
@@ -307,7 +334,13 @@ fn refresh_all(ctx: &Shared) {
         .map(|s| SessionItem {
             id: s.id.clone().into(),
             title: s.title.clone().into(),
-            meta: format!("{}m · {} · {}", s.minutes, subject_label(&s.subject), session_time(&s.completed_at, app.local_offset)).into(),
+            meta: format!(
+                "{}m · {} · {}",
+                s.minutes,
+                subject_label(&s.subject),
+                session_time(&s.completed_at, app.local_offset)
+            )
+            .into(),
             sync_status: s.sync_status.clone().into(),
             message: s.message.clone().into(),
             can_retry: s.sync_status != "synced" && s.sync_status != "duplicate" && s.sync_status != "syncing",
@@ -320,7 +353,15 @@ fn refresh_all(ctx: &Shared) {
     ui.set_has_profile(app.saved.profile.is_some());
     if let Some(profile) = &app.saved.profile {
         ui.set_username(profile.username.clone().into());
-        ui.set_initials(profile.username.chars().take(2).collect::<String>().to_uppercase().into());
+        ui.set_initials(
+            profile
+                .username
+                .chars()
+                .take(2)
+                .collect::<String>()
+                .to_uppercase()
+                .into(),
+        );
         ui.set_level(profile.level.to_string().into());
         ui.set_streak(format!("{}d", profile.streak).into());
         ui.set_water(profile.water.to_string().into());
@@ -422,8 +463,18 @@ fn complete(ctx: &Shared) {
         app.status = Status::Finished;
         app.deadline = None;
         app.remaining = Duration::ZERO;
-        let title = if app.title.trim().is_empty() { "Desktop Focus".to_string() } else { app.title.trim().to_string() };
-        (app.mode, app.active.clone().unwrap_or_else(new_session), app.minutes_for(app.mode), title, SUBJECTS[app.subject].0.to_string())
+        let title = if app.title.trim().is_empty() {
+            "Desktop Focus".to_string()
+        } else {
+            app.title.trim().to_string()
+        };
+        (
+            app.mode,
+            app.active.clone().unwrap_or_else(new_session),
+            app.minutes_for(app.mode),
+            title,
+            SUBJECTS[app.subject].0.to_string(),
+        )
     };
     if mode == Mode::Focus {
         // Asking the system for idle time can block for a moment, so do it off the UI thread
@@ -437,16 +488,35 @@ fn complete(ctx: &Shared) {
     refresh_all(ctx);
 }
 
-fn focus_finished(ctx: &Shared, session: ActiveSession, minutes: u32, title: String, subject: String, idle_seconds: u64) {
+fn focus_finished(
+    ctx: &Shared,
+    session: ActiveSession,
+    minutes: u32,
+    title: String,
+    subject: String,
+    idle_seconds: u64,
+) {
     let idle_guard = ctx.app.borrow().saved.idle_guard;
     if idle_guard && idle_seconds >= IDLE_GUARD_SECONDS {
-        ctx.app.borrow_mut().pending_idle = Some(PendingIdle { session, minutes, title, subject, idle_seconds });
+        ctx.app.borrow_mut().pending_idle = Some(PendingIdle {
+            session,
+            minutes,
+            title,
+            subject,
+            idle_seconds,
+        });
         set_sync(
             ctx,
             "off",
-            &format!("Idle Guard paused this session. Confirm it if {} idle time was expected.", format_idle(idle_seconds)),
+            &format!(
+                "Idle Guard paused this session. Confirm it if {} idle time was expected.",
+                format_idle(idle_seconds)
+            ),
         );
-        platform::notify("Confirm focus session", "Pomo paused this session because your computer was idle for a while.");
+        platform::notify(
+            "Confirm focus session",
+            "Pomo paused this session because your computer was idle for a while.",
+        );
         refresh_all(ctx);
         return;
     }
@@ -468,7 +538,12 @@ fn credit(ctx: &Shared, session: ActiveSession, minutes: u32, title: String, sub
             started_at: session.started_at.clone(),
             completed_at: now_iso(),
             sync_status: if auto_sync { "syncing" } else { "local" }.into(),
-            message: if auto_sync { "Syncing with PomoBot..." } else { "Saved locally. Auto-sync is off." }.into(),
+            message: if auto_sync {
+                "Syncing with PomoBot..."
+            } else {
+                "Saved locally. Auto-sync is off."
+            }
+            .into(),
         });
         app.saved.save();
         auto_sync
@@ -492,7 +567,10 @@ fn update_session(ctx: &Shared, id: &str, status: &str, message: &str) {
 fn sync_session(ctx: &Shared, session: ActiveSession, minutes: u32, title: String, subject: String) {
     let (api_url, token) = {
         let app = ctx.app.borrow();
-        (app.saved.sync.api_url.trim().to_string(), app.saved.sync.token.trim().to_string())
+        (
+            app.saved.sync.api_url.trim().to_string(),
+            app.saved.sync.token.trim().to_string(),
+        )
     };
     if token.is_empty() {
         set_sync(ctx, "off", "Sync skipped. Add a desktop token first.");
@@ -524,7 +602,10 @@ fn sync_session(ctx: &Shared, session: ActiveSession, minutes: u32, title: Strin
                     } else {
                         let reward = data.get("reward").cloned().unwrap_or(Value::Null);
                         let number = |key: &str| reward.get(key).map(|v| v.to_string()).unwrap_or_else(|| "0".into());
-                        let streak = reward.get("streak").map(|v| v.to_string()).unwrap_or_else(|| "-".into());
+                        let streak = reward
+                            .get("streak")
+                            .map(|v| v.to_string())
+                            .unwrap_or_else(|| "-".into());
                         let message = format!("+{} water, +{} XP, streak {}", number("water"), number("xp"), streak);
                         set_sync(ctx, "synced", &format!("Synced: {message}"));
                         update_session(ctx, &id, "synced", &message);
@@ -543,14 +624,26 @@ fn sync_session(ctx: &Shared, session: ActiveSession, minutes: u32, title: Strin
 fn retry(ctx: &Shared, id: &str) {
     let session = ctx.app.borrow().saved.recent.iter().find(|s| s.id == id).cloned();
     if let Some(s) = session {
-        sync_session(ctx, ActiveSession { id: s.id, started_at: s.started_at }, s.minutes, s.title, s.subject);
+        sync_session(
+            ctx,
+            ActiveSession {
+                id: s.id,
+                started_at: s.started_at,
+            },
+            s.minutes,
+            s.title,
+            s.subject,
+        );
     }
 }
 
 fn test_sync(ctx: &Shared) {
     let (api_url, token) = {
         let app = ctx.app.borrow();
-        (app.saved.sync.api_url.trim().to_string(), app.saved.sync.token.trim().to_string())
+        (
+            app.saved.sync.api_url.trim().to_string(),
+            app.saved.sync.token.trim().to_string(),
+        )
     };
     if token.is_empty() {
         set_sync(ctx, "error", "Connect with Discord first.");
@@ -566,11 +659,18 @@ fn test_sync(ctx: &Shared) {
                 Ok(data) => {
                     apply_profile(ctx, &data);
                     let user = data.get("user").cloned().unwrap_or(Value::Null);
-                    let field = |key: &str, fallback: &str| user.get(key).map(|v| v.to_string()).unwrap_or_else(|| fallback.into());
+                    let field = |key: &str, fallback: &str| {
+                        user.get(key).map(|v| v.to_string()).unwrap_or_else(|| fallback.into())
+                    };
                     set_sync(
                         ctx,
                         "synced",
-                        &format!("Connected: Lv.{}, {} water, {} streak", field("level", "1"), field("water", "0"), field("streak", "0")),
+                        &format!(
+                            "Connected: Lv.{}, {} water, {} streak",
+                            field("level", "1"),
+                            field("water", "0"),
+                            field("streak", "0")
+                        ),
                     );
                 }
                 Err(message) => set_sync(ctx, "error", &message),
@@ -582,11 +682,19 @@ fn test_sync(ctx: &Shared) {
 
 fn apply_profile(ctx: &Shared, data: &Value) {
     let Some(user) = data.get("user") else { return };
-    let Some(discord_id) = user.get("discord_id").map(|v| v.as_str().map(String::from).unwrap_or_else(|| v.to_string())) else {
+    let Some(discord_id) = user
+        .get("discord_id")
+        .map(|v| v.as_str().map(String::from).unwrap_or_else(|| v.to_string()))
+    else {
         return;
     };
     let profile = data.get("profile");
-    let text = |v: Option<&Value>| v.and_then(Value::as_str).map(str::trim).filter(|s| !s.is_empty()).map(String::from);
+    let text = |v: Option<&Value>| {
+        v.and_then(Value::as_str)
+            .map(str::trim)
+            .filter(|s| !s.is_empty())
+            .map(String::from)
+    };
     let number = |key: &str| user.get(key).and_then(Value::as_f64).unwrap_or(0.0);
     let avatar_url = {
         let mut app = ctx.app.borrow_mut();
@@ -652,12 +760,20 @@ fn handle_link(ctx: &Shared, link: &str) {
     if !is_connect {
         return;
     }
-    let param = |name: &str| url.query_pairs().find(|(key, _)| key == name).map(|(_, value)| value.to_string());
-    let Some(token) = param("token").map(|t| t.trim().to_string()).filter(|t| !t.is_empty()) else { return };
+    let param = |name: &str| {
+        url.query_pairs()
+            .find(|(key, _)| key == name)
+            .map(|(_, value)| value.to_string())
+    };
+    let Some(token) = param("token").map(|t| t.trim().to_string()).filter(|t| !t.is_empty()) else {
+        return;
+    };
     {
         let mut app = ctx.app.borrow_mut();
         app.saved.sync.token = token;
-        app.saved.sync.api_url = param("apiUrl").and_then(|v| trusted_api_url(&v)).unwrap_or_else(|| state::DEFAULT_API_URL.into());
+        app.saved.sync.api_url = param("apiUrl")
+            .and_then(|v| trusted_api_url(&v))
+            .unwrap_or_else(|| state::DEFAULT_API_URL.into());
         app.saved.sync.auto_sync = true;
         app.saved.save();
     }
@@ -680,7 +796,11 @@ fn set_compact(ctx: &Shared, compact: bool) {
     ctx.app.borrow_mut().compact = compact;
     if let Some(ui) = ctx.ui.upgrade() {
         ui.set_compact(compact);
-        let size = if compact { LogicalSize::new(360.0, 440.0) } else { LogicalSize::new(1120.0, 760.0) };
+        let size = if compact {
+            LogicalSize::new(360.0, 440.0)
+        } else {
+            LogicalSize::new(1120.0, 760.0)
+        };
         ui.window().set_size(size);
         let _ = ui.show();
     }
@@ -705,13 +825,18 @@ fn main() -> Result<(), slint::PlatformError> {
     let start_hidden = args.iter().any(|arg| arg == platform::HIDDEN_ARG);
 
     // Only one copy runs; a second launch (or a clicked pomo:// link) wakes the first one
-    let message = link.as_ref().map(|l| format!("link {l}")).unwrap_or_else(|| "show".into());
+    let message = link
+        .as_ref()
+        .map(|l| format!("link {l}"))
+        .unwrap_or_else(|| "show".into());
     if platform::forward_to_running(&message) {
         return Ok(());
     }
 
     #[cfg(feature = "snapshot")]
-    let snapshot_window = std::env::var("POMO_SNAPSHOT").ok().map(|path| (path, snapshot::install()));
+    let snapshot_window = std::env::var("POMO_SNAPSHOT")
+        .ok()
+        .map(|path| (path, snapshot::install()));
     #[cfg(not(feature = "snapshot"))]
     let snapshot_window: Option<()> = None;
 
@@ -760,12 +885,20 @@ fn main() -> Result<(), slint::PlatformError> {
 
     // Tray: closing the window only hides it while the tray icon is there to bring it back
     // The off-screen snapshot window has no event loop for a tray icon
-    let tray_result = if snapshot_window.is_some() { Err(slint::PlatformError::NoPlatform) } else { Tray::new() };
+    let tray_result = if snapshot_window.is_some() {
+        Err(slint::PlatformError::NoPlatform)
+    } else {
+        Tray::new()
+    };
     let tray_ok = match tray_result {
         Ok(tray) => {
             let c = ctx.clone();
             tray.on_toggle_timer(move || {
-                if c.app.borrow().status == Status::Running { pause(&c) } else { start(&c) }
+                if c.app.borrow().status == Status::Running {
+                    pause(&c)
+                } else {
+                    start(&c)
+                }
             });
             let c = ctx.clone();
             tray.on_reset_timer(move || reset(&c, None));
@@ -837,7 +970,11 @@ fn main() -> Result<(), slint::PlatformError> {
     let c = ctx.clone();
     ui.on_discard_idle(move || {
         c.app.borrow_mut().pending_idle = None;
-        set_sync(&c, "off", "Idle session discarded. No local stats or rewards were added.");
+        set_sync(
+            &c,
+            "off",
+            "Idle session discarded. No local stats or rewards were added.",
+        );
         refresh_all(&c);
     });
     let c = ctx.clone();
@@ -918,7 +1055,10 @@ fn main() -> Result<(), slint::PlatformError> {
         let view = std::env::var("POMO_VIEW").unwrap_or_else(|_| "timer".into());
         let (w, h) = std::env::var("POMO_SIZE")
             .ok()
-            .and_then(|s| s.split_once('x').map(|(w, h)| (w.parse().unwrap_or(1120), h.parse().unwrap_or(760))))
+            .and_then(|s| {
+                s.split_once('x')
+                    .map(|(w, h)| (w.parse().unwrap_or(1120), h.parse().unwrap_or(760)))
+            })
             .unwrap_or((1120, 760));
         if view == "mini" {
             ctx.app.borrow_mut().compact = true;

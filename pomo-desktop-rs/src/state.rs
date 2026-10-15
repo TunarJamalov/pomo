@@ -15,7 +15,11 @@ pub struct TimerSettings {
 
 impl Default for TimerSettings {
     fn default() -> Self {
-        Self { focus: 25, short_break: 5, long_break: 15 }
+        Self {
+            focus: 25,
+            short_break: 5,
+            long_break: 15,
+        }
     }
 }
 
@@ -29,7 +33,11 @@ pub struct SyncSettings {
 
 impl Default for SyncSettings {
     fn default() -> Self {
-        Self { api_url: DEFAULT_API_URL.into(), token: String::new(), auto_sync: true }
+        Self {
+            api_url: DEFAULT_API_URL.into(),
+            token: String::new(),
+            auto_sync: true,
+        }
     }
 }
 
@@ -123,7 +131,9 @@ impl Saved {
         if std::fs::create_dir_all(&dir).is_err() {
             return;
         }
-        let Ok(text) = serde_json::to_string_pretty(self) else { return };
+        let Ok(text) = serde_json::to_string_pretty(self) else {
+            return;
+        };
         let tmp = dir.join("state.json.tmp");
         if std::fs::write(&tmp, text).is_ok() {
             // The file holds the Pomo connection token: readable by this user only
@@ -139,7 +149,10 @@ impl Saved {
     /// Today's numbers, starting from zero on a new (UTC) day.
     pub fn today_mut(&mut self, today: &str) -> &mut DailyStats {
         if self.today.date != today {
-            self.today = DailyStats { date: today.into(), ..Default::default() };
+            self.today = DailyStats {
+                date: today.into(),
+                ..Default::default()
+            };
         }
         &mut self.today
     }
