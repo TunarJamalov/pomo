@@ -1,18 +1,21 @@
 /**
- * Pomo Plus / Pomo Pro checkout. Payments run on the website's pricing page,
- * where the buyer signs in with Discord so the payment can be linked to them.
- * The bot only links there, and only once sales are open (PRO_SALES_OPEN=true).
- * Keep prices in sync with apps/web/lib/billing.ts.
+ * Pomo Plus / Pomo Pro checkout. Payments run on the website (Epoint), where the
+ * buyer signs in with Discord so the payment can be linked to them. The bot only
+ * links there, and only once sales are open (PRO_SALES_OPEN=true).
+ * Prices come from utils/epoint.js; keep them in sync with apps/web/lib/billing.ts.
  */
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { db } = require('./database');
 const { t } = require('./i18n');
+const { EPOINT_PRICES } = require('./epoint');
 
+const azn = amount => `${amount} AZN`;
 const PLANS = {
-    plus: { monthly: '$1.49', yearly: '$11.99', labelKey: 'planBuyPlus' },
-    pro: { monthly: '$1.99', yearly: '$15.99', labelKey: 'planBuyPro' },
+    plus: { monthly: azn(EPOINT_PRICES.plus.monthly), yearly: azn(EPOINT_PRICES.plus.yearly), labelKey: 'planBuyPlus' },
+    pro: { monthly: azn(EPOINT_PRICES.pro.monthly), yearly: azn(EPOINT_PRICES.pro.yearly), labelKey: 'planBuyPro' },
 };
 const PRICING_PAGE = 'https://pomofocus.online/pricing';
+const BILLING_PAGE = 'https://pomofocus.online/billing';
 
 /** True when a plan can actually be bought (checkout is live). */
 function checkoutConfigured() {
@@ -35,13 +38,13 @@ function buyRow(language, discordId) {
     return new ActionRowBuilder().addComponents(...buyButtons(language, discordId));
 }
 
-/** Link to manage (cancel) the user's latest subscription, if Paddle gave us one. */
+/** Link to the billing page (card, renewal date, cancel) if the user has an Epoint subscription. */
 function manageUrl(discordId) {
-    return db.prepare(`
-        SELECT customer_portal_url FROM billing_subscriptions
-        WHERE provider = 'paddle' AND discord_id = ? AND customer_portal_url IS NOT NULL
-        ORDER BY updated_at DESC LIMIT 1
-    `).get(String(discordId))?.customer_portal_url || null;
+    const sub = db.prepare(`
+        SELECT 1 FROM epoint_subscriptions
+        WHERE discord_id = ? AND status IN ('active', 'past_due') LIMIT 1
+    `).get(String(discordId));
+    return sub ? BILLING_PAGE : null;
 }
 
-module.exports = { PLANS, PRICING_PAGE, checkoutConfigured, buyButtons, buyRow, manageUrl };
+module.exports = { PLANS, PRICING_PAGE, BILLING_PAGE, checkoutConfigured, buyButtons, buyRow, manageUrl };

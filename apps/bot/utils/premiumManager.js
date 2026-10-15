@@ -16,7 +16,7 @@ const { t, getUserLanguage } = require('./i18n');
 /**
  * Grant or extend Pro. Returns the updated entitlement row.
  * Called by: premiumadmin grant and the reactivation campaign. Paid Pro from
- * Paddle uses extendPremiumUntil (services/billingProcessor.js).
+ * Epoint uses extendPremiumUntil (services/billingProcessor.js).
  */
 function grantProAccess(userId, days = 30, grantedBy = 'OWNER_MANUAL', { note = null, source = 'manual', planKey = 'pro' } = {}) {
     const entitlement = grantPremium({

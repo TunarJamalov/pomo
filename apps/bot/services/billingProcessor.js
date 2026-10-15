@@ -1,44 +1,49 @@
 /**
- * Turns verified Paddle webhooks into Pomo Pro.
+ * Pomo Plus / Pomo Pro subscriptions through Epoint.
  *
- * The website receives the webhook, checks its signature and stores it in
- * `billing_events`; this job works through that queue. Because the queue lives
- * in the database, payments made while the bot is offline are applied as soon
- * as it comes back.
+ * First payment: the website creates an `epoint_orders` row and sends the buyer
+ * to Epoint ("register card and pay"). Epoint calls the website back; the website
+ * checks the signature and queues the result in `billing_events`. This job works
+ * through that queue, so payments made while the bot restarts are never lost.
+ * A successful first payment opens an `epoint_subscriptions` row with the saved card.
  *
- * Rules:
- *   active / trialing / past_due  → Pro until the end of the current billing period (+ grace)
- *   canceled / paused             → Pro revoked, but only if it came from Paddle
- *   refund or chargeback approved → Pro revoked, but only if it came from Paddle
+ * Renewals: when a period ends, this job charges the saved card (execute-pay).
+ *   success           → next period, plan extended (until period end + grace)
+ *   failed            → past_due, retried every 24h; after 3 failures the plan ends
+ *   no answer         → wait for Epoint's callback before trying again, so a card is never charged twice
+ *   cancelled by user → no charge; the plan ends when the paid period does
  *
- * A cancellation is scheduled for the end of the paid period, so Paddle sends
- * `canceled` only once that period is over.
+ * Every order is applied at most once (epoint_orders.status), whichever of the
+ * callback and the direct reply arrives first.
  */
 const { db, getPremiumEntitlement, extendPremiumUntil } = require('../utils/database');
-const { revokeProAccess, isProActive } = require('../utils/premiumManager');
+const { revokeProAccess, isFullPro } = require('../utils/premiumManager');
 const { t, getUserLanguage } = require('../utils/i18n');
 const { PRO_STREAK_SHIELDS } = require('../utils/constants');
+const epoint = require('../utils/epoint');
 
-const PROVIDER = 'paddle';
-const SOURCE = 'paddle';
-const GRANTED_BY = 'PADDLE';
-const GRACE_DAYS = 2;
-const POLL_MS = 15 * 1000;
-const SNOWFLAKE = /^\d{17,20}$/;
+const PROVIDER = 'epoint';
+const SOURCE = 'epoint';
+const GRANTED_BY = 'EPOINT';
+const GRACE_DAYS = 3;
+const MAX_ATTEMPTS = 3;
+const HOUR_MS = 3600000;
+const QUEUE_POLL_MS = 15 * 1000;
+const RENEW_POLL_MS = 10 * 60 * 1000;
 
-function parseDate(value) {
-    const d = value ? new Date(value) : null;
-    return d && !Number.isNaN(d.getTime()) ? d : null;
-}
+const toSql = date => date.toISOString().slice(0, 19).replace('T', ' ');
+const fromSql = value => new Date(`${String(value).replace(' ', 'T')}Z`);
 
-function isSandbox() {
-    return process.env.PADDLE_ENV !== 'production';
-}
-
-/** In sandbox only the listed Discord ids (the owner's test accounts) can get Pro from a payment. */
-function sandboxAllows(userId) {
-    const allowed = (process.env.PADDLE_TEST_DISCORD_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
-    return allowed.includes(String(userId));
+/** One month or one year later, keeping the day of month where it exists (31 Jan → 28/29 Feb). */
+function addPeriod(date, cycle) {
+    const d = new Date(date);
+    const months = cycle === 'yearly' ? 12 : 1;
+    const day = d.getUTCDate();
+    d.setUTCDate(1);
+    d.setUTCMonth(d.getUTCMonth() + months);
+    const lastDay = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
+    d.setUTCDate(Math.min(day, lastDay));
+    return d;
 }
 
 function revokeIfOurs(userId, note) {
@@ -50,116 +55,199 @@ function revokeIfOurs(userId, note) {
     return false;
 }
 
-function planName(sub) {
-    const cycle = sub.items?.[0]?.price?.billing_cycle;
-    if (cycle?.interval === 'year') return 'Yearly';
-    if (cycle?.interval === 'month') return 'Monthly';
-    return sub.items?.[0]?.price?.name || null;
-}
-
-function saveSubscription(sub, discordId) {
-    db.prepare(`
-        INSERT INTO billing_subscriptions (provider, subscription_id, discord_id, status, variant_name, renews_at, ends_at, customer_portal_url, test_mode, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
-        ON CONFLICT(provider, subscription_id) DO UPDATE SET
-            discord_id = COALESCE(excluded.discord_id, billing_subscriptions.discord_id),
-            status = excluded.status,
-            variant_name = COALESCE(excluded.variant_name, billing_subscriptions.variant_name),
-            renews_at = excluded.renews_at,
-            ends_at = excluded.ends_at,
-            customer_portal_url = COALESCE(excluded.customer_portal_url, billing_subscriptions.customer_portal_url),
-            test_mode = excluded.test_mode,
-            updated_at = datetime('now')
-    `).run(PROVIDER, String(sub.id), discordId, sub.status || null, planName(sub),
-        sub.next_billed_at || null, sub.current_billing_period?.ends_at || null,
-        sub.management_urls?.cancel || null, isSandbox() ? 1 : 0);
-}
-
-function findSubscriptionOwner(subscriptionId) {
-    if (!subscriptionId) return null;
-    return db.prepare('SELECT discord_id FROM billing_subscriptions WHERE provider = ? AND subscription_id = ?')
-        .get(PROVIDER, String(subscriptionId))?.discord_id || null;
-}
-
-function claimedDiscordId(data) {
-    const id = String(data?.custom_data?.discord_id || '');
-    return SNOWFLAKE.test(id) ? id : null;
+function grantPlan(userId, plan, periodEnd, subId) {
+    const wasFullPro = isFullPro(userId);
+    extendPremiumUntil({
+        userId,
+        until: new Date(periodEnd.getTime() + GRACE_DAYS * 86400000),
+        grantedBy: GRANTED_BY,
+        source: SOURCE,
+        providerRef: `epoint:${subId}`,
+        note: `Epoint subscription #${subId}`,
+        planKey: plan,
+    });
+    // Streak shields come with Pro only
+    if (plan === 'pro' && !wasFullPro) {
+        db.prepare('UPDATE users SET streak_shields_remaining = ?, pro_shields_month = ? WHERE discord_id = ?')
+            .run(PRO_STREAK_SHIELDS, new Date().toISOString().slice(0, 7), userId);
+    }
 }
 
 /**
- * Applies one webhook payload. Returns { result, userId?, change? } where change is
- * 'activated' | 'renewed' | 'ended' | 'unlinked' for side effects (DMs, logs).
+ * Applies a payment result (from a callback or a direct execute-pay reply) to its order.
+ * Returns { result, userId?, change?, plan? }; change drives DMs and logs in notify().
  */
-function applyPaddleEvent(payload) {
-    const eventType = payload?.event_type || 'unknown';
-    const data = payload?.data || {};
+function applyPaymentResult(result, now = new Date()) {
+    const orderId = String(result?.order_id || '');
+    const order = db.prepare('SELECT * FROM epoint_orders WHERE order_id = ?').get(orderId);
+    if (!order) return { result: `unknown order ${orderId || '-'}` };
+    const userId = order.discord_id;
+    if (order.status === 'success') return { result: `order ${orderId} already applied`, userId };
 
-    if (eventType.startsWith('subscription.')) {
-        const userId = claimedDiscordId(data) || findSubscriptionOwner(data.id);
-        if (userId && isSandbox() && !sandboxAllows(userId)) {
-            return { result: `ignored sandbox ${eventType} for ${userId} (not a test account)` };
-        }
-        saveSubscription(data, userId);
-        if (!userId) return { result: `no discord id for subscription ${data.id}`, change: 'unlinked', customer: data.customer_id };
-
-        const status = data.status;
-        if (['active', 'trialing', 'past_due'].includes(status)) {
-            const end = parseDate(data.current_billing_period?.ends_at);
-            if (!end || end <= new Date()) return { result: `subscription ${data.id} ${status} without a future period end`, userId };
-            const wasActive = isProActive(userId);
-            const until = new Date(end.getTime() + GRACE_DAYS * 86400000);
-            const plan = planName(data) || 'Pro';
-            extendPremiumUntil({
-                userId, until, grantedBy: GRANTED_BY, source: SOURCE,
-                providerRef: String(data.id), note: `${plan} (${status})${isSandbox() ? ' SANDBOX' : ''}`,
-            });
-            if (!wasActive) {
-                db.prepare('UPDATE users SET streak_shields_remaining = ?, pro_shields_month = ? WHERE discord_id = ?')
-                    .run(PRO_STREAK_SHIELDS, new Date().toISOString().slice(0, 7), userId);
-            }
-            return { result: `pro until ${until.toISOString()} (${status})`, userId, change: wasActive ? 'renewed' : 'activated', plan };
-        }
-        if (['canceled', 'paused'].includes(status)) {
-            const revoked = revokeIfOurs(userId, `subscription ${status}`);
-            return { result: revoked ? `revoked (${status})` : `nothing to revoke (${status})`, userId, change: revoked ? 'ended' : undefined };
-        }
-        return { result: `ignored subscription status ${status}`, userId };
+    if (result.status !== 'success') {
+        db.prepare(`
+            UPDATE epoint_orders SET status = 'failed', transaction_id = COALESCE(?, transaction_id), result = ?, updated_at = datetime('now')
+            WHERE order_id = ? AND status != 'success'
+        `).run(result.transaction || null, String(result.message || result.code || result.status || 'failed').slice(0, 200), orderId);
+        return { result: `order ${orderId} ${result.status || 'failed'}`, userId };
     }
 
-    if (eventType.startsWith('adjustment.')) {
-        // Refunds and chargebacks; credits and pending requests change nothing
-        const takesMoneyBack = ['refund', 'chargeback'].includes(data.action) && data.status === 'approved';
-        if (!takesMoneyBack) return { result: `ignored ${data.action || 'adjustment'} (${data.status || 'unknown'})` };
-        const userId = findSubscriptionOwner(data.subscription_id);
-        if (!userId) return { result: `${data.action} for unknown subscription ${data.subscription_id || '-'}` };
-        const revoked = revokeIfOurs(userId, `payment ${data.action}`);
-        return { result: revoked ? `revoked (${data.action})` : `${data.action}, nothing to revoke`, userId, change: revoked ? 'ended' : undefined };
+    // Never trust a payment for a different amount than we asked for
+    if (result.amount != null && Math.abs(Number(result.amount) - Number(order.amount)) > 0.001) {
+        db.prepare("UPDATE epoint_orders SET status = 'review', result = ?, updated_at = datetime('now') WHERE order_id = ?")
+            .run(`amount ${result.amount} != ${order.amount}`, orderId);
+        return { result: `order ${orderId} paid ${result.amount}, expected ${order.amount}: not applied`, userId, change: 'mismatch' };
     }
 
-    return { result: `ignored ${eventType}` };
+    return db.transaction(() => {
+        let subId = order.subscription_id;
+        let periodEnd;
+        if (order.kind === 'renewal') {
+            const sub = db.prepare('SELECT * FROM epoint_subscriptions WHERE id = ?').get(subId);
+            if (!sub) return { result: `renewal ${orderId} for missing subscription ${subId}`, userId };
+            periodEnd = addPeriod(fromSql(sub.current_period_end), sub.cycle);
+            db.prepare(`
+                UPDATE epoint_subscriptions SET status = 'active', current_period_end = ?, failed_attempts = 0,
+                    next_attempt_at = NULL, card_mask = COALESCE(?, card_mask), updated_at = datetime('now')
+                WHERE id = ?
+            `).run(toSql(periodEnd), result.card_mask || null, subId);
+        } else {
+            // A new subscription replaces any other the user still has (e.g. moving from Plus to Pro)
+            db.prepare(`
+                UPDATE epoint_subscriptions SET status = 'replaced', updated_at = datetime('now')
+                WHERE discord_id = ? AND status IN ('active', 'past_due')
+            `).run(userId);
+            periodEnd = addPeriod(now, order.cycle);
+            subId = db.prepare(`
+                INSERT INTO epoint_subscriptions (discord_id, plan, cycle, amount, card_id, card_mask, status, current_period_end)
+                VALUES (?, ?, ?, ?, ?, ?, 'active', ?)
+            `).run(userId, order.plan, order.cycle, order.amount, result.card_id || null, result.card_mask || null, toSql(periodEnd)).lastInsertRowid;
+        }
+
+        db.prepare(`
+            UPDATE epoint_orders SET status = 'success', transaction_id = ?, subscription_id = ?, result = 'paid', updated_at = datetime('now')
+            WHERE order_id = ?
+        `).run(result.transaction || null, subId, orderId);
+
+        grantPlan(userId, order.plan, periodEnd, subId);
+        const change = order.kind === 'renewal' ? 'renewed' : 'activated';
+        return { result: `${order.plan} until ${periodEnd.toISOString()} (order ${orderId})`, userId, change, plan: order.plan };
+    })();
+}
+
+function endSubscription(sub, status, note) {
+    db.prepare("UPDATE epoint_subscriptions SET status = ?, next_attempt_at = NULL, updated_at = datetime('now') WHERE id = ?")
+        .run(status, sub.id);
+    const revoked = revokeIfOurs(sub.discord_id, note);
+    return { result: `subscription #${sub.id} ${status}${revoked ? ', plan removed' : ''}`, userId: sub.discord_id, change: revoked ? 'ended' : undefined };
+}
+
+async function renewOne(sub, now, charge) {
+    if (sub.cancel_at_period_end) return endSubscription(sub, 'canceled', 'cancelled by the user');
+    if (!sub.card_id) return endSubscription(sub, 'ended', 'no saved card to renew with');
+
+    // A renewal that got no answer may still go through; give its callback a day before trying again
+    const pending = db.prepare(`
+        SELECT order_id, created_at FROM epoint_orders
+        WHERE subscription_id = ? AND kind = 'renewal' AND status = 'new'
+        ORDER BY created_at DESC LIMIT 1
+    `).get(sub.id);
+    if (pending) {
+        if (now - fromSql(pending.created_at) < 24 * HOUR_MS) {
+            db.prepare('UPDATE epoint_subscriptions SET next_attempt_at = ? WHERE id = ?').run(toSql(new Date(now.getTime() + HOUR_MS)), sub.id);
+            return { result: `subscription #${sub.id} waiting for order ${pending.order_id}` };
+        }
+        db.prepare("UPDATE epoint_orders SET status = 'failed', result = 'no answer', updated_at = datetime('now') WHERE order_id = ?").run(pending.order_id);
+    }
+
+    const orderId = `pomo-r${sub.id}-${now.getTime()}`;
+    db.prepare(`
+        INSERT INTO epoint_orders (order_id, discord_id, plan, cycle, amount, kind, subscription_id, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, 'renewal', ?, ?, ?)
+    `).run(orderId, sub.discord_id, sub.plan, sub.cycle, sub.amount, sub.id, toSql(now), toSql(now));
+
+    let reply;
+    try {
+        reply = await charge({
+            cardId: sub.card_id,
+            orderId,
+            amount: sub.amount,
+            description: `Pomo ${sub.plan === 'pro' ? 'Pro' : 'Plus'} (${sub.cycle}) renewal`,
+        });
+    } catch (err) {
+        db.prepare('UPDATE epoint_subscriptions SET next_attempt_at = ? WHERE id = ?').run(toSql(new Date(now.getTime() + HOUR_MS)), sub.id);
+        return { result: `renewal ${orderId} got no answer: ${err.message}` };
+    }
+
+    const outcome = applyPaymentResult({ ...reply, order_id: orderId }, now);
+    if (reply?.status === 'success') return outcome;
+
+    const attempts = sub.failed_attempts + 1;
+    if (attempts >= MAX_ATTEMPTS) {
+        const ended = endSubscription(sub, 'ended', `renewal failed ${attempts} times`);
+        return { ...ended, result: `${ended.result} after ${attempts} failed payments` };
+    }
+    db.prepare(`
+        UPDATE epoint_subscriptions SET status = 'past_due', failed_attempts = ?, next_attempt_at = ?, updated_at = datetime('now')
+        WHERE id = ?
+    `).run(attempts, toSql(new Date(now.getTime() + 24 * HOUR_MS)), sub.id);
+    return {
+        result: `renewal ${orderId} failed (${attempts}/${MAX_ATTEMPTS}): ${reply?.message || reply?.status || 'unknown'}`,
+        userId: sub.discord_id,
+        change: attempts === 1 ? 'payment_failed' : undefined,
+    };
+}
+
+/** Charges every subscription whose period is over. Returns the outcomes. */
+async function renewDue(now = new Date(), charge = epoint.chargeSavedCard) {
+    const due = db.prepare(`
+        SELECT * FROM epoint_subscriptions
+        WHERE status IN ('active', 'past_due') AND current_period_end <= ?
+          AND (next_attempt_at IS NULL OR next_attempt_at <= ?)
+        ORDER BY current_period_end
+    `).all(toSql(now), toSql(now));
+    const outcomes = [];
+    for (const sub of due) {
+        let outcome;
+        try {
+            outcome = await renewOne(sub, now, charge);
+        } catch (err) {
+            outcome = { result: `renewal of #${sub.id} errored: ${err.message}` };
+            console.error('[Billing] Renewal failed:', sub.id, err);
+        }
+        console.log(`[Billing] ${outcome.result}`);
+        outcomes.push(outcome);
+    }
+    return outcomes;
 }
 
 async function notify(client, outcome) {
     const { userId, change } = outcome;
+    if (!client || !change) return;
     const logChannelId = process.env.OWNER_LOG_CHANNEL_ID;
     const log = async text => {
         if (!logChannelId) return;
         const channel = await client.channels.fetch(logChannelId).catch(() => null);
         await channel?.send({ content: text, allowedMentions: { parse: [] } }).catch(() => {});
     };
-    if (change === 'unlinked') {
-        await log(`⚠️ Paddle subscription without a Discord id (customer ${outcome.customer || 'unknown'}). Grant it with \`/premiumadmin\`.`);
-        return;
-    }
-    if (!userId || !change || change === 'renewed') return;
+    const dm = (key, vars) => client.users.fetch(userId).then(u => u.send(t(getUserLanguage(userId), key, vars))).catch(() => {});
+    const planName = plan => t(getUserLanguage(userId), plan === 'pro' ? 'planNamePro' : 'planNamePlus');
+
     if (change === 'activated') {
         require('../utils/premiumCheck').syncPremiumRole(client, userId, true).catch(() => {});
-        await client.users.fetch(userId).then(u => u.send(t(getUserLanguage(userId), 'proActivatedDm'))).catch(() => {});
-        await log(`💰 New Pomo Pro: <@${userId}> (${outcome.plan || 'Pro'})${isSandbox() ? ' [sandbox]' : ''}`);
+        await dm('epointActivatedDm', { plan: planName(outcome.plan) });
+        await log(`💰 New ${outcome.plan === 'pro' ? 'Pomo Pro' : 'Pomo Plus'}: <@${userId}>`);
+    } else if (change === 'renewed') {
+        await log(`🔁 Renewed ${outcome.plan === 'pro' ? 'Pomo Pro' : 'Pomo Plus'}: <@${userId}>`);
+    } else if (change === 'payment_failed') {
+        await dm('epointPaymentFailedDm');
+        await log(`⚠️ Renewal payment failed: <@${userId}>`);
     } else if (change === 'ended') {
         require('../utils/premiumCheck').syncPremiumRole(client, userId, false).catch(() => {});
-        await client.users.fetch(userId).then(u => u.send(t(getUserLanguage(userId), 'premiumExpiryDm'))).catch(() => {});
-        await log(`📉 Pomo Pro ended: <@${userId}>`);
+        await dm('premiumExpiryDm');
+        await log(`📉 Plan ended: <@${userId}> (${outcome.result})`);
+    } else if (change === 'mismatch') {
+        await log(`🚨 Epoint payment with an unexpected amount for <@${userId}>: ${outcome.result}`);
     }
 }
 
@@ -171,29 +259,41 @@ async function processQueue(client) {
     for (const row of rows) {
         let outcome;
         try {
-            outcome = applyPaddleEvent(JSON.parse(row.payload));
+            outcome = applyPaymentResult(JSON.parse(row.payload));
         } catch (err) {
             outcome = { result: `error: ${err.message}` };
             console.error('[Billing] Event failed:', row.id, err);
         }
         db.prepare("UPDATE billing_events SET processed_at = datetime('now'), result = ? WHERE id = ?").run(outcome.result.slice(0, 500), row.id);
         console.log(`[Billing] #${row.id}: ${outcome.result}`);
-        if (client) await notify(client, outcome).catch(() => {});
+        await notify(client, outcome).catch(() => {});
     }
     return rows.length;
 }
 
 function startBillingProcessor(client) {
-    let running = false;
-    const tick = async () => {
-        if (running) return;
-        running = true;
+    let queueRunning = false;
+    let renewRunning = false;
+    const queueTick = async () => {
+        if (queueRunning) return;
+        queueRunning = true;
         try { await processQueue(client); } catch (err) { console.error('[Billing] Queue error:', err.message); }
-        running = false;
+        queueRunning = false;
     };
-    tick();
-    setInterval(tick, POLL_MS);
-    console.log(`[Billing] Paddle queue processor started (${isSandbox() ? 'sandbox' : 'production'}).`);
+    const renewTick = async () => {
+        if (renewRunning || !epoint.configured()) return;
+        renewRunning = true;
+        try {
+            for (const outcome of await renewDue()) await notify(client, outcome).catch(() => {});
+        } catch (err) {
+            console.error('[Billing] Renewal job error:', err.message);
+        }
+        renewRunning = false;
+    };
+    queueTick();
+    setInterval(queueTick, QUEUE_POLL_MS);
+    setInterval(renewTick, RENEW_POLL_MS);
+    console.log(`[Billing] Epoint processor started (renewals ${epoint.configured() ? 'on' : 'off: EPOINT keys missing'}).`);
 }
 
-module.exports = { applyPaddleEvent, processQueue, startBillingProcessor };
+module.exports = { addPeriod, applyPaymentResult, renewDue, processQueue, startBillingProcessor };

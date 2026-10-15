@@ -186,6 +186,38 @@ function initDatabase() {
             updated_at TEXT DEFAULT (datetime('now')),
             PRIMARY KEY (provider, subscription_id)
         );
+        CREATE TABLE IF NOT EXISTS epoint_orders (
+            order_id TEXT PRIMARY KEY,
+            discord_id TEXT NOT NULL,
+            plan TEXT NOT NULL,
+            cycle TEXT NOT NULL,
+            amount TEXT NOT NULL,
+            kind TEXT NOT NULL DEFAULT 'first',
+            subscription_id INTEGER,
+            status TEXT NOT NULL DEFAULT 'new',
+            transaction_id TEXT,
+            result TEXT,
+            created_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now'))
+        );
+        CREATE INDEX IF NOT EXISTS idx_epoint_orders_user ON epoint_orders(discord_id);
+        CREATE TABLE IF NOT EXISTS epoint_subscriptions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            discord_id TEXT NOT NULL,
+            plan TEXT NOT NULL,
+            cycle TEXT NOT NULL,
+            amount TEXT NOT NULL,
+            card_id TEXT,
+            card_mask TEXT,
+            status TEXT NOT NULL DEFAULT 'active',
+            current_period_end TEXT NOT NULL,
+            cancel_at_period_end INTEGER NOT NULL DEFAULT 0,
+            failed_attempts INTEGER NOT NULL DEFAULT 0,
+            next_attempt_at TEXT,
+            created_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now'))
+        );
+        CREATE INDEX IF NOT EXISTS idx_epoint_subscriptions_user ON epoint_subscriptions(discord_id);
         CREATE TABLE IF NOT EXISTS featured_servers (
             guild_id TEXT PRIMARY KEY,
             guild_name TEXT,
@@ -2318,8 +2350,8 @@ function extendPremiumUntil({ userId, until, grantedBy, source, note = null, pro
         `).run(userId, planKey, source, toSqliteDate(target), grantedBy || null, note, providerRef);
         db.prepare(`
             INSERT INTO premium_events (user_id, action, plan_key, source, duration_days, actor_id, note)
-            VALUES (?, 'grant', 'pro_beta', ?, ?, ?, ?)
-        `).run(userId, source, Math.max(0, Math.round((target - Date.now()) / 86400000)), grantedBy || null, note);
+            VALUES (?, 'grant', ?, ?, ?, ?, ?)
+        `).run(userId, planKey, source, Math.max(0, Math.round((target - Date.now()) / 86400000)), grantedBy || null, note);
         return getPremiumEntitlement(userId);
     })();
 }

@@ -4,7 +4,7 @@ import { CONTACT_EMAIL, LEGAL_NAME, SUPPORT_SERVER_URL } from "@/lib/links";
 
 export const metadata: Metadata = {
   title: "Refund Policy",
-  description: "Pomo Pro comes with a 14-day money-back guarantee on every payment.",
+  description: "Pomo Plus and Pomo Pro come with a 14-day money-back guarantee on every payment.",
   alternates: { canonical: "/refunds" },
 };
 
@@ -19,9 +19,9 @@ export default function RefundsPage() {
           <section>
             <h2>14-day money-back guarantee</h2>
             <p>
-              Every Pomo Pro payment, including renewals, comes with a 14-day money-back guarantee. If you ask within 14
-              days of a payment, you get a full refund, no questions asked. The refund goes back to the original payment
-              method.
+              Every Pomo Plus and Pomo Pro payment, including renewals, comes with a 14-day money-back guarantee. If you
+              ask within 14 days of a payment, you get a full refund, no questions asked. The refund goes back to the card
+              you paid with; depending on your bank it usually arrives within a few business days.
             </p>
           </section>
 
@@ -31,26 +31,26 @@ export default function RefundsPage() {
               Email{" "}
               <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-4">{CONTACT_EMAIL}</a>, message us in
               the{" "}
-              <a href={SUPPORT_SERVER_URL} target="_blank" rel="noreferrer" className="underline underline-offset-4">support server</a>,
-              or contact Paddle directly through the link in your receipt or at{" "}
-              <a href="https://paddle.net" target="_blank" rel="noreferrer" className="underline underline-offset-4">paddle.net</a>.
+              <a href={SUPPORT_SERVER_URL} target="_blank" rel="noreferrer" className="underline underline-offset-4">support server</a>{" "}
+              with your Discord username and the date of the payment.
             </p>
           </section>
 
           <section>
             <h2>Cancelling</h2>
             <p>
-              You can cancel your subscription at any time with <code>/premium status</code> in Discord or from the link in
-              your receipt. You will not be charged again, and Pro stays active until the end of the period you already paid
-              for. If you get a refund, Pro for that period ends.
+              You can cancel your subscription at any time at pomofocus.online/billing or with <code>/premium status</code> in
+              Discord. You will not be charged again, and your plan stays active until the end of the period you already paid
+              for. If you get a refund, the plan for that period ends.
             </p>
           </section>
 
           <section>
             <h2>Who handles payments</h2>
             <p>
-              Our order process is conducted by our online reseller Paddle.com. Paddle.com is the Merchant of Record for all
-              our orders. Paddle provides all customer service inquiries and handles returns. Pomo is operated by {LEGAL_NAME}.
+              The seller is {LEGAL_NAME}. Payments and refunds are processed by Epoint (epoint.az), a payment institution
+              licensed by the Central Bank of the Republic of Azerbaijan. Questions about a charge go to us first, through the
+              contacts above.
             </p>
           </section>
         </div>

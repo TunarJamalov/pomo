@@ -20,7 +20,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-bold text-white mb-4">1. Who we are</h2>
             <p>
-              Pomo (the Pomo Discord bot, pomofocus.online and the Pomo Focus desktop app) is operated by {LEGAL_NAME}, an individual based in Azerbaijan. You can reach us at{" "}
+              Pomo (the Pomo Discord bot, pomofocus.online and the Pomo Focus desktop app) is operated by {LEGAL_NAME}, based in Azerbaijan. You can reach us at{" "}
               <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-4">{CONTACT_EMAIL}</a>{" "}
               or in our support server.
             </p>
@@ -55,12 +55,13 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-white mb-4">6. Pomo Pro subscriptions</h2>
+            <h2 className="text-xl font-bold text-white mb-4">6. Pomo Plus and Pomo Pro subscriptions</h2>
             <p>
-              Pomo Pro is an optional software subscription ($2.99 per month or $19.99 per year) that unlocks extra features in Pomo for the Discord account it was bought for. Subscriptions renew automatically until cancelled. You can cancel any time with <code>/premium status</code> in Discord or from the link in your receipt; Pro stays active until the end of the period you paid for. Pro perks are not transferable. We may change the perks included in Pro; existing subscribers will be told in advance about price changes.
+              Pomo Plus (2.49 AZN per month or 19.99 AZN per year) and Pomo Pro (3.49 AZN per month or 26.99 AZN per year) are optional software subscriptions that unlock extra features in Pomo for the Discord account they were bought for. Prices are in Azerbaijani manat (AZN); if your card is in another currency, your bank converts the amount and may add its own fee. Subscriptions renew automatically on the same card until cancelled. You can cancel any time at{" "}
+              <Link href="/billing" className="underline underline-offset-4">pomofocus.online/billing</Link> or with <code>/premium status</code> in Discord; your plan stays active until the end of the period you paid for. Plans are not transferable. We may change the perks included in a plan; existing subscribers will be told in advance about price changes.
             </p>
             <p className="mt-3">
-              Our order process is conducted by our online reseller Paddle.com. Paddle.com is the Merchant of Record for all our orders. Paddle provides all customer service inquiries and handles returns.
+              The seller is {LEGAL_NAME}. Payments are processed by Epoint (epoint.az), a payment institution licensed by the Central Bank of the Republic of Azerbaijan. You enter your card details on Epoint&apos;s payment page; we never see or store your full card number. Epoint keeps the card as a token so that renewals can be charged.
             </p>
             <p className="mt-3">
               <strong>Refunds:</strong> every payment comes with a 14-day money-back guarantee. See our{" "}

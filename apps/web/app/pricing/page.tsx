@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Check } from "lucide-react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Footer from "@/components/Footer";
+import ProSignInButton from "@/components/site/ProSignInButton";
 import { SUPPORT_SERVER_URL } from "@/lib/links";
 import { PRO_TIERS, type ProTier } from "@/lib/billing";
+import { canBuy, currentSubscription, epointConfigured } from "@/lib/epoint";
 
 export const metadata: Metadata = {
   title: "Pricing",
-  description: "Pomo Plus ($1.49/month) and Pomo Pro ($1.99/month) unlock extra features in the Pomo Discord bot: 2x water, a bigger garden, more habits, streak shields, advanced stats and 24/7 lofi radio.",
+  description: "Pomo Plus (2.49 AZN/month) and Pomo Pro (3.49 AZN/month) unlock extra features in the Pomo Discord bot: 2x water, a bigger garden, more habits, streak shields, advanced stats and 24/7 lofi radio.",
   alternates: { canonical: "/pricing" },
 };
 
@@ -23,12 +28,21 @@ const FREE_FEATURES = [
 const FAQ = [
   ["What do I get?", "A subscription for your Discord account. The plan's features unlock in the Pomo bot and on the dashboard for as long as the subscription is active."],
   ["Plus or Pro?", "Plus covers the everyday boosts: more water, a bigger garden and 10 habits. Pro adds streak shields, deeper stats, 15 habits and 24/7 lofi radio."],
-  ["How do I cancel?", "Run /premium status in Discord, or use the link in your receipt email. You keep your plan until the end of the period you paid for."],
+  ["How do I cancel?", "Open pomofocus.online/billing (or run /premium status in Discord) and press Cancel. Nothing more is charged and you keep your plan until the end of the period you paid for."],
+  ["Which currency?", "Plans are charged in Azerbaijani manat (AZN) through Epoint, a payment provider licensed by the Central Bank of Azerbaijan. If your card is in another currency, your bank converts the amount."],
+  ["Does it renew?", "Yes, every month or year on the same card, until you cancel. You can see the next payment date on your billing page."],
   ["Refunds", "Every payment has a 14-day money-back guarantee: ask within 14 days for a full refund, no questions asked."],
 ];
 
-export default function PricingPage() {
+export const revalidate = 0;
+
+export default async function PricingPage() {
   const tiers = (Object.keys(PRO_TIERS) as ProTier[]).map(tier => ({ tier, ...PRO_TIERS[tier] }));
+  const session = await getServerSession(authOptions);
+  const discordId = (session?.user as { id?: string } | undefined)?.id;
+  const salesOpen = epointConfigured() && process.env.PRO_SALES_OPEN === "true";
+  const buyer = discordId ? canBuy(discordId) : false;
+  const current = discordId ? currentSubscription(discordId) : null;
 
   return (
     <main className="site min-h-screen">
@@ -64,7 +78,7 @@ export default function PricingPage() {
                   <span className="ml-1 text-[16px] font-normal text-[var(--site-muted)]">/ month</span>
                 </p>
                 <p className="mt-2 text-[14px] text-[var(--site-muted)]">
-                  or {p.yearly} a year, about {p.yearlyPerMonth} a month
+                  about {p.usdMonthly} · or {p.yearly} a year ({p.yearlyPerMonth} a month)
                 </p>
                 <ul className="mt-8 border-t border-[var(--site-line)]">
                   {p.perks.map(([title, detail]) => (
@@ -78,7 +92,8 @@ export default function PricingPage() {
                   ))}
                 </ul>
               </div>
-              <span className="btn btn-outline h-11 w-full opacity-60">Coming soon</span>
+              <BuyArea tier={p.tier} name={p.name} monthly={p.monthly} yearly={p.yearly}
+                signedIn={Boolean(discordId)} salesOpen={salesOpen} canBuy={buyer} currentPlan={current?.plan ?? null} />
             </div>
           ))}
         </div>
@@ -123,4 +138,35 @@ export default function PricingPage() {
       <Footer />
     </main>
   );
+}
+
+/** The bottom of a plan card: monthly / yearly buttons, sign-in, or "coming soon". */
+function BuyArea({ tier, name, monthly, yearly, signedIn, salesOpen, canBuy, currentPlan }: {
+  tier: ProTier; name: string; monthly: string; yearly: string;
+  signedIn: boolean; salesOpen: boolean; canBuy: boolean; currentPlan: ProTier | null;
+}) {
+  if (currentPlan) {
+    return (
+      <Link href="/billing" className="btn btn-outline w-full">
+        {currentPlan === tier ? "Your plan · manage" : "Manage your plan"}
+      </Link>
+    );
+  }
+  if (canBuy) {
+    return (
+      <form action="/api/billing/epoint/checkout" method="post" className="grid gap-2 sm:grid-cols-2">
+        <input type="hidden" name="plan" value={tier} />
+        <button type="submit" name="cycle" value="monthly" className="btn btn-tomato w-full">
+          {monthly} / month
+        </button>
+        <button type="submit" name="cycle" value="yearly" className="btn btn-outline w-full">
+          {yearly} / year
+        </button>
+      </form>
+    );
+  }
+  if (salesOpen && !signedIn) {
+    return <ProSignInButton label={`Sign in to get ${name}`} className="btn btn-tomato w-full" callbackUrl={`/pricing?plan=${tier}#pricing`} />;
+  }
+  return <span className="btn btn-outline w-full opacity-60">Coming soon</span>;
 }
