@@ -1,0 +1,39 @@
+# Builds the Rust version of Pomo Focus (pomo-desktop-rs) on GitHub machines.
+# Run it by hand (`gh workflow run desktop-rs-build.yml`), then download the artifacts.
+# Linux builds on Ubuntu 22.04 so the binary needs only glibc 2.35 and runs on older distros.
+name: Desktop (Rust) build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  linux:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: pomo-desktop-rs
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: pomo-desktop-rs
+
+      - name: System libraries
+        run: sudo apt-get update && sudo apt-get install -y pkg-config libfontconfig1-dev libfreetype6-dev libxkbcommon-dev libwayland-dev
+
+      - run: cargo build --release --locked
+
+      - name: Package .deb and AppImage
+        run: packaging/build-deb.sh && packaging/build-appimage.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pomo-focus-linux
+          path: |
+            pomo-desktop-rs/dist/*.deb
+            pomo-desktop-rs/dist/*.AppImage
+          if-no-files-found: error
+          retention-days: 14

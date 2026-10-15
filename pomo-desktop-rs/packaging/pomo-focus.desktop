@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Pomo Focus
+GenericName=Focus Timer
+Comment=Pomodoro focus timer for Pomo on Discord
+Exec=pomo-focus %U
+Icon=pomo-focus
+Terminal=false
+Categories=Education;Utility;
+Keywords=pomodoro;focus;timer;study;discord;
+StartupWMClass=pomo-focus
+MimeType=x-scheme-handler/pomo;
