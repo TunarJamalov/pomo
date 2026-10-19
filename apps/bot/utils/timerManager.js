@@ -71,6 +71,9 @@ function formatCycleTitle(language, session, sessionTitle) {
  * Start a study session timer.
  * @param {boolean} isNew - Whether this is a newly created session (triggers friend notifications).
  */
+// A completion timer may fire a little early or late; within this it counts as on time
+const END_TOLERANCE_MS = 5000;
+
 function startStudyTimer(client, session, isNew = false) {
     const now = Date.now();
     if (Number(session.paused || 0) === 1) {
@@ -104,19 +107,27 @@ function startStudyTimer(client, session, isNew = false) {
     const MAX_CONSECUTIVE_ERRORS = 5;
 
     // ─── Progress update interval (every 60 seconds) ─────────
+    // True while this set of timers is the session's current one (pause/resume replace it)
+    const isCurrent = () => activeTimers.get(session.id) === timers;
+
     timers.interval = setInterval(async () => {
         try {
+            const live = getSessionById(session.id);
+            if (!isCurrent() || !live || Number(live.completed || 0) === 1 || Number(live.paused || 0) === 1) {
+                clearInterval(timers.interval);
+                return;
+            }
             const nowMs = Date.now();
-            const endMs = parseUTC(session.ends_at).getTime();
+            const endMs = parseUTC(live.ends_at).getTime();
 
             // Safety: if we're past the end time, the completion timer must have failed
             if (nowMs >= endMs + 60000) {
                 console.warn(`[TIMER] Session ${session.id} overran end time. Force-completing.`);
-                handleSessionComplete(client, session);
+                handleSessionComplete(client, live);
                 return;
             }
 
-            const elapsed = Math.floor((nowMs - parseUTC(session.started_at).getTime()) / 1000 / 60);
+            const elapsed = Math.floor((nowMs - parseUTC(live.started_at).getTime()) / 1000 / 60);
             const remaining = Math.max(0, Math.ceil((endMs - nowMs) / 1000 / 60));
             const total = session.duration;
 
@@ -141,6 +152,12 @@ function startStudyTimer(client, session, isNew = false) {
             }
             if (session.message_id) {
                 const message = await channel.messages.fetch(session.message_id).catch(() => null);
+                // Fetching can take seconds when Discord is slow; if the user paused meanwhile,
+                // this running view must not replace the paused one
+                const stillRunning = getSessionById(session.id);
+                if (!isCurrent() || !stillRunning || Number(stillRunning.paused || 0) === 1 || Number(stillRunning.completed || 0) === 1) {
+                    return;
+                }
                 if (message) {
                     await message.edit({ embeds: [embed] }).catch((err) => {
                         if (err.code === 50001 || err.status === 403 || err.code === 10008) {
@@ -206,7 +223,7 @@ function startStudyTimer(client, session, isNew = false) {
     // ─── Hard safety timeout (duration + 5 min) ───────────
     // Catches ANY case where the completion timer somehow fails
     timers.safety = setTimeout(() => {
-        if (activeTimers.has(session.id)) {
+        if (isCurrent()) {
             console.warn(`[TIMER] Safety timeout triggered for session ${session.id}. Force-completing.`);
             handleSessionComplete(client, session);
         }
@@ -295,7 +312,17 @@ function startBreakTimer(client, session) {
 
 const { handleSessionComplete: _handleSessionComplete } = require('./timer/sessionComplete');
 async function handleSessionComplete(client, session) {
-    return _handleSessionComplete(client, session, {
+    // Timers keep the session as it was when they started. Pausing or resuming changes
+    // it since, so decide from the database: a paused session never finishes (its pause
+    // timeout handles it), and one whose end moved later goes back on the clock.
+    const current = getSessionById(session.id);
+    if (!current || Number(current.completed || 0) === 1) return;
+    if (Number(current.paused || 0) === 1) return;
+    if (parseUTC(current.ends_at).getTime() - Date.now() > END_TOLERANCE_MS) {
+        startStudyTimer(client, current);
+        return;
+    }
+    return _handleSessionComplete(client, current, {
         clearTimers,
         parseUTC,
         startBreakTimer,
