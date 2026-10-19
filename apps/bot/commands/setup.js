@@ -276,7 +276,7 @@ async function handleStatus(interaction, language) {
 
     return interaction.reply({
         embeds: [embed],
-        components: isSetupComplete(settings) ? [buildSetupNextActionRow()] : [buildSetupButtonRow()],
+        components: isSetupComplete(settings) ? [buildSetupNextActionRow()] : [buildSetupButtonRow(null, 'en', interaction.guild)],
         flags: 64,
     });
 }

@@ -139,7 +139,21 @@ function getSetupRecommendation(settings = {}) {
 
 // Buttons are passed a guild id when sent by DM, where interaction.guild is empty.
 // A row holds at most five buttons.
-function buildSetupButtonRow(guildId = null, language = 'en') {
+/**
+ * Whether 1-Click Setup can work in this server: it creates channels and a role, which
+ * the standard invite does not grant. Unknown (no guild given) counts as yes.
+ */
+function canAutoSetup(guild) {
+    const permissions = guild?.members?.me?.permissions;
+    if (!permissions?.has) return true;
+    return permissions.has([PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageRoles]);
+}
+
+/**
+ * Setup buttons. Pass the guild so 1-Click Setup is left out where Pomo lacks the
+ * permissions for it: a button that only answers with an error drives new servers away.
+ */
+function buildSetupButtonRow(guildId = null, language = 'en', guild = null) {
     const quickId = guildId ? `setup_quick_${guildId}` : 'setup_quick';
     const autoId = guildId ? `setup_auto_${guildId}` : 'setup_auto';
     const wizardId = guildId ? `setup_wizard_open_${guildId}` : 'setup_wizard_open';
@@ -148,12 +162,16 @@ function buildSetupButtonRow(guildId = null, language = 'en') {
         new ButtonBuilder()
             .setCustomId(quickId)
             .setLabel(t(language, 'setupQuickButton'))
-            .setStyle(ButtonStyle.Success),
-        new ButtonBuilder()
-            .setCustomId(autoId)
-            .setLabel(t(language, 'setupFullButton'))
-            .setStyle(ButtonStyle.Primary)
+            .setStyle(ButtonStyle.Success)
     );
+    if (canAutoSetup(guild)) {
+        row.addComponents(
+            new ButtonBuilder()
+                .setCustomId(autoId)
+                .setLabel(t(language, 'setupFullButton'))
+                .setStyle(ButtonStyle.Primary)
+        );
+    }
 
     if (!guildId) {
         row.addComponents(
@@ -279,7 +297,7 @@ async function maybeSendSetupNudge(interaction) {
 
     const message = await interaction.followUp({
         embeds: [embed],
-        components: [buildSetupButtonRow()],
+        components: [buildSetupButtonRow(null, 'en', interaction.guild)],
         flags: 64,
     }).catch(() => null);
 
@@ -456,6 +474,7 @@ module.exports = {
     isGuildConfigured,
     isSetupComplete,
     buildSetupButtonRow,
+    canAutoSetup,
     buildSetupWizardRows,
     buildSetupWizardRowsFor,
     buildSetupProgressEmbed,

@@ -14,6 +14,7 @@ const {
     getCurrentGuildQuests,
     db,
     recordCommandUsage,
+    recordOnboardingEvent,
 } = require('../utils/database');
 const { cancelSession, pauseStudySession, resumeStudySession, shortenToTrialSession } = require('../utils/timerManager');
 const { getInteractionLanguage, getGuildLanguage, t } = require('../utils/i18n');
@@ -295,14 +296,17 @@ async function routeButton(interaction) {
         }
 
         if (customId === 'setup_auto') {
+            trackSetup(interaction, setupGuildId, 'auto_click');
             return await handleAutoSetup(interaction, setupGuildId);
         }
 
         if (customId === 'setup_quick') {
+            trackSetup(interaction, setupGuildId, 'quick_click');
             return await handleQuickSetup(interaction, setupGuildId);
         }
 
         if (customId === 'setup_wizard_open') {
+            trackSetup(interaction, setupGuildId, 'wizard_open');
             return await handleSetupWizardOpen(interaction, setupGuildId);
         }
 
@@ -779,6 +783,15 @@ function getAutoSetupLanguage(interaction, setupGuildId) {
     return getInteractionLanguage(interaction);
 }
 
+/** Records a setup click or result for /botstats (onboarding_events, event "setup"). */
+function trackSetup(interaction, guildId, topic) {
+    try {
+        recordOnboardingEvent(interaction.guildId || guildId, interaction.user.id, 'setup', topic);
+    } catch (_) {
+        // Stats must never break setup
+    }
+}
+
 async function handleAutoSetup(interaction, setupGuildId = null) {
     const guildId = interaction.guildId || setupGuildId;
     if (guildId && autoSetupInProgress.has(guildId)) {
@@ -873,6 +886,7 @@ async function runQuickSetup(interaction, setupGuildId = null) {
         && channel.permissionsFor(me)?.has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks]);
     const reportChannel = canPost(interaction.channel) ? interaction.channel : findWelcomeChannel(guild);
     if (!reportChannel) {
+        trackSetup(interaction, guild.id, 'quick_failed');
         return interaction.editReply({
             embeds: [errorEmbed(t(language, 'interactionSetupFailedTitle'), t(language, 'quickSetupNoChannelBody'))],
         });
@@ -895,6 +909,7 @@ async function runQuickSetup(interaction, setupGuildId = null) {
         setup_completed_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
     });
     getCurrentGuildQuests(guild.id);
+    trackSetup(interaction, guild.id, 'quick_done');
 
     return interaction.editReply({
         embeds: [successEmbed(
@@ -913,6 +928,7 @@ async function runAutoSetup(interaction, setupGuildId = null) {
     if (error) return interaction.editReply(error);
     const botMember = guild.members.me || await guild.members.fetchMe().catch(() => null);
     if (!botMember?.permissions.has([PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageRoles])) {
+        trackSetup(interaction, guild.id, 'auto_no_permission');
         return interaction.editReply({
             embeds: [errorEmbed(
                 t(language, 'interactionBotPermissionsMissingTitle'),
@@ -1009,9 +1025,11 @@ async function runAutoSetup(interaction, setupGuildId = null) {
             })
         );
 
+        trackSetup(interaction, guild.id, 'auto_done');
         return interaction.editReply({ embeds: [embed] });
 
     } catch (error) {
+        trackSetup(interaction, guild.id, 'auto_failed');
         console.error('1-Click Setup Error:', error);
         await role?.delete().catch(() => {});
         for (const channel of [...studyChannels].reverse()) await channel.delete().catch(() => {});

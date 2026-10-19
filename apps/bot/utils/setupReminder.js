@@ -70,7 +70,7 @@ async function runSetupReminders(client, limit = DAILY_BATCH_SIZE) {
             )
             .setTimestamp();
 
-        const message = await channel.send({ embeds: [embed], components: [buildSetupButtonRow()] }).catch(() => null);
+        const message = await channel.send({ embeds: [embed], components: [buildSetupButtonRow(null, 'en', guild)] }).catch(() => null);
         markSetupReminderAttempt(candidate.guild_id, Boolean(message));
         if (message) sent++;
     }
@@ -105,7 +105,7 @@ async function runSetupFollowups(client, limit = HOURLY_FOLLOWUP_BATCH_SIZE) {
                 .setColor(Colors.SUCCESS)
                 .setTitle(t(language, 'setupFollowupTitle'))
                 .setDescription(t(language, 'setupFollowupBody'))],
-            components: [buildSetupButtonRow(null, language)],
+            components: [buildSetupButtonRow(null, language, guild)],
         }).catch(() => null) : null;
         // Marked even when it could not be posted, so a server is never retried hourly
         markSetupFollowupSent(candidate.guild_id);
@@ -158,7 +158,7 @@ async function runSetupNudges(client, limit = DAILY_NUDGE_BATCH_SIZE) {
         const embed = buildSetupNudgeEmbed(candidate);
         const message = await channel.send({
             embeds: [embed],
-            components: [buildSetupButtonRow()],
+            components: [buildSetupButtonRow(null, 'en', guild)],
         }).catch(() => null);
 
         if (message) {

@@ -3,9 +3,9 @@ const {
     EmbedBuilder,
     PermissionFlagsBits,
 } = require('discord.js');
-const { recordGuildJoin } = require('../utils/database');
+const { recordGuildJoin, recordOnboardingEvent } = require('../utils/database');
 const { Colors } = require('../utils/constants');
-const { buildSetupButtonRow } = require('../utils/setupWizard');
+const { buildSetupButtonRow, canAutoSetup } = require('../utils/setupWizard');
 const { normalizeLanguage, t } = require('../utils/i18n');
 
 module.exports = {
@@ -24,26 +24,37 @@ module.exports = {
 
         // Post in the server so whoever added Pomo sees the next step right away,
         // and DM the owner in case they did not add it themselves.
+        // What the new server actually saw, for /botstats (onboarding_events, event "welcome")
+        const track = topic => recordOnboardingEvent(guild.id, guild.ownerId || 'unknown', 'welcome', topic);
+
         const channel = findWelcomeChannel(guild);
         if (channel) {
             try {
                 const message = await channel.send({
                     embeds: [buildWelcomeEmbed(guild, language)],
-                    components: [buildSetupButtonRow(null, language)],
+                    components: [buildSetupButtonRow(null, language, guild)],
                 });
+                track('posted');
                 if (channel.permissionsFor(guild.members.me)?.has(PermissionFlagsBits.ManageMessages)) {
                     await message.pin().catch(() => {});
                 }
             } catch (err) {
+                track('post_failed');
                 console.log(`[GUILD_CREATE] Could not send or pin message in ${guild.name}`);
             }
+        } else {
+            track('no_channel');
         }
 
         if (owner) {
-            await owner.send({
+            const sent = await owner.send({
                 embeds: [buildWelcomeEmbed(guild, language)],
-                components: [buildSetupButtonRow(guild.id, language)],
-            }).catch(() => console.log(`[GUILD_CREATE] Could not DM owner of ${guild.name}`));
+                components: [buildSetupButtonRow(guild.id, language, guild)],
+            }).then(() => true).catch(() => {
+                console.log(`[GUILD_CREATE] Could not DM owner of ${guild.name}`);
+                return false;
+            });
+            track(sent ? 'dm_sent' : 'dm_failed');
         }
 
         await logGuildChange(guild.client, guild, true);
@@ -51,15 +62,19 @@ module.exports = {
 };
 
 function buildWelcomeEmbed(guild, language) {
+    const fields = [
+        { name: t(language, 'welcomeTryName'), value: t(language, 'welcomeTryValue'), inline: false },
+        { name: t(language, 'welcomeQuickName'), value: t(language, 'welcomeQuickValue'), inline: false },
+    ];
+    // Only offered where Pomo can create channels and roles; otherwise the button just fails
+    if (canAutoSetup(guild)) {
+        fields.push({ name: t(language, 'welcomeFullName'), value: t(language, 'welcomeFullValue'), inline: false });
+    }
     return new EmbedBuilder()
         .setColor(Colors.SUCCESS)
         .setTitle(t(language, 'welcomeTitle', { server: guild.name }))
         .setDescription(t(language, 'welcomeIntro'))
-        .addFields(
-            { name: t(language, 'welcomeTryName'), value: t(language, 'welcomeTryValue'), inline: false },
-            { name: t(language, 'welcomeQuickName'), value: t(language, 'welcomeQuickValue'), inline: false },
-            { name: t(language, 'welcomeFullName'), value: t(language, 'welcomeFullValue'), inline: false },
-        )
+        .addFields(...fields)
         .setFooter({ text: t(language, 'welcomeFooter') })
         .setTimestamp();
 }

@@ -7,6 +7,7 @@ const {
     getTopCommands,
     getChurnAnalytics,
     getRetentionAnalytics,
+    getFirstStepsAnalytics,
     db,
 } = require('../utils/database');
 const { Colors } = require('../utils/constants');
@@ -129,6 +130,16 @@ function buildChurnRetentionEmbed() {
     const cohortText = churn.joined
         ? `${churn.already_left || 0} of ${churn.joined} servers that joined already left (**${pct(churn.already_left, churn.joined)}**)`
         : 'No new joins in this window.';
+    // Tracked since the welcome and setup buttons started recording (onboarding_events)
+    const s = getFirstStepsAnalytics(30);
+    const c = key => s[key] || 0;
+    const firstStepsText = [
+        `Welcome posted **${c('welcome:posted')}** · failed **${c('welcome:post_failed')}** · no channel **${c('welcome:no_channel')}**`,
+        `Owner DM sent **${c('welcome:dm_sent')}** · failed **${c('welcome:dm_failed')}**`,
+        `Quick Setup: clicked **${c('setup:quick_click')}** · done **${c('setup:quick_done')}** · failed **${c('setup:quick_failed')}**`,
+        `1-Click: clicked **${c('setup:auto_click')}** · no permission **${c('setup:auto_no_permission')}** · done **${c('setup:auto_done')}** · failed **${c('setup:auto_failed')}**`,
+        `Manual setup opened **${c('setup:wizard_open')}**`,
+    ].join('\n');
     const retentionLine = (label, returned, cohort) =>
         `${label}: **${pct(returned, cohort)}** (${returned || 0}/${cohort || 0})`;
 
@@ -139,6 +150,7 @@ function buildChurnRetentionEmbed() {
             { name: 'Server leaves (30d)', value: leftText, inline: false },
             { name: 'Before leaving', value: beforeText, inline: false },
             { name: 'Joined in 30d', value: cohortText, inline: false },
+            { name: 'New servers, first steps (30d)', value: firstStepsText, inline: false },
             {
                 name: 'User retention (joined in last 90d)',
                 value: [

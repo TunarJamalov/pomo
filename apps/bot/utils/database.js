@@ -3012,6 +3012,22 @@ function getOnboardingAnalytics(days = 7, limit = 6) {
     return { ...summary, top_topics: topTopics };
 }
 
+/**
+ * What new servers did first: was the welcome delivered, which setup button they
+ * pressed and how it ended. Counts per topic of the "welcome" and "setup" events.
+ */
+function getFirstStepsAnalytics(days = 30) {
+    const safeDays = Math.max(1, Math.min(Number(days) || 30, 90));
+    const rows = db.prepare(`
+        SELECT event_type || ':' || COALESCE(topic, '') AS key, COUNT(*) AS n
+        FROM onboarding_events
+        WHERE event_type IN ('welcome', 'setup')
+          AND created_at >= datetime('now', '-' || ? || ' days')
+        GROUP BY event_type, topic
+    `).all(safeDays);
+    return Object.fromEntries(rows.map(row => [row.key, row.n]));
+}
+
 function markOnboardingTipShown(userId, tipKey) {
     getOrCreateUser(userId);
     const result = db.prepare(`
@@ -4727,6 +4743,7 @@ module.exports = {
     recordCommandUsage,
     getUserActiveGuildLanguage,
     recordOnboardingEvent,
+    getFirstStepsAnalytics,
     getOnboardingAnalytics,
     markOnboardingTipShown,
     hasSeenOnboardingTip,

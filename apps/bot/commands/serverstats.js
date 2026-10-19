@@ -149,7 +149,7 @@ module.exports = {
             .setTimestamp();
 
         const setupComplete = isSetupComplete(settings);
-        const components = setupComplete ? [] : [buildSetupButtonRow()];
+        const components = setupComplete ? [] : [buildSetupButtonRow(null, 'en', interaction.guild)];
         if (!setupComplete) {
             embed.addFields({
                 name: t(language, 'serverStatsSetupHintField'),

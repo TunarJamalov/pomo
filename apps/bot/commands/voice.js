@@ -233,7 +233,7 @@ async function handleSettings(interaction, language) {
 
     await interaction.reply({
         embeds: [embed],
-        components: configured ? [] : [buildSetupButtonRow()],
+        components: configured ? [] : [buildSetupButtonRow(null, 'en', interaction.guild)],
     });
 }
 
