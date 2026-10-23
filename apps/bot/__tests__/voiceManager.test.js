@@ -149,6 +149,21 @@ describe('voice focus tracking', () => {
             expect(second.send.mock.calls[0][0].embeds[0].data.description).not.toContain('New to Pomo');
         });
 
+        test('a session without water says why: an unfinished 25-minute block, or rewards turned off', async () => {
+            createBackdatedVoiceSession('voice_block', '2026-06-06 10:00:00');
+            const short = fakeClient();
+            await finishVoiceSession(short.client, 'voice_block', 'guild_voice', { endedAt: '2026-06-06 10:15:00' });
+            const blockText = short.send.mock.calls[0][0].embeds[0].data.description;
+            expect(blockText).toContain('25-minute');
+            expect(blockText).toContain('stay 10 min longer');
+
+            updateGuildSettings('guild_voice', { voice_rewards_enabled: 0 });
+            createBackdatedVoiceSession('voice_off', '2026-06-06 10:00:00');
+            const off = fakeClient();
+            await finishVoiceSession(off.client, 'voice_off', 'guild_voice', { endedAt: '2026-06-06 10:50:00' });
+            expect(off.send.mock.calls[0][0].embeds[0].data.description).toContain('turned off water rewards');
+        });
+
         test('a first visit below the minimum gets one hint, never again', async () => {
             createBackdatedVoiceSession('voice_short_new', '2026-06-06 10:00:00');
             const first = fakeClient();

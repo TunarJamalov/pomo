@@ -150,6 +150,14 @@ async function finishVoiceSession(client, userId, guildId, options = {}) {
         ? Math.min(creditedMinutes, remainingCap)
         : 0;
     const rewardedMinutes = Math.floor(rewardBaseMinutes / 25) * 25;
+    // Why no water, so the summary can say it plainly instead of one catch-all line
+    let noRewardReason = null;
+    if (rewardedMinutes === 0) {
+        if (!settings.voice_rewards_enabled) noRewardReason = 'off';
+        else if (creditedMinutes === 0 && overlapMinutes > 0) noRewardReason = 'overlap';
+        else if (creditedMinutes === 0 || remainingCap < 25) noRewardReason = 'cap';
+        else noRewardReason = 'block';
+    }
 
     const rewards = awardVoiceFocus(userId, guildId, creditedMinutes, rewardedMinutes, session.started_at);
 
@@ -191,6 +199,8 @@ async function finishVoiceSession(client, userId, guildId, options = {}) {
             creditedMinutes,
             overlapMinutes,
             rewardedMinutes,
+            noRewardReason,
+            dailyCap,
             ...rewards,
         });
     }
@@ -579,7 +589,12 @@ async function sendVoiceSummary(client, userId, result) {
     if (result.rewardedMinutes > 0) {
         description += `\n\n${t(language, 'voiceRewards', { water: result.water, xp: result.xp })}`;
     } else {
-        description += `\n\n${t(language, 'voiceNoReward')}`;
+        const noRewardKeys = { block: 'voiceNoRewardBlock', cap: 'voiceNoRewardCap', off: 'voiceNoRewardOff' };
+        description += `\n\n${t(language, noRewardKeys[result.noRewardReason] || 'voiceNoReward', {
+            credited: result.creditedMinutes,
+            left: Math.max(1, 25 - result.creditedMinutes),
+            cap: result.dailyCap,
+        })}`;
     }
     if (result.leveledUp) description += `\n${t(language, 'levelUpLabel')}: **${result.newLevel}**`;
 

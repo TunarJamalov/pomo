@@ -14458,6 +14458,58 @@ Object.assign(Messages['ar'], {
     "voiceShortSessionHint": "👋 بقيت {minutes} دقيقة في قناة دراسة صوتية. يحتسب Pomo الدراسة الصوتية ابتداءً من **{min} دقائق**: ابقَ أطول قليلًا في المرة القادمة لتكسب 💧 الماء وتبدأ 🔥 سلسلة.\nتفضّل مؤقّتًا؟ اكتب `/study 25`."
 });
 
+// Voice summary: why a session earned no water (utils/voiceManager.js)
+Object.assign(Messages['en'], {
+    "voiceNoRewardBlock": "💧 Water comes in full **25-minute** blocks. You studied {credited} min: stay {left} min longer next time to earn it. These minutes still count for your streak and the leaderboard.",
+    "voiceNoRewardCap": "💧 You've reached this server's daily voice water limit ({cap} min). These minutes still count for your streak and the leaderboard.",
+    "voiceNoRewardOff": "💧 This server turned off water rewards for voice study. These minutes still count for your streak and the leaderboard."
+});
+Object.assign(Messages['es'], {
+    "voiceNoRewardBlock": "💧 El agua llega en bloques completos de **25 minutos**. Estudiaste {credited} min: quédate {left} min más la próxima vez para ganarla. Estos minutos siguen contando para tu racha y la clasificación.",
+    "voiceNoRewardCap": "💧 Llegaste al límite diario de agua por voz de este servidor ({cap} min). Estos minutos siguen contando para tu racha y la clasificación.",
+    "voiceNoRewardOff": "💧 Este servidor desactivó el agua por estudiar en voz. Estos minutos siguen contando para tu racha y la clasificación."
+});
+Object.assign(Messages['fr'], {
+    "voiceNoRewardBlock": "💧 L’eau se gagne par blocs complets de **25 minutes**. Tu as étudié {credited} min : reste {left} min de plus la prochaine fois pour en gagner. Ces minutes comptent quand même pour ta série et le classement.",
+    "voiceNoRewardCap": "💧 Tu as atteint la limite quotidienne d’eau en vocal de ce serveur ({cap} min). Ces minutes comptent quand même pour ta série et le classement.",
+    "voiceNoRewardOff": "💧 Ce serveur a désactivé l’eau pour l’étude en vocal. Ces minutes comptent quand même pour ta série et le classement."
+});
+Object.assign(Messages['pt-BR'], {
+    "voiceNoRewardBlock": "💧 A água vem em blocos completos de **25 minutos**. Você estudou {credited} min: fique {left} min a mais da próxima vez para ganhar. Esses minutos ainda contam para sua sequência e o ranking.",
+    "voiceNoRewardCap": "💧 Você atingiu o limite diário de água por voz deste servidor ({cap} min). Esses minutos ainda contam para sua sequência e o ranking.",
+    "voiceNoRewardOff": "💧 Este servidor desativou a água por estudo em voz. Esses minutos ainda contam para sua sequência e o ranking."
+});
+Object.assign(Messages['ru'], {
+    "voiceNoRewardBlock": "💧 Вода начисляется за полные блоки по **25 минут**. Ты позанимался(ась) {credited} мин: в следующий раз задержись на {left} мин дольше, чтобы её получить. Эти минуты всё равно идут в серию и рейтинг.",
+    "voiceNoRewardCap": "💧 Ты достиг(ла) дневного лимита воды за голосовые сессии на этом сервере ({cap} мин). Эти минуты всё равно идут в серию и рейтинг.",
+    "voiceNoRewardOff": "💧 На этом сервере вода за учёбу в голосовом канале отключена. Эти минуты всё равно идут в серию и рейтинг."
+});
+Object.assign(Messages['tr'], {
+    "voiceNoRewardBlock": "💧 Su tam **25 dakikalık** bloklarla verilir. {credited} dk çalıştın: bir dahaki sefere {left} dk daha kal ve kazan. Bu dakikalar yine de serine ve sıralamaya sayılır.",
+    "voiceNoRewardCap": "💧 Bu sunucunun günlük ses suyu sınırına ulaştın ({cap} dk). Bu dakikalar yine de serine ve sıralamaya sayılır.",
+    "voiceNoRewardOff": "💧 Bu sunucu ses kanalında çalışma için su ödülünü kapattı. Bu dakikalar yine de serine ve sıralamaya sayılır."
+});
+Object.assign(Messages['az'], {
+    "voiceNoRewardBlock": "💧 Su tam **25 dəqiqəlik** bloklarla verilir. {credited} dəq oxudun: növbəti dəfə {left} dəq çox qal və qazan. Bu dəqiqələr yenə də seriyana və reytinqə sayılır.",
+    "voiceNoRewardCap": "💧 Bu serverin gündəlik səsli su limitinə çatdın ({cap} dəq). Bu dəqiqələr yenə də seriyana və reytinqə sayılır.",
+    "voiceNoRewardOff": "💧 Bu server səsli oxuma üçün su mükafatını söndürüb. Bu dəqiqələr yenə də seriyana və reytinqə sayılır."
+});
+Object.assign(Messages['ja'], {
+    "voiceNoRewardBlock": "💧 水は**25分**ごとのブロックでもらえます。今回は{credited}分でした。次はあと{left}分長くいればもらえます。この時間はストリークとランキングにはカウントされます。",
+    "voiceNoRewardCap": "💧 このサーバーのボイスでの1日の水の上限（{cap}分）に達しました。この時間はストリークとランキングにはカウントされます。",
+    "voiceNoRewardOff": "💧 このサーバーではボイスでの勉強に水の報酬がありません。この時間はストリークとランキングにはカウントされます。"
+});
+Object.assign(Messages['ko'], {
+    "voiceNoRewardBlock": "💧 물은 **25분** 단위로만 받아요. 이번에는 {credited}분 공부했어요. 다음엔 {left}분만 더 있으면 받을 수 있어요. 이 시간은 연속 기록과 순위에는 그대로 반영돼요.",
+    "voiceNoRewardCap": "💧 이 서버의 하루 음성 물 한도({cap}분)에 도달했어요. 이 시간은 연속 기록과 순위에는 그대로 반영돼요.",
+    "voiceNoRewardOff": "💧 이 서버는 음성 공부 물 보상을 꺼 두었어요. 이 시간은 연속 기록과 순위에는 그대로 반영돼요."
+});
+Object.assign(Messages['ar'], {
+    "voiceNoRewardBlock": "💧 يُمنح الماء على كتل كاملة مدتها **25 دقيقة**. درست {credited} دقيقة: ابقَ {left} دقيقة أطول في المرة القادمة لتحصل عليه. هذه الدقائق تُحتسب مع ذلك لسلسلتك والترتيب.",
+    "voiceNoRewardCap": "💧 وصلت إلى الحد اليومي لماء الدراسة الصوتية في هذا الخادم ({cap} دقيقة). هذه الدقائق تُحتسب مع ذلك لسلسلتك والترتيب.",
+    "voiceNoRewardOff": "💧 أوقف هذا الخادم مكافأة الماء للدراسة الصوتية. هذه الدقائق تُحتسب مع ذلك لسلسلتك والترتيب."
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,
