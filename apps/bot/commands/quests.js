@@ -138,8 +138,9 @@ async function checkAndNotifyQuests(client, userId, language, channel) {
 
                 if (result.changes === 0) continue;
 
+                // Paid plans boost quest water only: XP feeds levels and the XP leaderboard, which stay fair
                 const waterGain = Math.ceil(quest.reward.water * premiumMultiplier);
-                const xpGain = Math.ceil(quest.reward.xp * premiumMultiplier);
+                const xpGain = quest.reward.xp;
 
                 incrementUser(userId, 'water', waterGain);
                 incrementUser(userId, 'xp', xpGain);
@@ -235,8 +236,9 @@ async function handleClaim(interaction, userId, language) {
 
             if (result.changes === 0) continue;
 
+            // Paid plans boost quest water only: XP feeds levels and the XP leaderboard, which stay fair
             const waterGain = Math.ceil(quest.reward.water * premiumMultiplier);
-            const xpGain = Math.ceil(quest.reward.xp * premiumMultiplier);
+            const xpGain = quest.reward.xp;
 
             incrementUser(userId, 'water', waterGain);
             incrementUser(userId, 'xp', xpGain);

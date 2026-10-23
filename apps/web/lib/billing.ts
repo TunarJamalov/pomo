@@ -14,7 +14,7 @@ export const PRO_TIERS = {
     perks: [
       ["2x Water", "On every focus session: solo, team and voice"],
       ["2nd daily reward", "/daily premium: +5 💧 and 5–8 fruits"],
-      ["Better quests", "+50% rewards, 2 fruits each"],
+      ["Better quests", "+50% water, 2 fruits each"],
       ["Bigger garden", "8 plots instead of 6"],
       ["More habits", "10 habits instead of 5"],
       ["Your style", "/proprofile accent and badge, no upgrade messages"],

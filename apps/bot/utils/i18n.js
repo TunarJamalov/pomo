@@ -13542,7 +13542,7 @@ Object.assign(Messages['en'], {
     "planNamePro": "Pomo Pro",
     "planPlusTitle": "⭐ Pomo Plus · {monthly}/month or {yearly}/year",
     "planProTitle": "🚀 Pomo Pro · {monthly}/month or {yearly}/year",
-    "planPlusItems": "🎁 **2nd daily reward**: `/daily premium` gives +5 💧 and 5–8 fruits\n💧 **2x Water** on every focus session\n📜 **Quests**: +50% rewards, 2 fruits each\n🌱 **8 garden plots** instead of 6\n🗓️ **10 habits** instead of 5\n🎨 `/proprofile` accent and badge\n🔕 No upgrade messages",
+    "planPlusItems": "🎁 **2nd daily reward**: `/daily premium` gives +5 💧 and 5–8 fruits\n💧 **2x Water** on every focus session\n📜 **Quests**: +50% water, 2 fruits each\n🌱 **8 garden plots** instead of 6\n🗓️ **10 habits** instead of 5\n🎨 `/proprofile` accent and badge\n🔕 No upgrade messages",
     "planProItems": "✨ **Everything in Plus**, and:\n🗓️ **15 habits**\n🛡️ **3 Streak Shields every month**, plus `/streak recover` once every 30 days\n📊 `/stats advanced`, `/mygoal` and `/dataexport`\n🎭 Unlimited `/persona` switches\n🎧 **24/7 lofi radio** with `/lofi`\n💬 Priority help in the support server",
     "premiumInactiveBody": "You don't have a Pomo plan right now.\n\n**Pomo Plus** is 2.49 AZN/month and **Pomo Pro** is 3.49 AZN/month, or less per month with a yearly plan. See `/premium perks` for what each one includes.",
     "premiumPerksHowToBody": "Pick a plan below. Checkout opens in your browser and your plan turns on automatically within a minute. Cancel any time from `/premium status`."
@@ -13554,7 +13554,7 @@ Object.assign(Messages['es'], {
     "planNamePro": "Pomo Pro",
     "planPlusTitle": "⭐ Pomo Plus · {monthly}/mes o {yearly}/año",
     "planProTitle": "🚀 Pomo Pro · {monthly}/mes o {yearly}/año",
-    "planPlusItems": "🎁 **2.ª recompensa diaria**: `/daily premium` da +5 💧 y 5–8 frutas\n💧 **Agua x2** en cada sesión de enfoque\n📜 **Misiones**: +50% de recompensas, 2 frutas cada una\n🌱 **8 parcelas** en lugar de 6\n🗓️ **10 hábitos** en lugar de 5\n🎨 Color e insignia con `/proprofile`\n🔕 Sin mensajes de mejora",
+    "planPlusItems": "🎁 **2.ª recompensa diaria**: `/daily premium` da +5 💧 y 5–8 frutas\n💧 **Agua x2** en cada sesión de enfoque\n📜 **Misiones**: +50% de agua, 2 frutas cada una\n🌱 **8 parcelas** en lugar de 6\n🗓️ **10 hábitos** en lugar de 5\n🎨 Color e insignia con `/proprofile`\n🔕 Sin mensajes de mejora",
     "planProItems": "✨ **Todo lo de Plus**, y además:\n🗓️ **15 hábitos**\n🛡️ **3 escudos de racha al mes**, y `/streak recover` una vez cada 30 días\n📊 `/stats advanced`, `/mygoal` y `/dataexport`\n🎭 Cambios ilimitados de `/persona`\n🎧 **Radio lofi 24/7** con `/lofi`\n💬 Ayuda prioritaria en el servidor de soporte",
     "premiumInactiveBody": "Ahora mismo no tienes un plan de Pomo.\n\n**Pomo Plus** cuesta 2.49 AZN/mes y **Pomo Pro** 3.49 AZN/mes, o menos al mes con un plan anual. Mira `/premium perks` para ver qué incluye cada uno.",
     "premiumPerksHowToBody": "Elige un plan abajo. El pago se abre en tu navegador y tu plan se activa solo en menos de un minuto. Cancela cuando quieras desde `/premium status`."
@@ -13566,7 +13566,7 @@ Object.assign(Messages['fr'], {
     "planNamePro": "Pomo Pro",
     "planPlusTitle": "⭐ Pomo Plus · {monthly}/mois ou {yearly}/an",
     "planProTitle": "🚀 Pomo Pro · {monthly}/mois ou {yearly}/an",
-    "planPlusItems": "🎁 **2e récompense quotidienne** : `/daily premium` donne +5 💧 et 5–8 fruits\n💧 **Eau x2** à chaque session de concentration\n📜 **Quêtes** : +50 % de récompenses, 2 fruits chacune\n🌱 **8 parcelles** au lieu de 6\n🗓️ **10 habitudes** au lieu de 5\n🎨 Couleur et badge avec `/proprofile`\n🔕 Plus de messages d’upgrade",
+    "planPlusItems": "🎁 **2e récompense quotidienne** : `/daily premium` donne +5 💧 et 5–8 fruits\n💧 **Eau x2** à chaque session de concentration\n📜 **Quêtes** : +50 % d’eau, 2 fruits chacune\n🌱 **8 parcelles** au lieu de 6\n🗓️ **10 habitudes** au lieu de 5\n🎨 Couleur et badge avec `/proprofile`\n🔕 Plus de messages d’upgrade",
     "planProItems": "✨ **Tout ce qu’offre Plus**, et en plus :\n🗓️ **15 habitudes**\n🛡️ **3 boucliers de série par mois**, plus `/streak recover` une fois tous les 30 jours\n📊 `/stats advanced`, `/mygoal` et `/dataexport`\n🎭 Changements de `/persona` illimités\n🎧 **Radio lofi 24h/24** avec `/lofi`\n💬 Aide prioritaire sur le serveur de support",
     "premiumInactiveBody": "Tu n’as pas de forfait Pomo pour le moment.\n\n**Pomo Plus** coûte 2,49 AZN/mois et **Pomo Pro** 3,49 AZN/mois, ou moins par mois avec un forfait annuel. Vois `/premium perks` pour le contenu de chacun.",
     "premiumPerksHowToBody": "Choisis un forfait ci-dessous. Le paiement s’ouvre dans ton navigateur et ton forfait s’active tout seul en moins d’une minute. Annule quand tu veux depuis `/premium status`."
@@ -13578,7 +13578,7 @@ Object.assign(Messages['pt-BR'], {
     "planNamePro": "Pomo Pro",
     "planPlusTitle": "⭐ Pomo Plus · {monthly}/mês ou {yearly}/ano",
     "planProTitle": "🚀 Pomo Pro · {monthly}/mês ou {yearly}/ano",
-    "planPlusItems": "🎁 **2ª recompensa diária**: `/daily premium` dá +5 💧 e 5–8 frutas\n💧 **Água em dobro** em cada sessão de foco\n📜 **Missões**: +50% de recompensas, 2 frutas cada\n🌱 **8 canteiros** em vez de 6\n🗓️ **10 hábitos** em vez de 5\n🎨 Cor e selo com `/proprofile`\n🔕 Sem mensagens de upgrade",
+    "planPlusItems": "🎁 **2ª recompensa diária**: `/daily premium` dá +5 💧 e 5–8 frutas\n💧 **Água em dobro** em cada sessão de foco\n📜 **Missões**: +50% de água, 2 frutas cada\n🌱 **8 canteiros** em vez de 6\n🗓️ **10 hábitos** em vez de 5\n🎨 Cor e selo com `/proprofile`\n🔕 Sem mensagens de upgrade",
     "planProItems": "✨ **Tudo do Plus**, e mais:\n🗓️ **15 hábitos**\n🛡️ **3 escudos de sequência por mês**, e `/streak recover` uma vez a cada 30 dias\n📊 `/stats advanced`, `/mygoal` e `/dataexport`\n🎭 Trocas ilimitadas de `/persona`\n🎧 **Rádio lofi 24/7** com `/lofi`\n💬 Ajuda prioritária no servidor de suporte",
     "premiumInactiveBody": "Você não tem um plano do Pomo agora.\n\n**Pomo Plus** custa 2.49 AZN/mês e **Pomo Pro** 3.49 AZN/mês, ou menos por mês no plano anual. Veja `/premium perks` para o que cada um inclui.",
     "premiumPerksHowToBody": "Escolha um plano abaixo. O pagamento abre no seu navegador e o plano é ativado sozinho em menos de um minuto. Cancele quando quiser em `/premium status`."
@@ -13590,7 +13590,7 @@ Object.assign(Messages['ru'], {
     "planNamePro": "Pomo Pro",
     "planPlusTitle": "⭐ Pomo Plus · {monthly}/мес или {yearly}/год",
     "planProTitle": "🚀 Pomo Pro · {monthly}/мес или {yearly}/год",
-    "planPlusItems": "🎁 **Вторая ежедневная награда**: `/daily premium` даёт +5 💧 и 5–8 фруктов\n💧 **Вода x2** за каждую фокус-сессию\n📜 **Квесты**: +50% наград, по 2 фрукта\n🌱 **8 грядок** вместо 6\n🗓️ **10 привычек** вместо 5\n🎨 Цвет и значок в `/proprofile`\n🔕 Без сообщений об апгрейде",
+    "planPlusItems": "🎁 **Вторая ежедневная награда**: `/daily premium` даёт +5 💧 и 5–8 фруктов\n💧 **Вода x2** за каждую фокус-сессию\n📜 **Квесты**: +50% воды, по 2 фрукта\n🌱 **8 грядок** вместо 6\n🗓️ **10 привычек** вместо 5\n🎨 Цвет и значок в `/proprofile`\n🔕 Без сообщений об апгрейде",
     "planProItems": "✨ **Всё из Plus**, а также:\n🗓️ **15 привычек**\n🛡️ **3 щита серии в месяц** и `/streak recover` раз в 30 дней\n📊 `/stats advanced`, `/mygoal` и `/dataexport`\n🎭 Безлимитная смена `/persona`\n🎧 **Lofi-радио 24/7** через `/lofi`\n💬 Приоритетная помощь на сервере поддержки",
     "premiumInactiveBody": "Сейчас у тебя нет плана Pomo.\n\n**Pomo Plus** стоит 2.49 AZN/мес, **Pomo Pro** — 3.49 AZN/мес, а с годовым планом дешевле в месяц. Что входит в каждый — в `/premium perks`.",
     "premiumPerksHowToBody": "Выбери план ниже. Оплата откроется в браузере, и план включится сам меньше чем за минуту. Отменить можно в любое время через `/premium status`."
@@ -13602,7 +13602,7 @@ Object.assign(Messages['tr'], {
     "planNamePro": "Pomo Pro",
     "planPlusTitle": "⭐ Pomo Plus · {monthly}/ay veya {yearly}/yıl",
     "planProTitle": "🚀 Pomo Pro · {monthly}/ay veya {yearly}/yıl",
-    "planPlusItems": "🎁 **2. günlük ödül**: `/daily premium` +5 💧 ve 5–8 meyve verir\n💧 Her odak oturumunda **2x Su**\n📜 **Görevler**: +%50 ödül, her biri 2 meyve\n🌱 6 yerine **8 bahçe alanı**\n🗓️ 5 yerine **10 alışkanlık**\n🎨 `/proprofile` rengi ve rozeti\n🔕 Yükseltme mesajı yok",
+    "planPlusItems": "🎁 **2. günlük ödül**: `/daily premium` +5 💧 ve 5–8 meyve verir\n💧 Her odak oturumunda **2x Su**\n📜 **Görevler**: +%50 su, her biri 2 meyve\n🌱 6 yerine **8 bahçe alanı**\n🗓️ 5 yerine **10 alışkanlık**\n🎨 `/proprofile` rengi ve rozeti\n🔕 Yükseltme mesajı yok",
     "planProItems": "✨ **Plus'taki her şey**, ayrıca:\n🗓️ **15 alışkanlık**\n🛡️ **Her ay 3 seri kalkanı**, ayrıca 30 günde bir `/streak recover`\n📊 `/stats advanced`, `/mygoal` ve `/dataexport`\n🎭 Sınırsız `/persona` değişimi\n🎧 `/lofi` ile **7/24 lofi radyo**\n💬 Destek sunucusunda öncelikli yardım",
     "premiumInactiveBody": "Şu anda bir Pomo planın yok.\n\n**Pomo Plus** aylık 2.49 AZN, **Pomo Pro** aylık 3.49 AZN; yıllık planla ay başına daha ucuz. Her birinde neler olduğunu `/premium perks` ile gör.",
     "premiumPerksHowToBody": "Aşağıdan bir plan seç. Ödeme tarayıcında açılır ve planın bir dakika içinde kendiliğinden açılır. İstediğin zaman `/premium status` ile iptal edebilirsin."
@@ -13614,7 +13614,7 @@ Object.assign(Messages['az'], {
     "planNamePro": "Pomo Pro",
     "planPlusTitle": "⭐ Pomo Plus · ayda {monthly} və ya ildə {yearly}",
     "planProTitle": "🚀 Pomo Pro · ayda {monthly} və ya ildə {yearly}",
-    "planPlusItems": "🎁 **2-ci gündəlik mükafat**: `/daily premium` +5 💧 və 5–8 meyvə verir\n💧 Hər fokus sessiyasında **2x su**\n📜 **Tapşırıqlar**: +50% mükafat, hər birinə 2 meyvə\n🌱 6 yerinə **8 bağ sahəsi**\n🗓️ 5 yerinə **10 vərdiş**\n🎨 `/proprofile` rəngi və nişanı\n🔕 Yüksəltmə mesajları yoxdur",
+    "planPlusItems": "🎁 **2-ci gündəlik mükafat**: `/daily premium` +5 💧 və 5–8 meyvə verir\n💧 Hər fokus sessiyasında **2x su**\n📜 **Tapşırıqlar**: +50% su, hər birinə 2 meyvə\n🌱 6 yerinə **8 bağ sahəsi**\n🗓️ 5 yerinə **10 vərdiş**\n🎨 `/proprofile` rəngi və nişanı\n🔕 Yüksəltmə mesajları yoxdur",
     "planProItems": "✨ **Plus-dakı hər şey**, üstəlik:\n🗓️ **15 vərdiş**\n🛡️ **Hər ay 3 seriya qalxanı**, üstəlik 30 gündə bir `/streak recover`\n📊 `/stats advanced`, `/mygoal` və `/dataexport`\n🎭 Limitsiz `/persona` dəyişimi\n🎧 `/lofi` ilə **24/7 lofi radio**\n💬 Dəstək serverində prioritet kömək",
     "premiumInactiveBody": "Hazırda Pomo planın yoxdur.\n\n**Pomo Plus** ayda 2.49 AZN, **Pomo Pro** ayda 3.49 AZN-dir; illik planla aylıq qiymət daha ucuzdur. Hər birinə nəyin daxil olduğunu `/premium perks` ilə gör.",
     "premiumPerksHowToBody": "Aşağıdan bir plan seç. Ödəniş brauzerdə açılır və planın bir dəqiqə ərzində avtomatik aktiv olur. İstədiyin vaxt `/premium status` ilə ləğv edə bilərsən."
@@ -13626,7 +13626,7 @@ Object.assign(Messages['ja'], {
     "planNamePro": "Pomo Pro",
     "planPlusTitle": "⭐ Pomo Plus · 月{monthly}または年{yearly}",
     "planProTitle": "🚀 Pomo Pro · 月{monthly}または年{yearly}",
-    "planPlusItems": "🎁 **2回目のデイリー報酬**：`/daily premium` で +5 💧 とフルーツ5〜8個\n💧 すべてのフォーカスセッションで **水2倍**\n📜 **クエスト**：報酬+50%、各2個のフルーツ\n🌱 庭の区画が6から **8に**\n🗓️ 習慣が5から **10に**\n🎨 `/proprofile` のカラーとバッジ\n🔕 アップグレードのお知らせなし",
+    "planPlusItems": "🎁 **2回目のデイリー報酬**：`/daily premium` で +5 💧 とフルーツ5〜8個\n💧 すべてのフォーカスセッションで **水2倍**\n📜 **クエスト**：水+50%、各2個のフルーツ\n🌱 庭の区画が6から **8に**\n🗓️ 習慣が5から **10に**\n🎨 `/proprofile` のカラーとバッジ\n🔕 アップグレードのお知らせなし",
     "planProItems": "✨ **Plusのすべて**に加えて：\n🗓️ **習慣15個**\n🛡️ **毎月3つのストリークシールド**、30日に1回 `/streak recover`\n📊 `/stats advanced`、`/mygoal`、`/dataexport`\n🎭 `/persona` の切り替え無制限\n🎧 `/lofi` で **24時間lofiラジオ**\n💬 サポートサーバーでの優先サポート",
     "premiumInactiveBody": "現在Pomoのプランはありません。\n\n**Pomo Plus** は月2.49 AZN、**Pomo Pro** は月3.49 AZNです。年額プランなら月あたりさらにお得です。内容は `/premium perks` で確認できます。",
     "premiumPerksHowToBody": "下からプランを選んでください。ブラウザで支払いが開き、1分以内に自動でプランが有効になります。`/premium status` からいつでも解約できます。"
@@ -13638,7 +13638,7 @@ Object.assign(Messages['ko'], {
     "planNamePro": "Pomo Pro",
     "planPlusTitle": "⭐ Pomo Plus · 월 {monthly} 또는 연 {yearly}",
     "planProTitle": "🚀 Pomo Pro · 월 {monthly} 또는 연 {yearly}",
-    "planPlusItems": "🎁 **두 번째 일일 보상**: `/daily premium`으로 +5 💧와 과일 5–8개\n💧 모든 집중 세션에서 **물 2배**\n📜 **퀘스트**: 보상 +50%, 각 과일 2개\n🌱 정원 칸 6개 대신 **8개**\n🗓️ 습관 5개 대신 **10개**\n🎨 `/proprofile` 색상과 배지\n🔕 업그레이드 메시지 없음",
+    "planPlusItems": "🎁 **두 번째 일일 보상**: `/daily premium`으로 +5 💧와 과일 5–8개\n💧 모든 집중 세션에서 **물 2배**\n📜 **퀘스트**: 물 +50%, 각 과일 2개\n🌱 정원 칸 6개 대신 **8개**\n🗓️ 습관 5개 대신 **10개**\n🎨 `/proprofile` 색상과 배지\n🔕 업그레이드 메시지 없음",
     "planProItems": "✨ **Plus의 모든 혜택**에 더해:\n🗓️ **습관 15개**\n🛡️ **매달 스트릭 보호막 3개**, 30일마다 한 번 `/streak recover`\n📊 `/stats advanced`, `/mygoal`, `/dataexport`\n🎭 `/persona` 무제한 변경\n🎧 `/lofi`로 **24시간 lofi 라디오**\n💬 지원 서버 우선 도움",
     "premiumInactiveBody": "지금은 Pomo 플랜이 없어요.\n\n**Pomo Plus**는 월 2.49 AZN, **Pomo Pro**는 월 3.49 AZN이고, 연간 플랜은 월 기준으로 더 저렴해요. 각 플랜 내용은 `/premium perks`에서 확인하세요.",
     "premiumPerksHowToBody": "아래에서 플랜을 고르세요. 브라우저에서 결제가 열리고 1분 안에 플랜이 자동으로 켜져요. `/premium status`에서 언제든 해지할 수 있어요."
@@ -13650,7 +13650,7 @@ Object.assign(Messages['ar'], {
     "planNamePro": "Pomo Pro",
     "planPlusTitle": "⭐ Pomo Plus · {monthly} شهريًا أو {yearly} سنويًا",
     "planProTitle": "🚀 Pomo Pro · {monthly} شهريًا أو {yearly} سنويًا",
-    "planPlusItems": "🎁 **مكافأة يومية ثانية**: `/daily premium` تمنح +5 💧 و5–8 فواكه\n💧 **ماء مضاعف** في كل جلسة تركيز\n📜 **المهام**: مكافآت +50% وفاكهتان لكل مهمة\n🌱 **8 قطع في الحديقة** بدل 6\n🗓️ **10 عادات** بدل 5\n🎨 لون وشارة عبر `/proprofile`\n🔕 بدون رسائل الترقية",
+    "planPlusItems": "🎁 **مكافأة يومية ثانية**: `/daily premium` تمنح +5 💧 و5–8 فواكه\n💧 **ماء مضاعف** في كل جلسة تركيز\n📜 **المهام**: ماء +50% وفاكهتان لكل مهمة\n🌱 **8 قطع في الحديقة** بدل 6\n🗓️ **10 عادات** بدل 5\n🎨 لون وشارة عبر `/proprofile`\n🔕 بدون رسائل الترقية",
     "planProItems": "✨ **كل ما في Plus**، وأيضًا:\n🗓️ **15 عادة**\n🛡️ **3 دروع للسلسلة كل شهر**، و`/streak recover` مرة كل 30 يومًا\n📊 `/stats advanced` و`/mygoal` و`/dataexport`\n🎭 تبديل غير محدود لـ `/persona`\n🎧 **راديو lofi على مدار الساعة** عبر `/lofi`\n💬 مساعدة ذات أولوية في خادم الدعم",
     "premiumInactiveBody": "ليس لديك خطة Pomo حاليًا.\n\n**Pomo Plus** بسعر 2.49 AZN شهريًا و**Pomo Pro** بسعر 3.49 AZN شهريًا، والخطة السنوية أرخص شهريًا. اطّلع على `/premium perks` لترى ما تتضمنه كل خطة.",
     "premiumPerksHowToBody": "اختر خطة بالأسفل. تُفتح صفحة الدفع في متصفحك وتُفعَّل خطتك تلقائيًا خلال دقيقة. يمكنك الإلغاء في أي وقت من `/premium status`."
