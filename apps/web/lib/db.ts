@@ -452,6 +452,12 @@ export function updateUserProfile(
   try {
     const db = getDb(false);
     const update = db.transaction(() => {
+      // Someone who signed in on the site but never used the bot has no users row yet,
+      // and pro_profile_settings references it
+      db.prepare(`
+        INSERT OR IGNORE INTO users (discord_id, water, total_focus_minutes, xp, level, streak, created_at)
+        VALUES (?, 0, 0, 0, 1, 0, datetime('now'))
+      `).run(discordId);
       db.prepare('UPDATE users SET bio = ?, theme = ? WHERE discord_id = ?').run(bio, theme, discordId);
       db.prepare(`
         INSERT INTO pro_profile_settings (user_id, accent_key, badge_key, updated_at)
