@@ -7,6 +7,7 @@ const { isProActive } = require('./premiumManager');
 const { t, getInteractionLanguage } = require('./i18n');
 
 const { buyButtons, checkoutConfigured } = require('./billing');
+const { isProTrialAvailable, proTrialButton } = require('./proTrial');
 
 const UPSELL_COOLDOWNS = {
   GLOBAL_HOURS:   24,
@@ -26,7 +27,7 @@ function getHoursSince(isoString) {
  * Check cooldowns and show an upsell embed to the user.
  * Returns true if upsell was shown, false if on cooldown.
  */
-async function triggerUpsell(interaction, upsellType) {
+async function triggerUpsell(interaction, upsellType, vars = {}) {
   const userId = interaction.user?.id || interaction.member?.id;
   if (!userId) return false;
 
@@ -63,7 +64,9 @@ async function triggerUpsell(interaction, upsellType) {
   if (upsellType === 'STREAK_BREAK') {
     embed
       .setTitle(`${t(language, 'upsellStreakTitle')} 🔥`)
-      .setDescription(t(language, 'upsellStreakBody', plotVars));
+      .setDescription(t(language, 'upsellStreakRecoverBody', { ...plotVars, ...vars }));
+    // A trial brings the streak back right away with /streak recover
+    if (isProTrialAvailable(userId)) buttons.addComponents(proTrialButton(language));
     buttons.addComponents(
       ...buyButtons(language, interaction.user.id),
       new ButtonBuilder().setCustomId('upsell_dismiss').setLabel(t(language, 'upsellMaybeLaterButton')).setStyle(ButtonStyle.Secondary)
@@ -112,4 +115,32 @@ async function triggerUpsell(interaction, upsellType) {
   }
 }
 
-module.exports = { triggerUpsell };
+/**
+ * After a command, if the user's streak broke and can still be brought back
+ * (streak_breaks keeps a break recoverable for 48 h), show the STREAK_BREAK
+ * upsell: free users can repair it for water, Pro recovers it for free.
+ * Skipped inside /streak and /premium, where the user is already on it.
+ */
+async function maybeSendStreakBreakUpsell(interaction) {
+  if (!interaction?.isChatInputCommand?.()) return false;
+  if (['streak', 'premium'].includes(interaction.commandName)) return false;
+  const userId = interaction.user?.id;
+  if (!userId || isProActive(userId) || !checkoutConfigured()) return false;
+
+  const recoverable = db.prepare(`
+    SELECT previous_streak, expires_at FROM streak_breaks
+    WHERE user_id = ? AND recovered_at IS NULL AND datetime(expires_at) >= datetime('now')
+    ORDER BY id DESC LIMIT 1
+  `).get(userId);
+  if (!recoverable) return false;
+
+  const hoursLeft = Math.max(1, Math.floor(-getHoursSince(`${recoverable.expires_at.replace(' ', 'T')}Z`)));
+  const user = db.prepare('SELECT water FROM users WHERE discord_id = ?').get(userId);
+  return triggerUpsell(interaction, 'STREAK_BREAK', {
+    streak: recoverable.previous_streak,
+    hours: hoursLeft,
+    water: user?.water || 0,
+  });
+}
+
+module.exports = { triggerUpsell, maybeSendStreakBreakUpsell };

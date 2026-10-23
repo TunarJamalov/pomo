@@ -14136,6 +14136,38 @@ Object.assign(Messages['ar'], {
     "proSourceTrial": "تجربة مجانية"
 });
 
+// STREAK_BREAK upsell: a broken streak can still be brought back (utils/upsellManager.js)
+Object.assign(Messages['en'], {
+    "upsellStreakRecoverBody": "Your **{streak}-day streak** ended, but you can still bring it back for the next **{hours} hours**:\n\n💧 `/streak repair`: 50 water (you have {water})\n🚀 **Pomo Pro**: `/streak recover` brings it back for free once a month, and 3 Streak Shields protect the days you miss"
+});
+Object.assign(Messages['es'], {
+    "upsellStreakRecoverBody": "Tu **racha de {streak} días** terminó, pero aún puedes recuperarla durante las próximas **{hours} horas**:\n\n💧 `/streak repair`: 50 de agua (tienes {water})\n🚀 **Pomo Pro**: `/streak recover` la recupera gratis una vez al mes, y 3 escudos de racha protegen los días que fallas"
+});
+Object.assign(Messages['fr'], {
+    "upsellStreakRecoverBody": "Ta **série de {streak} jours** s’est arrêtée, mais tu peux encore la récupérer pendant les **{hours} prochaines heures** :\n\n💧 `/streak repair` : 50 d’eau (tu en as {water})\n🚀 **Pomo Pro** : `/streak recover` la récupère gratuitement une fois par mois, et 3 boucliers de série protègent les jours manqués"
+});
+Object.assign(Messages['pt-BR'], {
+    "upsellStreakRecoverBody": "Sua **sequência de {streak} dias** acabou, mas você ainda pode recuperá-la nas próximas **{hours} horas**:\n\n💧 `/streak repair`: 50 de água (você tem {water})\n🚀 **Pomo Pro**: `/streak recover` recupera de graça uma vez por mês, e 3 escudos de sequência protegem os dias perdidos"
+});
+Object.assign(Messages['ru'], {
+    "upsellStreakRecoverBody": "Твоя **серия из {streak} дн.** прервалась, но её ещё можно вернуть в течение **{hours} ч.**:\n\n💧 `/streak repair`: 50 воды (у тебя {water})\n🚀 **Pomo Pro**: `/streak recover` возвращает серию бесплатно раз в месяц, а 3 щита серии защищают пропущенные дни"
+});
+Object.assign(Messages['tr'], {
+    "upsellStreakRecoverBody": "**{streak} günlük serin** bitti ama önümüzdeki **{hours} saat** içinde hâlâ geri getirebilirsin:\n\n💧 `/streak repair`: 50 su (sende {water} var)\n🚀 **Pomo Pro**: `/streak recover` ayda bir kez ücretsiz geri getirir, 3 seri kalkanı da kaçırdığın günleri korur"
+});
+Object.assign(Messages['az'], {
+    "upsellStreakRecoverBody": "**{streak} günlük seriyan** qırıldı, amma onu növbəti **{hours} saat** ərzində hələ geri qaytara bilərsən:\n\n💧 `/streak repair`: 50 su (səndə {water} var)\n🚀 **Pomo Pro**: `/streak recover` ayda bir dəfə pulsuz geri qaytarır, 3 seriya qalxanı da buraxdığın günləri qoruyur"
+});
+Object.assign(Messages['ja'], {
+    "upsellStreakRecoverBody": "**{streak}日間のストリーク**が途切れましたが、あと **{hours}時間** 以内なら取り戻せます:\n\n💧 `/streak repair`：水50（所持：{water}）\n🚀 **Pomo Pro**：`/streak recover` で月1回無料で復活、さらにストリークシールド3つが休んだ日を守ります"
+});
+Object.assign(Messages['ko'], {
+    "upsellStreakRecoverBody": "**{streak}일 연속 기록**이 끊겼지만, 앞으로 **{hours}시간** 안에는 되살릴 수 있어요:\n\n💧 `/streak repair`: 물 50 (보유: {water})\n🚀 **Pomo Pro**: `/streak recover`로 한 달에 한 번 무료로 되살리고, 연속 기록 보호막 3개가 빠진 날을 지켜줘요"
+});
+Object.assign(Messages['ar'], {
+    "upsellStreakRecoverBody": "انتهت **سلسلتك البالغة {streak} يومًا**، لكن ما زال بإمكانك استعادتها خلال **{hours} ساعة** القادمة:\n\n💧 `/streak repair`: ‏50 ماء (لديك {water})\n🚀 **Pomo Pro**: ‏`/streak recover` يعيدها مجانًا مرة في الشهر، و3 دروع للسلسلة تحمي الأيام التي تفوتك"
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,

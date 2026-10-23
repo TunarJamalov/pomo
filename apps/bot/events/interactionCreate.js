@@ -186,15 +186,22 @@ module.exports = {
                 console.error('[ANALYTICS] Failed to record command usage:', usageError.message);
             }
             logCommand(interaction, fullCommand.trim());
+            let followUpSent = false;
             try {
-                await maybeSendSetupNudge(interaction);
+                followUpSent = await maybeSendSetupNudge(interaction);
             } catch (nudgeError) {
                 console.error('[SETUP] Failed to send admin nudge:', nudgeError.message);
             }
             try {
-                await maybeSendUserOnboardingTip(interaction);
+                followUpSent = (await maybeSendUserOnboardingTip(interaction)) || followUpSent;
             } catch (onboardingError) {
                 console.error('[ONBOARDING] Failed to send user tip:', onboardingError.message);
+            }
+            try {
+                // An upsell only when nothing else was added to this command's reply
+                if (!followUpSent) await require('../utils/upsellManager').maybeSendStreakBreakUpsell(interaction);
+            } catch (upsellError) {
+                console.error('[UPSELL] Failed to send streak break upsell:', upsellError.message);
             }
         } catch (error) {
             console.error(`[${new Date().toISOString()}] Error executing /${interaction.commandName}:`, error);
