@@ -125,13 +125,13 @@ function startPremiumExpiryJob(client) {
     const checkExpiry = async () => {
         try {
             const expired = db.prepare(`
-                SELECT user_id FROM premium_entitlements
+                SELECT user_id, source FROM premium_entitlements
                 WHERE status = 'active'
                   AND expires_at IS NOT NULL
                   AND expires_at <= datetime('now')
             `).all();
 
-            for (const { user_id: userId } of expired) {
+            for (const { user_id: userId, source } of expired) {
                 // getPremiumEntitlement flips the row to 'expired' as a side effect
                 getPremiumEntitlement(userId);
                 db.prepare('UPDATE users SET streak_shields_remaining = 0 WHERE discord_id = ?').run(userId);
@@ -146,7 +146,7 @@ function startPremiumExpiryJob(client) {
                 if (client) {
                     // One DM at a time with a pause, so a batch of expiries can't burst
                     await client.users.fetch(userId)
-                        .then(u => u.send(t(getUserLanguage(userId), 'premiumExpiryDm')))
+                        .then(u => u.send(t(getUserLanguage(userId), source === 'trial' ? 'proTrialEndedDm' : 'premiumExpiryDm')))
                         .catch(() => {});
                     await new Promise(resolve => setTimeout(resolve, 1000));
                 }

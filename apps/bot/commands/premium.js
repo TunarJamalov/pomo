@@ -9,6 +9,7 @@ const { Colors, SUPPORT_SERVER_URL } = require('../utils/constants');
 const { getPremiumStatus } = require('../utils/premiumCheck');
 const { getInteractionLanguage, t } = require('../utils/i18n');
 const { buyButtons, manageUrl, PRICING_PAGE, PLANS } = require('../utils/billing');
+const { isProTrialAvailable, proTrialButton } = require('../utils/proTrial');
 
 module.exports = {
     cooldown: 3,
@@ -60,7 +61,7 @@ module.exports = {
     },
 };
 
-/** Buy buttons for non-Pro users; manage + support links for Pro users. */
+/** Trial + buy buttons for non-Pro users; manage + support links for Pro users. */
 function buildActionRow(language, userId, isActive) {
     const row = new ActionRowBuilder();
     if (isActive) {
@@ -69,6 +70,7 @@ function buildActionRow(language, userId, isActive) {
             row.addComponents(new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(t(language, 'proManageButton')).setEmoji('⚙️').setURL(portal));
         }
     } else {
+        if (isProTrialAvailable(userId)) row.addComponents(proTrialButton(language));
         row.addComponents(...buyButtons(language, userId));
     }
     row.addComponents(
@@ -127,6 +129,7 @@ function formatSource(source, language = 'en') {
         boosty_manual: 'Boosty',
         campaign: t(language, 'premiumSourceCampaign'),
         manual: t(language, 'premiumSourceManual'),
+        trial: t(language, 'proSourceTrial'),
     };
     return sources[source] || source || t(language, 'premiumUnknown');
 }

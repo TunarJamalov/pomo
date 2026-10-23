@@ -287,6 +287,10 @@ async function routeButton(interaction) {
             return await handleSetDailyGoalBtn(interaction);
         }
 
+        if (customId === 'pro_trial_start') {
+            return await require('../utils/proTrial').handleProTrialButton(interaction);
+        }
+
         
         
         if (customId === 'upsell_dismiss') {

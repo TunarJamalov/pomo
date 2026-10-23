@@ -14034,6 +14034,108 @@ Object.assign(Messages['ar'], {
     "epointPaymentFailedDm": "⚠️ **تعذّر تجديد خطة Pomo.** لم تنجح عملية الدفع من بطاقتك المحفوظة.\n\nسنحاول مرة أخرى خلال اليومين القادمين وتبقى مزاياك مفعّلة في هذه الأثناء. لاستخدام بطاقة أخرى، افتح https://pomofocus.online/billing واشترك من جديد."
 });
 
+// 7-day Pro trial (utils/proTrial.js)
+Object.assign(Messages['en'], {
+    "proTrialButton": "Try Pro free · {days} days",
+    "proTrialStartedTitle": "🎁 Your Pro trial has started",
+    "proTrialStartedBody": "Every Pro perk is on until {ends}. No card and nothing to cancel: the trial simply ends.\n\nWorth trying this week:\n📊 `/stats view:Advanced`: the hour you study best\n🔥 `/streak recover`: bring a broken streak back\n🎧 `/lofi play`: lofi radio for everyone in your voice channel\n💧 2x water on every focus session",
+    "proTrialClosed": "The free Pro trial isn't available right now.",
+    "proTrialAlreadyActive": "You already have a Pomo plan, so there's no trial to start.",
+    "proTrialUsed": "You've already used your free Pro trial. See the plans with `/premium perks` or at <https://pomofocus.online/pricing>.",
+    "proTrialEndedDm": "⏳ **Your Pro trial has ended.**\n\nThe Pro perks are paused; your XP, streak and garden are all safe.\n\nWant to keep them? See Pomo Plus and Pro with `/premium perks` or at <https://pomofocus.online/pricing>. Full refund within 14 days if it's not for you.",
+    "proSourceTrial": "Free trial"
+});
+Object.assign(Messages['es'], {
+    "proTrialButton": "Prueba Pro gratis · {days} días",
+    "proTrialStartedTitle": "🎁 Tu prueba de Pro ha empezado",
+    "proTrialStartedBody": "Todas las ventajas Pro están activas hasta {ends}. Sin tarjeta y sin nada que cancelar: la prueba simplemente termina.\n\nVale la pena probar esta semana:\n📊 `/stats view:Advanced`: la hora en la que mejor estudias\n🔥 `/streak recover`: recupera una racha rota\n🎧 `/lofi play`: radio lofi para todo tu canal de voz\n💧 Agua x2 en cada sesión de enfoque",
+    "proTrialClosed": "La prueba gratis de Pro no está disponible ahora mismo.",
+    "proTrialAlreadyActive": "Ya tienes un plan de Pomo, así que no hay prueba que empezar.",
+    "proTrialUsed": "Ya usaste tu prueba gratis de Pro. Mira los planes con `/premium perks` o en <https://pomofocus.online/pricing>.",
+    "proTrialEndedDm": "⏳ **Tu prueba de Pro ha terminado.**\n\nLas ventajas Pro están en pausa; tu XP, tu racha y tu jardín están a salvo.\n\n¿Quieres conservarlas? Mira Pomo Plus y Pro con `/premium perks` o en <https://pomofocus.online/pricing>. Reembolso completo en 14 días si no es para ti.",
+    "proSourceTrial": "Prueba gratis"
+});
+Object.assign(Messages['fr'], {
+    "proTrialButton": "Essayer Pro gratuitement · {days} jours",
+    "proTrialStartedTitle": "🎁 Ton essai Pro a commencé",
+    "proTrialStartedBody": "Tous les avantages Pro sont actifs jusqu’au {ends}. Pas de carte et rien à annuler : l’essai s’arrête tout seul.\n\nÀ essayer cette semaine :\n📊 `/stats view:Advanced` : l’heure où tu étudies le mieux\n🔥 `/streak recover` : récupère une série perdue\n🎧 `/lofi play` : la radio lofi pour tout ton salon vocal\n💧 Eau x2 à chaque session de concentration",
+    "proTrialClosed": "L’essai gratuit de Pro n’est pas disponible pour le moment.",
+    "proTrialAlreadyActive": "Tu as déjà un forfait Pomo, il n’y a donc pas d’essai à lancer.",
+    "proTrialUsed": "Tu as déjà utilisé ton essai gratuit de Pro. Vois les forfaits avec `/premium perks` ou sur <https://pomofocus.online/pricing>.",
+    "proTrialEndedDm": "⏳ **Ton essai Pro est terminé.**\n\nLes avantages Pro sont en pause ; ton XP, ta série et ton jardin sont en sécurité.\n\nTu veux les garder ? Découvre Pomo Plus et Pro avec `/premium perks` ou sur <https://pomofocus.online/pricing>. Remboursement complet sous 14 jours si ça ne te convient pas.",
+    "proSourceTrial": "Essai gratuit"
+});
+Object.assign(Messages['pt-BR'], {
+    "proTrialButton": "Teste o Pro grátis · {days} dias",
+    "proTrialStartedTitle": "🎁 Seu teste do Pro começou",
+    "proTrialStartedBody": "Todas as vantagens Pro estão ativas até {ends}. Sem cartão e nada para cancelar: o teste simplesmente termina.\n\nVale testar esta semana:\n📊 `/stats view:Advanced`: o horário em que você estuda melhor\n🔥 `/streak recover`: recupere uma sequência perdida\n🎧 `/lofi play`: rádio lofi para todo o seu canal de voz\n💧 Água em dobro em cada sessão de foco",
+    "proTrialClosed": "O teste grátis do Pro não está disponível agora.",
+    "proTrialAlreadyActive": "Você já tem um plano do Pomo, então não há teste para começar.",
+    "proTrialUsed": "Você já usou seu teste grátis do Pro. Veja os planos com `/premium perks` ou em <https://pomofocus.online/pricing>.",
+    "proTrialEndedDm": "⏳ **Seu teste do Pro terminou.**\n\nAs vantagens Pro estão pausadas; seu XP, sua sequência e seu jardim estão seguros.\n\nQuer mantê-las? Veja o Pomo Plus e o Pro com `/premium perks` ou em <https://pomofocus.online/pricing>. Reembolso total em até 14 dias se não for para você.",
+    "proSourceTrial": "Teste grátis"
+});
+Object.assign(Messages['ru'], {
+    "proTrialButton": "Попробовать Pro бесплатно · {days} дн.",
+    "proTrialStartedTitle": "🎁 Пробный Pro начался",
+    "proTrialStartedBody": "Все преимущества Pro включены до {ends}. Без карты и без отмены: пробный период просто закончится.\n\nСтоит попробовать на этой неделе:\n📊 `/stats view:Advanced`: час, когда ты учишься лучше всего\n🔥 `/streak recover`: верни прерванную серию\n🎧 `/lofi play`: лофи-радио для всего голосового канала\n💧 Вода x2 за каждую фокус-сессию",
+    "proTrialClosed": "Бесплатный пробный Pro сейчас недоступен.",
+    "proTrialAlreadyActive": "У тебя уже есть план Pomo, так что пробный период не нужен.",
+    "proTrialUsed": "Ты уже использовал(а) бесплатный пробный Pro. Посмотри планы через `/premium perks` или на <https://pomofocus.online/pricing>.",
+    "proTrialEndedDm": "⏳ **Пробный Pro закончился.**\n\nПреимущества Pro на паузе; твой XP, серия и сад в безопасности.\n\nХочешь сохранить их? Посмотри Pomo Plus и Pro через `/premium perks` или на <https://pomofocus.online/pricing>. Полный возврат в течение 14 дней, если не подойдёт.",
+    "proSourceTrial": "Пробный период"
+});
+Object.assign(Messages['tr'], {
+    "proTrialButton": "Pro'yu ücretsiz dene · {days} gün",
+    "proTrialStartedTitle": "🎁 Pro denemen başladı",
+    "proTrialStartedBody": "Tüm Pro avantajları {ends} tarihine kadar açık. Kart yok, iptal edecek bir şey yok: deneme kendiliğinden biter.\n\nBu hafta denemeye değer:\n📊 `/stats view:Advanced`: en iyi çalıştığın saat\n🔥 `/streak recover`: kopan serini geri getir\n🎧 `/lofi play`: ses kanalındaki herkes için lofi radyo\n💧 Her odak oturumunda 2x su",
+    "proTrialClosed": "Ücretsiz Pro denemesi şu anda kullanılamıyor.",
+    "proTrialAlreadyActive": "Zaten bir Pomo planın var, bu yüzden başlatılacak bir deneme yok.",
+    "proTrialUsed": "Ücretsiz Pro denemeni zaten kullandın. Planlara `/premium perks` ile veya <https://pomofocus.online/pricing> adresinden bakabilirsin.",
+    "proTrialEndedDm": "⏳ **Pro denemen sona erdi.**\n\nPro avantajları durduruldu; XP'n, serin ve bahçen güvende.\n\nDevam etmek ister misin? Pomo Plus ve Pro'ya `/premium perks` ile veya <https://pomofocus.online/pricing> adresinden bak. Sana uygun değilse 14 gün içinde tam iade.",
+    "proSourceTrial": "Ücretsiz deneme"
+});
+Object.assign(Messages['az'], {
+    "proTrialButton": "Pro-nu pulsuz yoxla · {days} gün",
+    "proTrialStartedTitle": "🎁 Pro sınağın başladı",
+    "proTrialStartedBody": "Bütün Pro üstünlükləri {ends} tarixinədək aktivdir. Kart lazım deyil, ləğv etməli bir şey yoxdur: sınaq öz-özünə bitir.\n\nBu həftə yoxlamağa dəyər:\n📊 `/stats view:Advanced`: ən yaxşı oxuduğun saat\n🔥 `/streak recover`: qırılan seriyanı geri qaytar\n🎧 `/lofi play`: səsli kanalındakı hər kəs üçün lofi radio\n💧 Hər fokus sessiyasında 2x su",
+    "proTrialClosed": "Pulsuz Pro sınağı hazırda əlçatan deyil.",
+    "proTrialAlreadyActive": "Artıq Pomo planın var, ona görə sınaq başlatmağa ehtiyac yoxdur.",
+    "proTrialUsed": "Pulsuz Pro sınağından artıq istifadə etmisən. Planlara `/premium perks` ilə və ya <https://pomofocus.online/pricing> səhifəsində bax.",
+    "proTrialEndedDm": "⏳ **Pro sınağın bitdi.**\n\nPro üstünlükləri dayandırılıb; XP-n, seriyan və bağın təhlükəsizdir.\n\nSaxlamaq istəyirsən? Pomo Plus və Pro-ya `/premium perks` ilə və ya <https://pomofocus.online/pricing> səhifəsində bax. Uyğun gəlməsə, 14 gün ərzində tam geri ödəniş.",
+    "proSourceTrial": "Pulsuz sınaq"
+});
+Object.assign(Messages['ja'], {
+    "proTrialButton": "Proを無料で試す · {days}日間",
+    "proTrialStartedTitle": "🎁 Proのお試しが始まりました",
+    "proTrialStartedBody": "{ends} まで、すべてのPro特典が使えます。カード不要、解約の手続きも不要です。お試しは自動で終わります。\n\n今週ぜひ試してみてください:\n📊 `/stats view:Advanced`：いちばん集中できる時間帯\n🔥 `/streak recover`：途切れたストリークを復活\n🎧 `/lofi play`：ボイスチャンネルの全員にローファイラジオ\n💧 すべてのフォーカスセッションで水2倍",
+    "proTrialClosed": "Proの無料お試しは現在ご利用いただけません。",
+    "proTrialAlreadyActive": "すでにPomoのプランをお持ちなので、お試しは不要です。",
+    "proTrialUsed": "Proの無料お試しはすでに使用済みです。プランは `/premium perks` または <https://pomofocus.online/pricing> でご確認ください。",
+    "proTrialEndedDm": "⏳ **Proのお試しが終了しました。**\n\nPro特典は一時停止中です。XP、ストリーク、庭はそのまま残っています。\n\n続けたい場合は `/premium perks` または <https://pomofocus.online/pricing> でPomo PlusとProをご覧ください。合わなければ14日以内なら全額返金します。",
+    "proSourceTrial": "無料お試し"
+});
+Object.assign(Messages['ko'], {
+    "proTrialButton": "Pro 무료 체험 · {days}일",
+    "proTrialStartedTitle": "🎁 Pro 체험이 시작됐어요",
+    "proTrialStartedBody": "{ends}까지 모든 Pro 혜택이 켜져 있어요. 카드도 필요 없고 해지할 것도 없어요. 체험은 그냥 끝나요.\n\n이번 주에 꼭 써 보세요:\n📊 `/stats view:Advanced`: 가장 공부가 잘 되는 시간\n🔥 `/streak recover`: 끊긴 연속 기록 되살리기\n🎧 `/lofi play`: 음성 채널 모두를 위한 로파이 라디오\n💧 모든 집중 세션에서 물 2배",
+    "proTrialClosed": "지금은 Pro 무료 체험을 이용할 수 없어요.",
+    "proTrialAlreadyActive": "이미 Pomo 플랜이 있어서 체험을 시작할 필요가 없어요.",
+    "proTrialUsed": "Pro 무료 체험을 이미 사용했어요. `/premium perks` 또는 <https://pomofocus.online/pricing> 에서 플랜을 확인하세요.",
+    "proTrialEndedDm": "⏳ **Pro 체험이 끝났어요.**\n\nPro 혜택은 일시 중지됐어요. XP, 연속 기록, 정원은 모두 그대로예요.\n\n계속 쓰고 싶다면 `/premium perks` 또는 <https://pomofocus.online/pricing> 에서 Pomo Plus와 Pro를 확인하세요. 맞지 않으면 14일 안에 전액 환불해 드려요.",
+    "proSourceTrial": "무료 체험"
+});
+Object.assign(Messages['ar'], {
+    "proTrialButton": "جرّب Pro مجانًا · {days} أيام",
+    "proTrialStartedTitle": "🎁 بدأت تجربة Pro",
+    "proTrialStartedBody": "كل مزايا Pro مفعّلة حتى {ends}. بدون بطاقة ولا شيء لإلغائه: تنتهي التجربة من تلقاء نفسها.\n\nتستحق التجربة هذا الأسبوع:\n📊 `/stats view:Advanced`: الساعة التي تدرس فيها بأفضل شكل\n🔥 `/streak recover`: استرجع سلسلة انقطعت\n🎧 `/lofi play`: راديو لوفاي لكل من في قناتك الصوتية\n💧 ماء مضاعف في كل جلسة تركيز",
+    "proTrialClosed": "تجربة Pro المجانية غير متاحة الآن.",
+    "proTrialAlreadyActive": "لديك خطة Pomo بالفعل، لذلك لا توجد تجربة لبدئها.",
+    "proTrialUsed": "لقد استخدمت تجربة Pro المجانية من قبل. اطّلع على الخطط عبر `/premium perks` أو على <https://pomofocus.online/pricing>.",
+    "proTrialEndedDm": "⏳ **انتهت تجربة Pro.**\n\nمزايا Pro متوقفة مؤقتًا؛ نقاط XP وسلسلتك وحديقتك كلها بأمان.\n\nتريد الاحتفاظ بها؟ اطّلع على Pomo Plus وPro عبر `/premium perks` أو على <https://pomofocus.online/pricing>. استرداد كامل خلال 14 يومًا إذا لم تناسبك.",
+    "proSourceTrial": "تجربة مجانية"
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,
