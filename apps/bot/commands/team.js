@@ -266,6 +266,14 @@ module.exports = {
         const cycles = interaction.options.getInteger('cycles') || 4;
         const hostId = interaction.user.id;
 
+        // A team session belongs to a server channel; Discord still offers /team in the bot's DMs
+        if (!interaction.guildId || interaction.guild === null) {
+            return interaction.reply({
+                embeds: [errorEmbed(t(language, 'serverOnlyTitle'), t(language, 'serverOnlyBody'))],
+                flags: 64,
+            });
+        }
+
         // ── Hard limits to prevent AFK farming ──────────────────────────
         const MAX_MIN        = 400;
         const MAX_WORK_MIN   = 120;
