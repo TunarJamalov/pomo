@@ -27,11 +27,21 @@ const FREE_FEATURES = [
 
 const FAQ = [
   ["What do I get?", "A subscription for your Discord account. The plan's features unlock in the Pomo bot and on the dashboard for as long as the subscription is active."],
-  ["Plus or Pro?", "Plus covers the everyday boosts: more water, a bigger garden and 10 habits. Pro adds streak shields, deeper stats, 15 habits and 24/7 lofi radio."],
+  ["Plus or Pro?", "Plus is for growing faster: more water, a second daily reward, a bigger garden and 10 habits. Pro adds streak recovery, insights into when you study best, lofi radio for your voice channel and 15 habits."],
+  ["Does paying change the leaderboard?", "No. Leaderboards rank focus minutes, and paid plans never add minutes. Plus and Pro make your garden grow faster; they don't move you up."],
   ["How do I cancel?", "Open pomofocus.online/billing (or run /premium status in Discord) and press Cancel. Nothing more is charged and you keep your plan until the end of the period you paid for."],
-  ["Which currency?", "Plans are charged in Azerbaijani manat (AZN) through Epoint, a payment provider licensed by the Central Bank of Azerbaijan. If your card is in another currency, your bank converts the amount."],
+  ["Which currency?", "Plans are charged in Azerbaijani manat (AZN) through Epoint, a payment provider licensed by the Central Bank of Azerbaijan. The manat is fixed to the US dollar at 1.70, so 2.49 AZN is about $1.46 and 3.49 AZN about $2.05. If your card is in another currency, your bank converts the amount and may add a foreign card fee."],
   ["Does it renew?", "Yes, every month or year on the same card, until you cancel. You can see the next payment date on your billing page."],
   ["Refunds", "Every payment has a 14-day money-back guarantee: ask within 14 days for a full refund, no questions asked."],
+];
+
+// Only while sales are open: the trial is offered in Discord only then (apps/bot/utils/proTrial.js)
+const TRIAL_FAQ = ["Can I try it first?", "Yes. Run /premium in Discord and press \"Try Pro free\": every Pro perk for 7 days, no card, nothing to cancel. Once per Discord account."];
+
+const PROMISES = [
+  "Full refund within 14 days, no questions asked",
+  "Leaderboards rank focus minutes: paid plans never add minutes",
+  "Cancel any time from your billing page",
 ];
 
 export const revalidate = 0;
@@ -43,16 +53,19 @@ export default async function PricingPage() {
   const salesOpen = epointConfigured() && process.env.PRO_SALES_OPEN === "true";
   const buyer = discordId ? canBuy(discordId) : false;
   const current = discordId ? currentSubscription(discordId) : null;
+  const faq = salesOpen ? [FAQ[0], TRIAL_FAQ, ...FAQ.slice(1)] : FAQ;
 
   return (
     <main className="site min-h-screen">
       <section className="pb-16 pt-28 md:pb-20 md:pt-36">
         <div className="site-container">
           <p className="kicker mb-6">Pricing</p>
-          <h1 className="site-heading max-w-[760px] text-[clamp(40px,6.5vw,72px)]">Pomo Plus and Pro</h1>
+          <h1 className="site-heading max-w-[760px] text-[clamp(40px,6.5vw,72px)]">
+            Pomo stays free. Plus and Pro make it go further.
+          </h1>
           <p className="mt-6 max-w-[600px] text-[17px] leading-relaxed text-[var(--site-muted)]">
-            Two monthly or yearly plans that unlock extra features in the Pomo Discord bot and dashboard. The core
-            timers, voice tracking and stats stay free.
+            Two optional plans for your Discord account, monthly or yearly. The timers, voice tracking, garden and
+            stats stay free for everyone.
           </p>
         </div>
       </section>
@@ -73,6 +86,7 @@ export default async function PricingPage() {
                     </span>
                   )}
                 </div>
+                <p className="mb-6 text-[15px] leading-relaxed text-[var(--site-fg-2)]">{p.pitch}</p>
                 <p className="text-[44px] font-semibold tracking-[-0.03em] text-[var(--site-fg)]">
                   {p.monthly}
                   <span className="ml-1 text-[16px] font-normal text-[var(--site-muted)]">/ month</span>
@@ -97,6 +111,22 @@ export default async function PricingPage() {
             </div>
           ))}
         </div>
+        <div className="site-container mt-8">
+          {salesOpen && !current && (
+            <p className="mb-5 text-[15px] text-[var(--site-fg-2)]">
+              Not sure yet? Try Pro free for 7 days: run <code className="font-mono text-[14px]">/premium</code> in
+              Discord. No card needed.
+            </p>
+          )}
+          <ul className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-8">
+            {PROMISES.map(promise => (
+              <li key={promise} className="flex items-center gap-2 text-[14px] text-[var(--site-muted)]">
+                <Check size={13} className="shrink-0 text-[var(--status-live)]" />
+                {promise}
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       <section className="border-t border-[var(--site-line)] py-16 md:py-24">
@@ -104,7 +134,7 @@ export default async function PricingPage() {
           <div>
             <p className="kicker mb-5">Questions</p>
             <dl className="divide-y divide-[var(--site-line)] border-y border-[var(--site-line)]">
-              {FAQ.map(([q, a]) => (
+              {faq.map(([q, a]) => (
                 <div key={q} className="py-5">
                   <dt className="text-[15px] font-medium text-[var(--site-fg)]">{q}</dt>
                   <dd className="mt-2 text-[14px] leading-relaxed text-[var(--site-muted)]">{a}</dd>
