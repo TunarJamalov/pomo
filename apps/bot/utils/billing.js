@@ -8,6 +8,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { db } = require('./database');
 const { t } = require('./i18n');
 const { EPOINT_PRICES } = require('./epoint');
+const { PlanEmojis } = require('./constants');
 
 const azn = amount => `${amount} AZN`;
 const PLANS = {
@@ -30,7 +31,7 @@ function buyButtons(language) {
     return Object.entries(PLANS).map(([plan, info]) => new ButtonBuilder()
         .setStyle(ButtonStyle.Link)
         .setLabel(t(language, info.labelKey, { price: info.monthly }))
-        .setEmoji(plan === 'pro' ? '🚀' : '⭐')
+        .setEmoji(PlanEmojis[plan])
         .setURL(`${PRICING_PAGE}?plan=${plan}#pricing`));
 }
 

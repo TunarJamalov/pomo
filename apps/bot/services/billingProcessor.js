@@ -19,7 +19,7 @@
 const { db, getPremiumEntitlement, extendPremiumUntil } = require('../utils/database');
 const { revokeProAccess, isFullPro } = require('../utils/premiumManager');
 const { t, getUserLanguage } = require('../utils/i18n');
-const { PRO_STREAK_SHIELDS } = require('../utils/constants');
+const { PRO_STREAK_SHIELDS, PlanEmojis } = require('../utils/constants');
 const epoint = require('../utils/epoint');
 
 const PROVIDER = 'epoint';
@@ -231,14 +231,15 @@ async function notify(client, outcome) {
         await channel?.send({ content: text, allowedMentions: { parse: [] } }).catch(() => {});
     };
     const dm = (key, vars) => client.users.fetch(userId).then(u => u.send(t(getUserLanguage(userId), key, vars))).catch(() => {});
-    const planName = plan => t(getUserLanguage(userId), plan === 'pro' ? 'planNamePro' : 'planNamePlus');
+    const planEmoji = plan => (plan === 'pro' ? PlanEmojis.pro : PlanEmojis.plus);
+    const planName = plan => `${planEmoji(plan)} ${t(getUserLanguage(userId), plan === 'pro' ? 'planNamePro' : 'planNamePlus')}`;
 
     if (change === 'activated') {
         require('../utils/premiumCheck').syncPremiumRole(client, userId, true).catch(() => {});
         await dm('epointActivatedDm', { plan: planName(outcome.plan) });
-        await log(`💰 New ${outcome.plan === 'pro' ? 'Pomo Pro' : 'Pomo Plus'}: <@${userId}>`);
+        await log(`💰 New ${planEmoji(outcome.plan)} ${outcome.plan === 'pro' ? 'Pomo Pro' : 'Pomo Plus'}: <@${userId}>`);
     } else if (change === 'renewed') {
-        await log(`🔁 Renewed ${outcome.plan === 'pro' ? 'Pomo Pro' : 'Pomo Plus'}: <@${userId}>`);
+        await log(`🔁 Renewed ${planEmoji(outcome.plan)} ${outcome.plan === 'pro' ? 'Pomo Pro' : 'Pomo Plus'}: <@${userId}>`);
     } else if (change === 'payment_failed') {
         await dm('epointPaymentFailedDm');
         await log(`⚠️ Renewal payment failed: <@${userId}>`);

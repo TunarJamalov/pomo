@@ -370,6 +370,13 @@ const SessionCardThemes = {
     lavender: { name: 'Lavender', bg: ['#2a2140', '#140f22'], accent: '#b388ff', glow: 'rgba(179, 136, 255, 0.34)' },
 };
 
+// Plan badges, uploaded as application emojis in the Developer Portal (art: marketing/badges/)
+const PlanEmojis = {
+    plus: process.env.EMOJI_PLAN_PLUS || '<:pomoplus128:1563109051179737089>',
+    pro: process.env.EMOJI_PLAN_PRO || '<:pomopro128:1563109053826076765>',
+    founding: process.env.EMOJI_PLAN_FOUNDING || '<:pomofounding128:1563109048080011354>',
+};
+
 const ProProfileBadges = {
     pomo_pro: { name: 'Pomo Pro', text: 'POMO PRO' },
     deep_work: { name: 'Deep Work', text: 'DEEP WORK' },
@@ -668,6 +675,7 @@ module.exports = {
     Themes,
     ProProfileAccents,
     ProProfileBadges,
+    PlanEmojis,
     SessionCardThemes,
     StudySnacks,
     TreeRequirements,

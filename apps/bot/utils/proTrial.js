@@ -8,7 +8,7 @@ const { ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const { db } = require('./database');
 const { grantProAccess, isProActive } = require('./premiumManager');
 const { checkoutConfigured } = require('./billing');
-const { Colors } = require('./constants');
+const { Colors, PlanEmojis } = require('./constants');
 const { t, getInteractionLanguage } = require('./i18n');
 
 const PRO_TRIAL_DAYS = 7;
@@ -73,7 +73,7 @@ async function handleProTrialButton(interaction) {
     const embed = new EmbedBuilder()
         .setColor(Colors.PREMIUM)
         .setTitle(t(language, 'proTrialStartedTitle'))
-        .setDescription(t(language, 'proTrialStartedBody', { days: PRO_TRIAL_DAYS, ends: `<t:${endsAt}:F>` }));
+        .setDescription(`${PlanEmojis.pro} ${t(language, 'proTrialStartedBody', { days: PRO_TRIAL_DAYS, ends: `<t:${endsAt}:F>` })}`);
     console.log(`[ProTrial] ${interaction.user.id} started a ${PRO_TRIAL_DAYS}-day trial`);
     return interaction.reply({ embeds: [embed], flags: 64 });
 }

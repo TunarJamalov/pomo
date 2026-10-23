@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { getServerSession } from "next-auth";
@@ -79,7 +80,10 @@ export default async function PricingPage() {
             >
               <div>
                 <div className="mb-6 flex items-center justify-between gap-3">
-                  <h2 className="text-[20px] font-medium tracking-[-0.02em] text-[var(--site-fg)]">{p.name}</h2>
+                  <h2 className="flex items-center gap-3 text-[20px] font-medium tracking-[-0.02em] text-[var(--site-fg)]">
+                    <Image src={`/badges/${p.tier}.png`} alt="" width={36} height={36} />
+                    {p.name}
+                  </h2>
                   {p.tier === "pro" && (
                     <span className="rounded-full bg-[var(--tomato-soft)] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--tomato)]">
                       Most features

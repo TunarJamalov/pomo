@@ -5,7 +5,7 @@ const {
     ButtonBuilder,
     ButtonStyle,
 } = require('discord.js');
-const { Colors, SUPPORT_SERVER_URL } = require('../utils/constants');
+const { Colors, SUPPORT_SERVER_URL, PlanEmojis } = require('../utils/constants');
 const { getPremiumStatus } = require('../utils/premiumCheck');
 const { getInteractionLanguage, t } = require('../utils/i18n');
 const { buyButtons, manageUrl, PRICING_PAGE, PLANS } = require('../utils/billing');
@@ -108,8 +108,8 @@ function buildPerksEmbed(language = 'en') {
 }
 
 function formatPlan(planKey, language = 'en') {
-    if (planKey === 'plus') return t(language, 'planNamePlus');
-    if (planKey === 'pro') return t(language, 'planNamePro');
+    if (planKey === 'plus') return `${PlanEmojis.plus} ${t(language, 'planNamePlus')}`;
+    if (planKey === 'pro') return `${PlanEmojis.pro} ${t(language, 'planNamePro')}`;
     if (planKey === 'pro_beta') return t(language, 'premiumPlanProBeta');
     if (planKey === 'supporter') return t(language, 'premiumPlanSupporter');
     if (planKey === 'legacy') return t(language, 'premiumPlanLegacy');

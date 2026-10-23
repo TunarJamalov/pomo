@@ -22,7 +22,11 @@ const {
     getUserExams,
 } = require('../utils/database');
 const { formatTime } = require('../utils/embeds');
-const { isPremium } = require('../utils/premiumCheck');
+const { getPremiumStatus } = require('../utils/premiumCheck');
+const path = require('path');
+
+const PLAN_BADGE_DIR = path.join(__dirname, '..', 'assets', 'badges');
+const PLAN_BADGE_SIZE = 28;
 const { getInteractionLanguage, t } = require('../utils/i18n');
 module.exports = {
     cooldown: 5,
@@ -64,9 +68,10 @@ module.exports = {
         await interaction.deferReply();
 
         try {
-            const premium = await isPremium(interaction.client, userId);
+            const status = await getPremiumStatus(interaction.client, userId);
+            const premium = status.active;
             const proSettings = premium ? getOrCreateProProfileSettings(userId) : null;
-            const buffer = await generateProfileCard(targetUser, user, premium, proSettings, language);
+            const buffer = await generateProfileCard(targetUser, user, premium, proSettings, language, status.tier);
             const attachment = new AttachmentBuilder(buffer, { name: 'profile.png' });
 
             await interaction.editReply({ files: [attachment] });
@@ -86,7 +91,7 @@ module.exports = {
 /**
  * Generate a Canvas-based profile card.
  */
-async function generateProfileCard(discordUser, dbUser, isPro = false, proSettings = null, language = 'en') {
+async function generateProfileCard(discordUser, dbUser, isPro = false, proSettings = null, language = 'en', tier = 'pro') {
     const width = 800;
     const height = 400;
     const canvas = createCanvas(width, height);
@@ -164,7 +169,7 @@ async function generateProfileCard(discordUser, dbUser, isPro = false, proSettin
     // ─── Username ────────────────────────────────────────────
     const textX = avatarX + avatarSize + 25;
     ctx.fillStyle = theme.text;
-    const reservedBadgeWidth = isPro ? 185 : 0;
+    const reservedBadgeWidth = isPro ? 185 + PLAN_BADGE_SIZE + 6 : 0;
     const maxUsernameWidth = width - textX - 45 - reservedBadgeWidth;
     let usernameSize = 28;
     ctx.font = `bold ${usernameSize}px sans-serif`;
@@ -175,7 +180,9 @@ async function generateProfileCard(discordUser, dbUser, isPro = false, proSettin
     ctx.fillText(discordUser.username, textX, avatarY + 30);
 
     if (isPro) {
-        const badgeText = proBadge.text;
+        const planTier = tier === 'plus' ? 'plus' : 'pro';
+        // The default badge names the plan, so Plus members don't read "POMO PRO"
+        const badgeText = proBadge === ProProfileBadges.pomo_pro && planTier === 'plus' ? 'POMO PLUS' : proBadge.text;
         ctx.font = 'bold 13px sans-serif';
         const badgeWidth = ctx.measureText(badgeText).width + 24;
         const badgeX = width - badgeWidth - 45;
@@ -184,6 +191,13 @@ async function generateProfileCard(discordUser, dbUser, isPro = false, proSettin
         ctx.fill();
         ctx.fillStyle = getContrastColor(accentColor);
         ctx.fillText(badgeText, badgeX + 12, avatarY + 24);
+
+        try {
+            const icon = await loadImage(path.join(PLAN_BADGE_DIR, `${planTier}.png`));
+            ctx.drawImage(icon, badgeX - PLAN_BADGE_SIZE - 6, avatarY + 5, PLAN_BADGE_SIZE, PLAN_BADGE_SIZE);
+        } catch (_) {
+            // The text badge alone is still fine
+        }
     }
 
     // ─── Level Badge ─────────────────────────────────────────
