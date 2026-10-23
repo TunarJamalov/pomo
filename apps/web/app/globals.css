@@ -164,12 +164,13 @@
     @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg px-5 text-[15px] font-semibold transition-colors duration-150;
     white-space: nowrap;
   }
+  /* White text needs the deeper tomato for WCAG AA (5.1:1); plain --tomato is only 3.5:1 */
   .btn-tomato {
-    background: var(--tomato);
+    background: var(--tomato-deep);
     color: #fff;
   }
   .btn-tomato:hover {
-    background: var(--tomato-deep);
+    background: #b0301f;
   }
   .btn-grey {
     background: #4e5058;
