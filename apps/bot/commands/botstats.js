@@ -136,7 +136,7 @@ function buildChurnRetentionEmbed() {
     const firstStepsText = [
         `Welcome posted **${c('welcome:posted')}** · failed **${c('welcome:post_failed')}** · no channel **${c('welcome:no_channel')}**`,
         `Owner DM sent **${c('welcome:dm_sent')}** · failed **${c('welcome:dm_failed')}**`,
-        `Quick Setup: clicked **${c('setup:quick_click')}** · done **${c('setup:quick_done')}** · failed **${c('setup:quick_failed')}**`,
+        `Quick Setup: clicked **${c('setup:quick_click')}** · done **${c('setup:quick_done')}** · failed **${c('setup:quick_failed')}** · not a manager **${c('setup:quick_no_permission')}** · already set up **${c('setup:quick_already_done')}**`,
         `1-Click: clicked **${c('setup:auto_click')}** · no permission **${c('setup:auto_no_permission')}** · done **${c('setup:auto_done')}** · failed **${c('setup:auto_failed')}**`,
         `Manual setup opened **${c('setup:wizard_open')}**`,
     ].join('\n');

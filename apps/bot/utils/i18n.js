@@ -14364,6 +14364,68 @@ Object.assign(Messages['ar'], {
     "voiceFirstSessionTip": "💡 **جديد على Pomo؟** كل جلسة تركيز في القناة الصوتية تمنحك 💧 ماء. أنفقه على البذور عبر `/garden` وشاهدها تنمو. مهام `/quests` اليومية تمنح ماءً إضافيًا، و`/profile` يعرض تقدّمك."
 });
 
+// Welcome message: Quick Setup first, with what voice tracking does for a server (events/guildCreate.js)
+Object.assign(Messages['en'], {
+    "welcomeIntro": "Thanks for adding Pomo! One click gets your server studying:",
+    "welcomeQuickValue": "Members earn water and streaks just by studying in any voice channel, and a weekly report lands here. Servers that track voice study keep about **twice as many members studying** a month later. Creates no new channels.",
+    "welcomeTryName": "⏱️ Or just try it",
+    "welcomeFooter": "Setup buttons work for members with Manage Server. Pomo only needs normal channel permissions, not Administrator."
+});
+Object.assign(Messages['es'], {
+    "welcomeIntro": "¡Gracias por añadir Pomo! Un clic y tu servidor empieza a estudiar:",
+    "welcomeQuickValue": "Los miembros ganan agua y rachas solo por estudiar en cualquier canal de voz, y aquí llega un informe semanal. Los servidores que registran el estudio en voz mantienen a casi **el doble de miembros estudiando** un mes después. No crea canales nuevos.",
+    "welcomeTryName": "⏱️ O simplemente pruébalo",
+    "welcomeFooter": "Los botones de configuración funcionan para miembros con Gestionar servidor. Pomo solo necesita permisos normales de canal, no Administrador."
+});
+Object.assign(Messages['fr'], {
+    "welcomeIntro": "Merci d’avoir ajouté Pomo ! Un clic et ton serveur se met à étudier :",
+    "welcomeQuickValue": "Les membres gagnent de l’eau et des séries rien qu’en étudiant dans n’importe quel salon vocal, et un rapport hebdomadaire arrive ici. Les serveurs qui suivent l’étude en vocal gardent environ **deux fois plus de membres qui étudient** un mois plus tard. Ne crée aucun nouveau salon.",
+    "welcomeTryName": "⏱️ Ou essaie tout de suite",
+    "welcomeFooter": "Les boutons de configuration fonctionnent pour les membres avec Gérer le serveur. Pomo n’a besoin que des permissions de salon normales, pas d’Administrateur."
+});
+Object.assign(Messages['pt-BR'], {
+    "welcomeIntro": "Obrigado por adicionar o Pomo! Um clique e seu servidor começa a estudar:",
+    "welcomeQuickValue": "Os membros ganham água e sequências só de estudar em qualquer canal de voz, e um relatório semanal chega aqui. Servidores que registram o estudo em voz mantêm cerca de **o dobro de membros estudando** um mês depois. Não cria canais novos.",
+    "welcomeTryName": "⏱️ Ou só experimente",
+    "welcomeFooter": "Os botões de configuração funcionam para membros com Gerenciar servidor. O Pomo só precisa de permissões normais de canal, não de Administrador."
+});
+Object.assign(Messages['ru'], {
+    "welcomeIntro": "Спасибо, что добавили Pomo! Один клик — и сервер начинает учиться:",
+    "welcomeQuickValue": "Участники получают воду и серии, просто занимаясь в любом голосовом канале, а сюда приходит еженедельный отчёт. Серверы, где учёба в голосовых каналах отслеживается, через месяц сохраняют примерно **вдвое больше занимающихся**. Новые каналы не создаются.",
+    "welcomeTryName": "⏱️ Или просто попробуйте",
+    "welcomeFooter": "Кнопки настройки работают для участников с правом «Управлять сервером». Pomo нужны только обычные права канала, не Администратор."
+});
+Object.assign(Messages['tr'], {
+    "welcomeIntro": "Pomo'yu eklediğin için teşekkürler! Tek tıkla sunucun çalışmaya başlar:",
+    "welcomeQuickValue": "Üyeler herhangi bir ses kanalında çalışarak su ve seri kazanır, haftalık rapor da buraya gelir. Ses kanalında çalışmayı takip eden sunucular bir ay sonra yaklaşık **iki kat daha fazla çalışan üyeyi** tutuyor. Yeni kanal oluşturmaz.",
+    "welcomeTryName": "⏱️ Ya da hemen dene",
+    "welcomeFooter": "Kurulum butonları Sunucuyu Yönet yetkisi olan üyeler için çalışır. Pomo'nun Yönetici yetkisine değil, sadece normal kanal izinlerine ihtiyacı var."
+});
+Object.assign(Messages['az'], {
+    "welcomeIntro": "Pomo-nu əlavə etdiyin üçün təşəkkürlər! Bir kliklə serverin oxumağa başlayır:",
+    "welcomeQuickValue": "Üzvlər istənilən səsli kanalda oxumaqla su və seriya qazanır, həftəlik hesabat da bura gəlir. Səsli kanalda oxumanı izləyən serverlər bir ay sonra təxminən **iki dəfə çox oxuyan üzv** saxlayır. Yeni kanal yaratmır.",
+    "welcomeTryName": "⏱️ Və ya sadəcə yoxla",
+    "welcomeFooter": "Quraşdırma düymələri Serveri İdarə Et icazəsi olan üzvlər üçün işləyir. Pomo-ya Administrator yox, yalnız adi kanal icazələri lazımdır."
+});
+Object.assign(Messages['ja'], {
+    "welcomeIntro": "Pomoを追加してくれてありがとう！ワンクリックでサーバーの勉強が始まります:",
+    "welcomeQuickValue": "メンバーはどのボイスチャンネルで勉強しても水とストリークがもらえ、ここに毎週レポートが届きます。ボイスでの勉強を記録しているサーバーは、1か月後も**約2倍のメンバーが勉強を続けています**。新しいチャンネルは作りません。",
+    "welcomeTryName": "⏱️ まずは試してみる",
+    "welcomeFooter": "セットアップボタンは「サーバー管理」権限を持つメンバーが使えます。Pomoに必要なのは通常のチャンネル権限だけで、管理者権限は不要です。"
+});
+Object.assign(Messages['ko'], {
+    "welcomeIntro": "Pomo를 추가해 주셔서 감사해요! 클릭 한 번이면 서버가 공부를 시작해요:",
+    "welcomeQuickValue": "멤버들은 어느 음성 채널에서든 공부하기만 하면 물과 연속 기록을 얻고, 주간 리포트가 여기로 와요. 음성 공부를 기록하는 서버는 한 달 뒤에도 **약 두 배의 멤버가 계속 공부해요**. 새 채널은 만들지 않아요.",
+    "welcomeTryName": "⏱️ 아니면 바로 써 보기",
+    "welcomeFooter": "설정 버튼은 서버 관리 권한이 있는 멤버만 사용할 수 있어요. Pomo는 관리자 권한이 아닌 일반 채널 권한만 있으면 돼요."
+});
+Object.assign(Messages['ar'], {
+    "welcomeIntro": "شكرًا لإضافة Pomo! نقرة واحدة ويبدأ خادمك بالدراسة:",
+    "welcomeQuickValue": "يكسب الأعضاء الماء والسلاسل بمجرد الدراسة في أي قناة صوتية، ويصل تقرير أسبوعي إلى هنا. الخوادم التي تتتبع الدراسة الصوتية تحتفظ بعد شهر بنحو **ضعف عدد الأعضاء الذين يواصلون الدراسة**. لا يُنشئ قنوات جديدة.",
+    "welcomeTryName": "⏱️ أو جرّبه الآن",
+    "welcomeFooter": "أزرار الإعداد تعمل للأعضاء الذين لديهم صلاحية إدارة الخادم. يحتاج Pomo إلى صلاحيات القنوات العادية فقط، وليس صلاحية المسؤول."
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,

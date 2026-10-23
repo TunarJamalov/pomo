@@ -2,7 +2,11 @@
  * Quick Setup: one click turns on voice tracking for every voice channel,
  * weekly reports and a size-appropriate weekly goal, without creating anything.
  */
-const { initDatabase, getOrCreateGuildSettings } = require('../utils/database');
+const { initDatabase, getOrCreateGuildSettings, db } = require('../utils/database');
+
+const trackedTopics = guildId => db.prepare(
+    "SELECT topic FROM onboarding_events WHERE guild_id = ? AND event_type = 'setup' ORDER BY id"
+).all(guildId).map(row => row.topic);
 const interactionCreate = require('../events/interactionCreate');
 const { isTrackedVoiceChannel } = require('../utils/voiceManager');
 
@@ -53,6 +57,7 @@ describe('Quick Setup button', () => {
         const interaction = buildButton();
         await interactionCreate.execute(interaction);
         expect(interaction.editReply.mock.calls[0][0].embeds[0].data.description).toContain('already configured');
+        expect(trackedTopics('quick_guild')).toContain('quick_already_done');
     });
 
     test('members without Manage Server cannot run it', async () => {
@@ -62,6 +67,8 @@ describe('Quick Setup button', () => {
         await interactionCreate.execute(interaction);
         expect(getOrCreateGuildSettings('other_guild').voice_tracking_enabled).toBeFalsy();
         expect(interaction.editReply).toHaveBeenCalled();
+        // Counted in /botstats, so clicks that never finish are explained
+        expect(trackedTopics('other_guild')).toEqual(['quick_click', 'quick_no_permission']);
     });
 });
 

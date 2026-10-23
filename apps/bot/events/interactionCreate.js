@@ -835,16 +835,16 @@ async function resolveSetupGuild(interaction, setupGuildId, language) {
         guild = interaction.client.guilds.cache.get(setupGuildId) || await interaction.client.guilds.fetch(setupGuildId).catch(() => null);
     }
     if (!guild) {
-        return { error: { content: `❌ ${t(language, 'interactionSetupGuildNotFound')}` } };
+        return { reason: 'guild_not_found', error: { content: `❌ ${t(language, 'interactionSetupGuildNotFound')}` } };
     }
 
     if (!interaction.guild) {
         const member = await guild.members.fetch(interaction.user.id).catch(() => null);
         if (!member || !member.permissions.has(PermissionFlagsBits.ManageGuild)) {
-            return { error: { embeds: [errorEmbed(t(language, 'interactionPermissionDeniedTitle'), t(language, 'interactionSetupManageServerDmBody'))] } };
+            return { reason: 'no_permission', error: { embeds: [errorEmbed(t(language, 'interactionPermissionDeniedTitle'), t(language, 'interactionSetupManageServerDmBody'))] } };
         }
     } else if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
-        return { error: { embeds: [errorEmbed(t(language, 'interactionPermissionDeniedTitle'), t(language, 'interactionSetupManageServerBody'))] } };
+        return { reason: 'no_permission', error: { embeds: [errorEmbed(t(language, 'interactionPermissionDeniedTitle'), t(language, 'interactionSetupManageServerBody'))] } };
     }
     return { guild };
 }
@@ -882,11 +882,16 @@ async function runQuickSetup(interaction, setupGuildId = null) {
     const language = getAutoSetupLanguage(interaction, setupGuildId);
     await interaction.deferReply({ flags: 64 });
 
-    const { guild, error } = await resolveSetupGuild(interaction, setupGuildId, language);
-    if (error) return interaction.editReply(error);
+    const { guild, error, reason } = await resolveSetupGuild(interaction, setupGuildId, language);
+    if (error) {
+        // Most often a member without Manage Server pressing the pinned welcome button
+        trackSetup(interaction, setupGuildId, `quick_${reason}`);
+        return interaction.editReply(error);
+    }
 
     const settings = getOrCreateGuildSettings(guild.id);
     if (settings.setup_completed_at) {
+        trackSetup(interaction, guild.id, 'quick_already_done');
         return interaction.editReply({
             embeds: [successEmbed(
                 `✅ ${t(language, 'interactionSetupAlreadyCompleteTitle')}`,

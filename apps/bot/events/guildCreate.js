@@ -62,9 +62,10 @@ module.exports = {
 };
 
 function buildWelcomeEmbed(guild, language) {
+    // Quick Setup first: servers with voice tracking keep about twice as many members studying
     const fields = [
-        { name: t(language, 'welcomeTryName'), value: t(language, 'welcomeTryValue'), inline: false },
         { name: t(language, 'welcomeQuickName'), value: t(language, 'welcomeQuickValue'), inline: false },
+        { name: t(language, 'welcomeTryName'), value: t(language, 'welcomeTryValue'), inline: false },
     ];
     // Only offered where Pomo can create channels and roles; otherwise the button just fails
     if (canAutoSetup(guild)) {
