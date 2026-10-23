@@ -152,17 +152,25 @@ function buildChurnRetentionEmbed() {
             { name: 'Joined in 30d', value: cohortText, inline: false },
             { name: 'New servers, first steps (30d)', value: firstStepsText, inline: false },
             {
-                name: 'User retention (joined in last 90d)',
+                name: 'User retention: active on day 1 (joined in last 90d)',
                 value: [
-                    retentionLine('Came back after 1 day', r.d1_returned, r.d1_cohort),
-                    retentionLine('Came back after 7 days', r.d7_returned, r.d7_cohort),
-                    retentionLine('Came back after 30 days', r.d30_returned, r.d30_cohort),
-                    `New users (30d): **${r.new_users_30d || 0}**`,
+                    retentionLine('Came back after 1 day', r.active_d1_returned, r.active_d1_cohort),
+                    retentionLine('Came back after 7 days', r.active_d7_returned, r.active_d7_cohort),
+                    retentionLine('Came back after 30 days', r.active_d30_returned, r.active_d30_cohort),
+                    `New users (30d): **${r.active_new_users_30d || 0}**`,
+                ].join('\n'),
+                inline: false,
+            },
+            {
+                name: 'All new user rows (incl. Activity and short voice visits)',
+                value: [
+                    `D1 **${pct(r.d1_returned, r.d1_cohort)}** · D7 **${pct(r.d7_returned, r.d7_cohort)}** · D30 **${pct(r.d30_returned, r.d30_cohort)}**`,
+                    `New user rows (30d): **${r.new_users_30d || 0}**`,
                 ].join('\n'),
                 inline: false,
             },
         )
-        .setFooter({ text: 'Leaves exclude servers that were present before tracking began. Retention = any command or completed session.' })
+        .setFooter({ text: 'Leaves exclude servers that were present before tracking began. Active on day 1 = a command or a finished session in the first 24 h. Came back = any command or finished session later.' })
         .setTimestamp();
 }
 

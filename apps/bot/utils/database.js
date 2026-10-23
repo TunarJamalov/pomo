@@ -3173,6 +3173,15 @@ function getRetentionAnalytics() {
         OR EXISTS (SELECT 1 FROM activity_rewards ar
                 WHERE ar.user_id = u.discord_id AND ar.created_at >= datetime(u.created_at, '${offset}'))
     )`;
+    // Users who did something themselves in their first 24 hours. Many user rows come from
+    // a Discord Activity visit or a short voice visit and never become users; counting
+    // only these shows how well Pomo keeps the people who actually tried it.
+    const activeDay1 = `(
+        EXISTS (SELECT 1 FROM command_usage cu
+                WHERE cu.user_id = u.discord_id AND cu.used_at < datetime(u.created_at, '+1 day'))
+        OR EXISTS (SELECT 1 FROM activity_rewards ar
+                WHERE ar.user_id = u.discord_id AND ar.created_at < datetime(u.created_at, '+1 day'))
+    )`;
     return db.prepare(`
         SELECT
             SUM(u.created_at >= datetime('now', '-30 days')) AS new_users_30d,
@@ -3181,7 +3190,14 @@ function getRetentionAnalytics() {
             SUM(u.created_at <= datetime('now', '-7 days')) AS d7_cohort,
             SUM(u.created_at <= datetime('now', '-7 days') AND ${cameBack('+7 days')}) AS d7_returned,
             SUM(u.created_at <= datetime('now', '-30 days')) AS d30_cohort,
-            SUM(u.created_at <= datetime('now', '-30 days') AND ${cameBack('+30 days')}) AS d30_returned
+            SUM(u.created_at <= datetime('now', '-30 days') AND ${cameBack('+30 days')}) AS d30_returned,
+            SUM(u.created_at >= datetime('now', '-30 days') AND ${activeDay1}) AS active_new_users_30d,
+            SUM(u.created_at <= datetime('now', '-1 day') AND ${activeDay1}) AS active_d1_cohort,
+            SUM(u.created_at <= datetime('now', '-1 day') AND ${activeDay1} AND ${cameBack('+1 day')}) AS active_d1_returned,
+            SUM(u.created_at <= datetime('now', '-7 days') AND ${activeDay1}) AS active_d7_cohort,
+            SUM(u.created_at <= datetime('now', '-7 days') AND ${activeDay1} AND ${cameBack('+7 days')}) AS active_d7_returned,
+            SUM(u.created_at <= datetime('now', '-30 days') AND ${activeDay1}) AS active_d30_cohort,
+            SUM(u.created_at <= datetime('now', '-30 days') AND ${activeDay1} AND ${cameBack('+30 days')}) AS active_d30_returned
         FROM users u
         WHERE u.created_at >= datetime('now', '-90 days')
     `).get();
