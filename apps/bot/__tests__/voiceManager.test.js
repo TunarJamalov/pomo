@@ -41,6 +41,7 @@ beforeEach(() => {
         DELETE FROM guild_quest_contributions;
         DELETE FROM guild_quests;
         DELETE FROM activity_rewards;
+        DELETE FROM user_onboarding;
         DELETE FROM settings;
         DELETE FROM voice_sessions;
         DELETE FROM study_sessions;
@@ -130,6 +131,22 @@ describe('voice focus tracking', () => {
             await finishVoiceSession(client, 'voice_dm_on', 'guild_voice', { endedAt: '2026-06-06 10:50:00' });
 
             expect(send).toHaveBeenCalled();
+        });
+
+        test('the summary shows the streak, explains water once, and offers next steps', async () => {
+            createBackdatedVoiceSession('voice_dm_new', '2026-06-06 10:00:00');
+            const first = fakeClient();
+            await finishVoiceSession(first.client, 'voice_dm_new', 'guild_voice', { endedAt: '2026-06-06 10:50:00' });
+
+            const summary = first.send.mock.calls[0][0];
+            expect(summary.embeds[0].data.description).toContain('-day streak');
+            expect(summary.embeds[0].data.description).toContain('New to Pomo');
+            expect(summary.components[0].components.map(c => c.data.custom_id)).toEqual(['next_garden', 'next_remind']);
+
+            createBackdatedVoiceSession('voice_dm_new', '2026-06-07 10:00:00');
+            const second = fakeClient();
+            await finishVoiceSession(second.client, 'voice_dm_new', 'guild_voice', { endedAt: '2026-06-07 10:50:00' });
+            expect(second.send.mock.calls[0][0].embeds[0].data.description).not.toContain('New to Pomo');
         });
 
         test('no DMs at all when the server turned them off, but the time still counts', async () => {

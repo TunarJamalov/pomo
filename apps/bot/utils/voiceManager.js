@@ -558,13 +558,26 @@ async function sendVoiceSummary(client, userId, result) {
     }
     if (result.leveledUp) description += `\n${t(language, 'levelUpLabel')}: **${result.newLevel}**`;
 
+    // A counted session: show the streak and what to do next, like the timer's card
+    const counted = result.creditedMinutes > 0;
+    if (counted && result.streak) {
+        description += `\n\n${t(language, 'voiceStreakLine', { streak: result.streak, next: result.streak + 1 })}`;
+    }
+    // Voice-only members never ran a command, so they never saw what water is for
+    if (counted && require('./database').markOnboardingTipShown(userId, 'voice_first')) {
+        description += `\n\n${t(language, 'voiceFirstSessionTip')}`;
+    }
+
     const embed = new EmbedBuilder()
         .setColor(Colors.SUCCESS)
         .setTitle(t(language, 'voiceStudyCompleteTitle'))
         .setDescription(description)
         .setTimestamp();
+    const components = counted
+        ? [require('./nextSteps').buildNextStepsRow({ user_id: userId }, language, { again: false })]
+        : [];
 
-    await user.send({ embeds: [embed] }).catch(() => {});
+    await user.send({ embeds: [embed], components }).catch(() => {});
 }
 
 function getGuildLanguage(guildId) {

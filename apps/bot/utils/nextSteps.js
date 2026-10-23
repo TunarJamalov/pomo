@@ -11,14 +11,20 @@ const { t, getInteractionLanguage, getUserLanguage } = require('./i18n');
 
 const AGAIN_PREFIX = 'next_again_';
 
-/** Buttons for the session-complete card; the reminder button hides once it is on. */
-function buildNextStepsRow(session, language) {
-    const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
+/**
+ * Buttons for the session-complete card; the reminder button hides once it is on.
+ * Voice summaries pass { again: false }: there is no timer to start again.
+ */
+function buildNextStepsRow(session, language, { again = true } = {}) {
+    const row = new ActionRowBuilder();
+    if (again) {
+        row.addComponents(new ButtonBuilder()
             .setCustomId(`${AGAIN_PREFIX}${session.id}`)
             .setStyle(ButtonStyle.Primary)
             .setEmoji('▶️')
-            .setLabel(t(language, 'nextAgainButton', { minutes: session.duration })),
+            .setLabel(t(language, 'nextAgainButton', { minutes: session.duration })));
+    }
+    row.addComponents(
         new ButtonBuilder()
             .setCustomId('next_garden')
             .setStyle(ButtonStyle.Secondary)

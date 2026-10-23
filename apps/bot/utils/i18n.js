@@ -14322,6 +14322,48 @@ Object.assign(Messages['ar'], {
     "comebackReminderOffButton": "أوقف هذه التذكيرات"
 });
 
+// Voice summary DM: streak line and a first-time tip (utils/voiceManager.js)
+Object.assign(Messages['en'], {
+    "voiceStreakLine": "🔥 **{streak}-day streak.** Study again tomorrow to make it {next}.",
+    "voiceFirstSessionTip": "💡 **New to Pomo?** Every focus session in voice earns 💧 water. Spend it on seeds with `/garden` and watch them grow. Daily `/quests` give extra water, and `/profile` shows your progress."
+});
+Object.assign(Messages['es'], {
+    "voiceStreakLine": "🔥 **Racha de {streak} días.** Vuelve a estudiar mañana para llegar a {next}.",
+    "voiceFirstSessionTip": "💡 **¿Nuevo en Pomo?** Cada sesión de enfoque en voz te da 💧 agua. Gástala en semillas con `/garden` y míralas crecer. Las `/quests` diarias dan agua extra y `/profile` muestra tu progreso."
+});
+Object.assign(Messages['fr'], {
+    "voiceStreakLine": "🔥 **Série de {streak} jours.** Étudie encore demain pour passer à {next}.",
+    "voiceFirstSessionTip": "💡 **Nouveau sur Pomo ?** Chaque session de concentration en vocal te rapporte de l’💧 eau. Dépense-la en graines avec `/garden` et regarde-les pousser. Les `/quests` quotidiennes donnent de l’eau en plus, et `/profile` montre ta progression."
+});
+Object.assign(Messages['pt-BR'], {
+    "voiceStreakLine": "🔥 **Sequência de {streak} dias.** Estude de novo amanhã para chegar a {next}.",
+    "voiceFirstSessionTip": "💡 **Novo no Pomo?** Cada sessão de foco em voz rende 💧 água. Gaste em sementes com `/garden` e veja crescerem. As `/quests` diárias dão água extra, e `/profile` mostra seu progresso."
+});
+Object.assign(Messages['ru'], {
+    "voiceStreakLine": "🔥 **Серия {streak} дн.** Позанимайся завтра, чтобы стало {next}.",
+    "voiceFirstSessionTip": "💡 **Впервые в Pomo?** Каждая фокус-сессия в голосовом канале приносит 💧 воду. Трать её на семена в `/garden` и смотри, как они растут. Ежедневные `/quests` дают больше воды, а `/profile` показывает твой прогресс."
+});
+Object.assign(Messages['tr'], {
+    "voiceStreakLine": "🔥 **{streak} günlük seri.** Yarın tekrar çalışırsan {next} olur.",
+    "voiceFirstSessionTip": "💡 **Pomo'da yeni misin?** Ses kanalındaki her odak oturumu 💧 su kazandırır. Suyu `/garden` ile tohumlara harca ve büyümelerini izle. Günlük `/quests` ekstra su verir, `/profile` ilerlemeni gösterir."
+});
+Object.assign(Messages['az'], {
+    "voiceStreakLine": "🔥 **{streak} günlük seriya.** Sabah yenə oxusan {next} olacaq.",
+    "voiceFirstSessionTip": "💡 **Pomo-da yenisən?** Səsli kanalda hər fokus sessiyası 💧 su qazandırır. Onu `/garden` ilə toxumlara xərclə və böyümələrinə bax. Gündəlik `/quests` əlavə su verir, `/profile` isə irəliləyişini göstərir."
+});
+Object.assign(Messages['ja'], {
+    "voiceStreakLine": "🔥 **{streak}日間のストリーク。** 明日も勉強すれば{next}日に。",
+    "voiceFirstSessionTip": "💡 **Pomoは初めて？** ボイスでの集中セッションごとに💧水がもらえます。`/garden` で種に使って育てましょう。毎日の `/quests` で水が増え、`/profile` で成長を確認できます。"
+});
+Object.assign(Messages['ko'], {
+    "voiceStreakLine": "🔥 **{streak}일 연속 기록.** 내일 또 공부하면 {next}일이 돼요.",
+    "voiceFirstSessionTip": "💡 **Pomo가 처음인가요?** 음성 채널에서 집중할 때마다 💧 물을 받아요. `/garden`에서 씨앗에 써서 키워 보세요. 매일 `/quests`로 물을 더 받고, `/profile`에서 진행 상황을 볼 수 있어요."
+});
+Object.assign(Messages['ar'], {
+    "voiceStreakLine": "🔥 **سلسلة {streak} يومًا.** ادرس مجددًا غدًا لتصبح {next}.",
+    "voiceFirstSessionTip": "💡 **جديد على Pomo؟** كل جلسة تركيز في القناة الصوتية تمنحك 💧 ماء. أنفقه على البذور عبر `/garden` وشاهدها تنمو. مهام `/quests` اليومية تمنح ماءً إضافيًا، و`/profile` يعرض تقدّمك."
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,
