@@ -53,139 +53,12 @@ module.exports = {
                 .addChoices(...SUBJECT_CHOICES)),
 
     async execute(interaction) {
-        const minutes = interaction.options.getInteger('minutes');
-        const language = getInteractionLanguage(interaction);
-        const taskNumber = interaction.options.getInteger('task');
-        const subject = interaction.options.getString('subject') || 'general';
-        const userId = interaction.user.id;
-        let linkedTodo = null;
-        let title = interaction.options.getString('title') || t(language, 'studySession');
-
-        // ── Hard limit to prevent AFK farming ───────────────────────────
-        const MAX_STUDY_MIN = 120;
-        if (minutes > MAX_STUDY_MIN) {
-            return interaction.reply({
-                embeds: [errorEmbed(
-                    t(language, 'sessionTooLongTitle'),
-                    t(language, 'sessionTooLongBody', { minutes: MAX_STUDY_MIN })
-                )],
-                flags: 64,
-            });
-        }
-        // ───────────────────────────────────────────────────────────────
-
-        // Ensure user exists in DB
-        getOrCreateUser(userId);
-        linkedTodo = taskNumber ? getActiveTodoByPosition(userId, taskNumber) : null;
-        if (!interaction.options.getString('title') && linkedTodo) {
-            title = linkedTodo.content;
-        }
-
-        // Check for existing active session (solo or team)
-
-
-        if (taskNumber && !linkedTodo) {
-            return interaction.reply({
-                embeds: [errorEmbed(
-                    t(language, 'studyTaskNotFoundTitle'),
-                    t(language, 'studyTaskNotFoundBody', { number: taskNumber })
-                )],
-                flags: 64,
-            });
-        }
-
-        // Build start embed
-        const embed = new EmbedBuilder()
-            .setColor(Colors.STUDY)
-            .setTitle(`📚 ${title}`)
-            .setDescription(
-                `**${t(language, 'durationLabel')}:** ${formatTime(minutes)}\n` +
-                `**Subject:** ${subjectLabel(subject)}\n` +
-                (linkedTodo ? `**${t(language, 'linkedTaskLabel')}:** ${linkedTodo.content}\n` : '') +
-                `**${t(language, 'elapsedLabel')}:** 0m\n` +
-                `**${t(language, 'remainingLabel')}:** ${formatTime(minutes)}\n\n` +
-                `${progressBar(0, minutes, 20)}`
-            )
-            .setFooter({ text: t(language, 'startedBy', { username: interaction.user.username }) })
-            .setTimestamp();
-
-        // Outside servers the bot is in, the live timer runs in the user's DMs
-        let dm = null;
-        if (needsDmTimer(interaction)) {
-            if (isUserInAnyActiveSession(userId)) {
-                return interaction.reply({
-                    embeds: [errorEmbed(t(language, 'activeSessionTitle'), t(language, 'activeSessionBody'))],
-                    flags: 64,
-                });
-            }
-            await interaction.deferReply();
-            dm = await openTimerDm(interaction);
-            if (!dm) {
-                return interaction.editReply({ embeds: [errorEmbed(t(language, 'dmTimerFailedTitle'), t(language, 'dmTimerFailedBody'))] });
-            }
-        }
-
-        // Create DB session first so we have the sessionId for the cancel button
-        let session;
-        try {
-            session = await transactionManager.execute(ctx => {
-                // IMPORTANT: Check for active session inside the transaction lock
-                // to prevent race conditions where a user spams the command
-                if (isUserInAnyActiveSession(userId)) {
-                    throw new Error('ACTIVE_SESSION');
-                }
-
-                return sessionRepository.createSession(ctx, {
-                    userId,
-                    guildId: botGuildId(interaction),
-                    channelId: dm ? dm.id : interaction.channelId,
-                    duration: minutes,
-                    title,
-                    todoId: linkedTodo?.id || null,
-                    subject
-                });
-            });
-        } catch (error) {
-            if (error.message === 'ACTIVE_SESSION') {
-                const payload = { embeds: [errorEmbed(t(language, 'activeSessionTitle'), t(language, 'activeSessionBody'))] };
-                return dm ? interaction.editReply(payload) : interaction.reply({ ...payload, flags: 64 });
-            }
-            throw error;
-        }
-
-        const row = buildStudyControlRow({ ...session, paused: 0 }, language);
-
-        try {
-            // Send and record message ID
-            let messageId;
-            let timerMessage = null;
-            if (dm) {
-                timerMessage = await dm.send({ embeds: [embed], components: [row] });
-                messageId = timerMessage.id;
-            } else {
-                const reply = await interaction.reply({ embeds: [embed], components: [row], withResponse: true });
-                // reply.resource.message.id is the actual Discord message ID.
-                messageId = reply?.resource?.message?.id;
-            }
-            if (messageId) {
-                await transactionManager.execute(ctx => {
-                    sessionRepository.updateMessageId(ctx, session.id, messageId);
-                });
-                session.message_id = messageId;
-            }
-
-            // Start the timer and trigger friend notifications
-            startStudyTimer(interaction.client, session, true);
-            if (timerMessage) await postDmTimerNotice(interaction, language, minutes, timerMessage);
-        } catch (err) {
-            console.error('[STUDY] Failed to reply to study command, deleting ghost session:', err.message);
-            await transactionManager.execute(ctx => {
-                sessionRepository.cancelSession(ctx, session.id);
-            });
-            if (dm) {
-                await interaction.editReply({ embeds: [errorEmbed(t(language, 'dmTimerFailedTitle'), t(language, 'dmTimerFailedBody'))] }).catch(() => {});
-            }
-        }
+        return startStudySession(interaction, {
+            minutes: interaction.options.getInteger('minutes'),
+            title: interaction.options.getString('title'),
+            taskNumber: interaction.options.getInteger('task'),
+            subject: interaction.options.getString('subject'),
+        });
     },
 
     /**
@@ -222,3 +95,143 @@ function getInteractionLanguage(interaction) {
     const settings = getOrCreateGuildSettings(interaction.guildId);
     return normalizeLanguage(settings.language || interaction.guildLocale || interaction.locale || 'en');
 }
+
+/**
+ * Starts a focus session. Used by /study and by the "Again" button on the
+ * session-complete card (utils/nextSteps.js), which passes the last session's values.
+ */
+async function startStudySession(interaction, { minutes, title: customTitle = null, taskNumber = null, subject: chosenSubject = null }) {
+    const language = getInteractionLanguage(interaction);
+    const subject = chosenSubject || 'general';
+    const userId = interaction.user.id;
+    let linkedTodo = null;
+    let title = customTitle || t(language, 'studySession');
+
+    // ── Hard limit to prevent AFK farming ───────────────────────────
+    const MAX_STUDY_MIN = 120;
+    if (minutes > MAX_STUDY_MIN) {
+        return interaction.reply({
+            embeds: [errorEmbed(
+                t(language, 'sessionTooLongTitle'),
+                t(language, 'sessionTooLongBody', { minutes: MAX_STUDY_MIN })
+            )],
+            flags: 64,
+        });
+    }
+    // ───────────────────────────────────────────────────────────────
+
+    // Ensure user exists in DB
+    getOrCreateUser(userId);
+    linkedTodo = taskNumber ? getActiveTodoByPosition(userId, taskNumber) : null;
+    if (!customTitle && linkedTodo) {
+        title = linkedTodo.content;
+    }
+
+    // Check for existing active session (solo or team)
+
+
+    if (taskNumber && !linkedTodo) {
+        return interaction.reply({
+            embeds: [errorEmbed(
+                t(language, 'studyTaskNotFoundTitle'),
+                t(language, 'studyTaskNotFoundBody', { number: taskNumber })
+            )],
+            flags: 64,
+        });
+    }
+
+    // Build start embed
+    const embed = new EmbedBuilder()
+        .setColor(Colors.STUDY)
+        .setTitle(`📚 ${title}`)
+        .setDescription(
+            `**${t(language, 'durationLabel')}:** ${formatTime(minutes)}\n` +
+            `**Subject:** ${subjectLabel(subject)}\n` +
+            (linkedTodo ? `**${t(language, 'linkedTaskLabel')}:** ${linkedTodo.content}\n` : '') +
+            `**${t(language, 'elapsedLabel')}:** 0m\n` +
+            `**${t(language, 'remainingLabel')}:** ${formatTime(minutes)}\n\n` +
+            `${progressBar(0, minutes, 20)}`
+        )
+        .setFooter({ text: t(language, 'startedBy', { username: interaction.user.username }) })
+        .setTimestamp();
+
+    // Outside servers the bot is in, the live timer runs in the user's DMs
+    let dm = null;
+    if (needsDmTimer(interaction)) {
+        if (isUserInAnyActiveSession(userId)) {
+            return interaction.reply({
+                embeds: [errorEmbed(t(language, 'activeSessionTitle'), t(language, 'activeSessionBody'))],
+                flags: 64,
+            });
+        }
+        await interaction.deferReply();
+        dm = await openTimerDm(interaction);
+        if (!dm) {
+            return interaction.editReply({ embeds: [errorEmbed(t(language, 'dmTimerFailedTitle'), t(language, 'dmTimerFailedBody'))] });
+        }
+    }
+
+    // Create DB session first so we have the sessionId for the cancel button
+    let session;
+    try {
+        session = await transactionManager.execute(ctx => {
+            // IMPORTANT: Check for active session inside the transaction lock
+            // to prevent race conditions where a user spams the command
+            if (isUserInAnyActiveSession(userId)) {
+                throw new Error('ACTIVE_SESSION');
+            }
+
+            return sessionRepository.createSession(ctx, {
+                userId,
+                guildId: botGuildId(interaction),
+                channelId: dm ? dm.id : interaction.channelId,
+                duration: minutes,
+                title,
+                todoId: linkedTodo?.id || null,
+                subject
+            });
+        });
+    } catch (error) {
+        if (error.message === 'ACTIVE_SESSION') {
+            const payload = { embeds: [errorEmbed(t(language, 'activeSessionTitle'), t(language, 'activeSessionBody'))] };
+            return dm ? interaction.editReply(payload) : interaction.reply({ ...payload, flags: 64 });
+        }
+        throw error;
+    }
+
+    const row = buildStudyControlRow({ ...session, paused: 0 }, language);
+
+    try {
+        // Send and record message ID
+        let messageId;
+        let timerMessage = null;
+        if (dm) {
+            timerMessage = await dm.send({ embeds: [embed], components: [row] });
+            messageId = timerMessage.id;
+        } else {
+            const reply = await interaction.reply({ embeds: [embed], components: [row], withResponse: true });
+            // reply.resource.message.id is the actual Discord message ID.
+            messageId = reply?.resource?.message?.id;
+        }
+        if (messageId) {
+            await transactionManager.execute(ctx => {
+                sessionRepository.updateMessageId(ctx, session.id, messageId);
+            });
+            session.message_id = messageId;
+        }
+
+        // Start the timer and trigger friend notifications
+        startStudyTimer(interaction.client, session, true);
+        if (timerMessage) await postDmTimerNotice(interaction, language, minutes, timerMessage);
+    } catch (err) {
+        console.error('[STUDY] Failed to reply to study command, deleting ghost session:', err.message);
+        await transactionManager.execute(ctx => {
+            sessionRepository.cancelSession(ctx, session.id);
+        });
+        if (dm) {
+            await interaction.editReply({ embeds: [errorEmbed(t(language, 'dmTimerFailedTitle'), t(language, 'dmTimerFailedBody'))] }).catch(() => {});
+        }
+    }
+}
+
+module.exports.startStudySession = startStudySession;

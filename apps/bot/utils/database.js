@@ -998,6 +998,9 @@ function initDatabase() {
     try { db.exec('ALTER TABLE settings ADD COLUMN morning_prompt INTEGER DEFAULT 0'); } catch(_) {}
     try { db.exec('ALTER TABLE settings ADD COLUMN evening_alert INTEGER DEFAULT 1'); } catch(_) {}
     try { db.exec('ALTER TABLE settings ADD COLUMN evening_reflection INTEGER DEFAULT 0'); } catch(_) {}
+    // "Remind me tomorrow" on the session card: one DM before the streak resets (utils/nextSteps.js)
+    try { db.exec('ALTER TABLE settings ADD COLUMN comeback_reminder INTEGER DEFAULT 0'); } catch(_) {}
+    try { db.exec('ALTER TABLE settings ADD COLUMN comeback_reminded_at TEXT'); } catch(_) {}
 
     // Pomo Pro (Boosty) support. Pro status itself lives in premium_entitlements;
     // these columns only hold per-user Pro state that has no other home.

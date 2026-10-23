@@ -130,6 +130,7 @@ function startBackgroundJobs() {
         ['market prices', () => require('./utils/marketPrices').initMarketPriceJob()],
         ['weekly wrapped', () => require('./utils/weeklyWrapped').initWeeklyWrappedJob(client)],
         ['daily habits', () => require('./utils/dailyHabits').initDailyHabitsJob(client)],
+        ['comeback reminders', () => require('./utils/nextSteps').startComebackReminderJob(client)],
     ];
     for (const [name, start] of jobs) {
         try {

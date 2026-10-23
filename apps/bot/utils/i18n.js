@@ -14220,6 +14220,108 @@ Object.assign(Messages['ar'], {
     "advancedStatsProBody": "يحوّل **Pomo Pro** سجل دراستك إلى إجابات:\n🕐 الساعة التي تدرس فيها بأفضل شكل\n📅 أقوى يوم في أسبوعك وأضعفه\n📈 هذه الفترة مقارنة بالسابقة\n🔥 أطول سلسلة وأطول انقطاع\n📊 رسوم بيانية لـ 7 أو 30 أو 90 يومًا\n📄 سجلك الكامل بصيغة CSV عبر `/dataexport`\n\nاطّلع على كل المزايا عبر `/premium perks`."
 });
 
+// Next steps on the session-complete card and the opt-in comeback reminder (utils/nextSteps.js)
+Object.assign(Messages['en'], {
+    "nextAgainButton": "Again · {minutes} min",
+    "nextGardenButton": "Garden",
+    "nextRemindButton": "Remind me tomorrow",
+    "nextAgainNotYours": "This button is for the person who finished the session. Start your own with `/study`.",
+    "nextRemindOnBody": "🔔 Done! If you haven't studied by tomorrow, I'll send you one DM before your streak resets. You can turn it off from that message.",
+    "nextRemindOffBody": "🔕 Reminders are off. Turn them back on with the 🔔 button on your next session card.",
+    "comebackReminderDm": "🔥 Your **{streak}-day streak** is waiting! Study today to make it **{next}**. The day resets {ends}.\n\nStart with `/study 25` or `/pomodoro` in your server.",
+    "comebackReminderOffButton": "Stop these reminders"
+});
+Object.assign(Messages['es'], {
+    "nextAgainButton": "Otra vez · {minutes} min",
+    "nextGardenButton": "Jardín",
+    "nextRemindButton": "Recuérdamelo mañana",
+    "nextAgainNotYours": "Este botón es para quien terminó la sesión. Empieza la tuya con `/study`.",
+    "nextRemindOnBody": "🔔 ¡Listo! Si mañana aún no has estudiado, te enviaré un DM antes de que se reinicie tu racha. Puedes desactivarlo desde ese mensaje.",
+    "nextRemindOffBody": "🔕 Recordatorios desactivados. Vuelve a activarlos con el botón 🔔 en tu próxima tarjeta de sesión.",
+    "comebackReminderDm": "🔥 ¡Tu **racha de {streak} días** te espera! Estudia hoy para llegar a **{next}**. El día se reinicia {ends}.\n\nEmpieza con `/study 25` o `/pomodoro` en tu servidor.",
+    "comebackReminderOffButton": "Desactivar estos recordatorios"
+});
+Object.assign(Messages['fr'], {
+    "nextAgainButton": "Encore · {minutes} min",
+    "nextGardenButton": "Jardin",
+    "nextRemindButton": "Me le rappeler demain",
+    "nextAgainNotYours": "Ce bouton est pour la personne qui a terminé la session. Lance la tienne avec `/study`.",
+    "nextRemindOnBody": "🔔 C’est noté ! Si tu n’as pas étudié demain, je t’enverrai un DM avant que ta série ne se réinitialise. Tu peux le désactiver depuis ce message.",
+    "nextRemindOffBody": "🔕 Rappels désactivés. Réactive-les avec le bouton 🔔 sur ta prochaine carte de session.",
+    "comebackReminderDm": "🔥 Ta **série de {streak} jours** t’attend ! Étudie aujourd’hui pour passer à **{next}**. La journée se réinitialise {ends}.\n\nCommence avec `/study 25` ou `/pomodoro` sur ton serveur.",
+    "comebackReminderOffButton": "Arrêter ces rappels"
+});
+Object.assign(Messages['pt-BR'], {
+    "nextAgainButton": "De novo · {minutes} min",
+    "nextGardenButton": "Jardim",
+    "nextRemindButton": "Me lembre amanhã",
+    "nextAgainNotYours": "Este botão é para quem terminou a sessão. Comece a sua com `/study`.",
+    "nextRemindOnBody": "🔔 Pronto! Se você não estudar até amanhã, envio uma DM antes de a sua sequência reiniciar. Dá para desligar por essa mensagem.",
+    "nextRemindOffBody": "🔕 Lembretes desligados. Ative de novo com o botão 🔔 no seu próximo cartão de sessão.",
+    "comebackReminderDm": "🔥 Sua **sequência de {streak} dias** está esperando! Estude hoje para chegar a **{next}**. O dia reinicia {ends}.\n\nComece com `/study 25` ou `/pomodoro` no seu servidor.",
+    "comebackReminderOffButton": "Parar estes lembretes"
+});
+Object.assign(Messages['ru'], {
+    "nextAgainButton": "Ещё раз · {minutes} мин",
+    "nextGardenButton": "Сад",
+    "nextRemindButton": "Напомни завтра",
+    "nextAgainNotYours": "Эта кнопка для того, кто завершил сессию. Начни свою через `/study`.",
+    "nextRemindOnBody": "🔔 Готово! Если завтра ты ещё не позанимаешься, я пришлю одно сообщение до того, как серия сбросится. Отключить можно в этом сообщении.",
+    "nextRemindOffBody": "🔕 Напоминания выключены. Включи их снова кнопкой 🔔 на следующей карточке сессии.",
+    "comebackReminderDm": "🔥 Твоя **серия {streak} дн.** ждёт! Позанимайся сегодня, чтобы стало **{next}**. День сбросится {ends}.\n\nНачни с `/study 25` или `/pomodoro` на своём сервере.",
+    "comebackReminderOffButton": "Отключить напоминания"
+});
+Object.assign(Messages['tr'], {
+    "nextAgainButton": "Tekrar · {minutes} dk",
+    "nextGardenButton": "Bahçe",
+    "nextRemindButton": "Yarın hatırlat",
+    "nextAgainNotYours": "Bu buton oturumu bitiren kişi için. Kendi oturumunu `/study` ile başlat.",
+    "nextRemindOnBody": "🔔 Tamam! Yarına kadar çalışmazsan, serin sıfırlanmadan önce sana bir DM göndereceğim. O mesajdan kapatabilirsin.",
+    "nextRemindOffBody": "🔕 Hatırlatmalar kapalı. Sonraki oturum kartındaki 🔔 butonuyla tekrar açabilirsin.",
+    "comebackReminderDm": "🔥 **{streak} günlük serin** seni bekliyor! Bugün çalışırsan **{next}** olur. Gün {ends} sıfırlanıyor.\n\nSunucunda `/study 25` veya `/pomodoro` ile başla.",
+    "comebackReminderOffButton": "Bu hatırlatmaları durdur"
+});
+Object.assign(Messages['az'], {
+    "nextAgainButton": "Yenə · {minutes} dəq",
+    "nextGardenButton": "Bağ",
+    "nextRemindButton": "Sabah xatırlat",
+    "nextAgainNotYours": "Bu düymə sessiyanı bitirən şəxs üçündür. Öz sessiyanı `/study` ilə başlat.",
+    "nextRemindOnBody": "🔔 Hazırdır! Sabaha qədər oxumasan, seriyan sıfırlanmadan əvvəl sənə bir DM göndərəcəyəm. O mesajdan söndürə bilərsən.",
+    "nextRemindOffBody": "🔕 Xatırlatmalar söndürüldü. Növbəti sessiya kartındakı 🔔 düyməsi ilə yenidən aç.",
+    "comebackReminderDm": "🔥 **{streak} günlük seriyan** səni gözləyir! Bu gün oxusan **{next}** olacaq. Gün {ends} sıfırlanır.\n\nServerində `/study 25` və ya `/pomodoro` ilə başla.",
+    "comebackReminderOffButton": "Bu xatırlatmaları dayandır"
+});
+Object.assign(Messages['ja'], {
+    "nextAgainButton": "もう一度 · {minutes}分",
+    "nextGardenButton": "庭",
+    "nextRemindButton": "明日リマインドして",
+    "nextAgainNotYours": "このボタンはセッションを終えた人専用です。自分のセッションは `/study` で始めてください。",
+    "nextRemindOnBody": "🔔 設定しました！明日までに勉強していなければ、ストリークがリセットされる前にDMを1回送ります。そのメッセージからオフにできます。",
+    "nextRemindOffBody": "🔕 リマインダーをオフにしました。次のセッションカードの🔔ボタンでまたオンにできます。",
+    "comebackReminderDm": "🔥 **{streak}日間のストリーク**が待っています！今日勉強すれば **{next}日** に。日付は {ends} にリセットされます。\n\nサーバーで `/study 25` か `/pomodoro` から始めましょう。",
+    "comebackReminderOffButton": "リマインダーを止める"
+});
+Object.assign(Messages['ko'], {
+    "nextAgainButton": "다시 · {minutes}분",
+    "nextGardenButton": "정원",
+    "nextRemindButton": "내일 알려줘",
+    "nextAgainNotYours": "이 버튼은 세션을 끝낸 사람만 쓸 수 있어요. `/study`로 내 세션을 시작하세요.",
+    "nextRemindOnBody": "🔔 설정했어요! 내일까지 공부하지 않으면 연속 기록이 초기화되기 전에 DM을 한 번 보낼게요. 그 메시지에서 끌 수 있어요.",
+    "nextRemindOffBody": "🔕 알림을 껐어요. 다음 세션 카드의 🔔 버튼으로 다시 켤 수 있어요.",
+    "comebackReminderDm": "🔥 **{streak}일 연속 기록**이 기다리고 있어요! 오늘 공부하면 **{next}일**이 돼요. 하루는 {ends} 초기화돼요.\n\n서버에서 `/study 25` 또는 `/pomodoro`로 시작하세요.",
+    "comebackReminderOffButton": "알림 그만 받기"
+});
+Object.assign(Messages['ar'], {
+    "nextAgainButton": "مرة أخرى · {minutes} د",
+    "nextGardenButton": "الحديقة",
+    "nextRemindButton": "ذكّرني غدًا",
+    "nextAgainNotYours": "هذا الزر لمن أنهى الجلسة. ابدأ جلستك بـ `/study`.",
+    "nextRemindOnBody": "🔔 تم! إذا لم تدرس حتى الغد، سأرسل لك رسالة واحدة قبل أن تُعاد سلسلتك. يمكنك إيقافها من تلك الرسالة.",
+    "nextRemindOffBody": "🔕 تم إيقاف التذكيرات. أعد تشغيلها بزر 🔔 في بطاقة جلستك القادمة.",
+    "comebackReminderDm": "🔥 **سلسلتك البالغة {streak} يومًا** بانتظارك! ادرس اليوم لتصبح **{next}**. يبدأ يوم جديد {ends}.\n\nابدأ بـ `/study 25` أو `/pomodoro` في خادمك.",
+    "comebackReminderOffButton": "أوقف هذه التذكيرات"
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,

@@ -294,6 +294,10 @@ async function routeButton(interaction) {
             return await handleSetDailyGoalBtn(interaction);
         }
 
+        if (customId.startsWith('next_')) {
+            return await require('../utils/nextSteps').handleNextStepButton(interaction);
+        }
+
         if (customId === 'pro_trial_start') {
             return await require('../utils/proTrial').handleProTrialButton(interaction);
         }

@@ -358,6 +358,11 @@ async function handleSessionComplete(client, session, deps) {
 
         const embed = successEmbed(t(language, 'sessionCompleteTitle'), description);
 
+        // A next step on the card, once the session is really over (not between pomodoro cycles)
+        const pomodoroState = session.pomodoro_data ? JSON.parse(session.pomodoro_data) : null;
+        const sessionOver = !pomodoroState || (pomodoroState.type === 'work' && pomodoroState.cycle >= pomodoroState.maxCycles);
+        const nextSteps = sessionOver ? [require('../nextSteps').buildNextStepsRow(session, language)] : [];
+
         // Send completion message
         const channel = await client.channels.fetch(session.channel_id).catch(() => null);
         if (channel) {
@@ -367,7 +372,7 @@ async function handleSessionComplete(client, session, deps) {
 
             if (cardStyle === 'text') {
                 // Detailed text embed (classic style)
-                await channel.send({ content: `<@${session.user_id}>`, embeds: [embed] }).catch(() => {});
+                await channel.send({ content: `<@${session.user_id}>`, embeds: [embed], components: nextSteps }).catch(() => {});
             } else {
                 // Generate and send the visual Session End Card (default)
                 try {
@@ -389,7 +394,7 @@ async function handleSessionComplete(client, session, deps) {
                         theme: isFullPro(session.user_id) ? getOrCreateProProfileSettings(session.user_id).card_theme : 'classic',
                     });
                     const attachment = new AttachmentBuilder(cardBuffer, { name: 'session-complete.png' });
-                    const payload = { content: `<@${session.user_id}>`, files: [attachment] };
+                    const payload = { content: `<@${session.user_id}>`, files: [attachment], components: nextSteps };
                     if (cardExtras) {
                         payload.embeds = [new EmbedBuilder()
                             .setColor(Colors.SUCCESS)
@@ -399,7 +404,7 @@ async function handleSessionComplete(client, session, deps) {
                     await channel.send(payload).catch(() => {});
                 } catch (cardErr) {
                     console.error('[TIMER] Session end card failed:', cardErr.message);
-                    await channel.send({ content: `<@${session.user_id}>`, embeds: [embed] }).catch(() => {});
+                    await channel.send({ content: `<@${session.user_id}>`, embeds: [embed], components: nextSteps }).catch(() => {});
                 }
             }
 
