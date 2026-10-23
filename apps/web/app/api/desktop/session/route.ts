@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { Database as BetterSqliteDatabase } from 'better-sqlite3';
 import { getActivityClaims } from '@/lib/activityAuth';
+import { isDesktopTokenRevoked } from '@/lib/desktopTokens';
 import { ensureSqliteSchema } from '@/lib/sqlite';
 import { rateLimit } from '@/lib/rateLimit';
 
 const ALLOWED_SUBJECTS = new Set(['general', 'math', 'language', 'coding', 'reading', 'exam']);
+// Shown by the app when the user pressed "Disconnect all desktop apps" on the dashboard
+const DISCONNECTED_MESSAGE = 'This app was disconnected. Connect it again at pomofocus.online/dashboard/desktop.';
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -75,6 +78,9 @@ export async function GET(request: Request) {
   if (!claims) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS_HEADERS });
   }
+  if (isDesktopTokenRevoked(claims)) {
+    return NextResponse.json({ error: DISCONNECTED_MESSAGE }, { status: 401, headers: CORS_HEADERS });
+  }
 
   const db = getDb();
   const user = db.prepare(`
@@ -104,6 +110,9 @@ export async function POST(request: Request) {
   const claims = getActivityClaims(request, { allowDesktop: true });
   if (!claims) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS_HEADERS });
+  }
+  if (isDesktopTokenRevoked(claims)) {
+    return NextResponse.json({ error: DISCONNECTED_MESSAGE }, { status: 401, headers: CORS_HEADERS });
   }
 
   // Simple per-user rate limit (retries of several failed sessions still fit).

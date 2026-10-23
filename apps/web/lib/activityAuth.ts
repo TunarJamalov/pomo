@@ -14,6 +14,8 @@ export type ActivityClaims = {
   username: string;
   avatar: string | null;
   exp: number;
+  /** Issued at (seconds). Missing on older tokens; used to disconnect desktop apps (lib/desktopTokens.ts). */
+  iat?: number;
   /** Missing on tokens issued before scopes existed; those are activity tokens. */
   scope?: TokenScope;
 };
@@ -61,11 +63,13 @@ export function createActivityToken(user: ActivityUser, { scope = 'activity' }: 
     throw new Error('Missing ACTIVITY_TOKEN_SECRET or fallback secret');
   }
 
+  const now = Math.floor(Date.now() / 1000);
   const claims: ActivityClaims = {
     sub: user.id,
     username: user.global_name || user.username || `User#${user.id.slice(-4)}`,
     avatar: user.avatar ?? null,
-    exp: Math.floor(Date.now() / 1000) + TOKEN_TTL_SECONDS[scope],
+    exp: now + TOKEN_TTL_SECONDS[scope],
+    iat: now,
     scope,
   };
 

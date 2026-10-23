@@ -3,6 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { createActivityToken } from "@/lib/activityAuth";
 import { Monitor, KeyRound, ShieldCheck, Timer, ExternalLink, PlugZap, Download } from "lucide-react";
 import { CopyTokenButton, DesktopSignIn, OpenDesktopButton } from "./DesktopConnect";
+import { disconnectDesktopAppsAction } from "./actions";
 
 export const revalidate = 0;
 
@@ -14,8 +15,10 @@ export default async function DesktopPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const session = await getServerSession(authOptions);
+  const params = await searchParams;
   // The app links here with ?from=app; after sign-in the page opens the app on its own
-  const fromApp = (await searchParams).from === "app";
+  const fromApp = params.from === "app";
+  const justDisconnected = params.disconnected === "1";
 
   if (!session || !session.user) {
     return (
@@ -48,6 +51,12 @@ export default async function DesktopPage({
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-3xl mx-auto">
       <DesktopHeader />
 
+      {justDisconnected && (
+        <div className="glass-panel p-4 mb-6 border border-emerald-500/30 text-sm text-emerald-200">
+          Every desktop app connected to your account is now disconnected. Connect again below whenever you like.
+        </div>
+      )}
+
       <div className="glass-panel p-8 mb-6">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-6">
           <div>
@@ -77,6 +86,23 @@ export default async function DesktopPage({
           />
           <CopyTokenButton token={token} />
         </details>
+      </div>
+
+      <div className="glass-panel p-6 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 className="font-bold mb-1">Disconnect desktop apps</h2>
+          <p className="text-sm text-[var(--text-secondary)]">
+            Lost a computer, or connected one you no longer use? This signs out every Pomo Focus app on your account.
+          </p>
+        </div>
+        <form action={disconnectDesktopAppsAction}>
+          <button
+            type="submit"
+            className="whitespace-nowrap rounded-xl border border-red-500/40 px-4 py-2 text-sm font-bold text-red-300 hover:bg-red-500/10 transition-colors"
+          >
+            Disconnect all
+          </button>
+        </form>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
