@@ -129,6 +129,9 @@ async function finishVoiceSession(client, userId, guildId, options = {}) {
             status: 'discarded',
             endReason: options.endReason || 'below_minimum',
         });
+        if (options.notify !== false) {
+            await sendShortSessionHint(client, userId, guildId, totalMinutes, minMinutes, settings);
+        }
         return { totalMinutes, creditedMinutes: 0, rewardedMinutes: 0, discarded: true };
     }
 
@@ -534,6 +537,28 @@ function startVoiceHeartbeat(client) {
             }
         }
     }, HEARTBEAT_MS);
+}
+
+const SHORT_HINT_MIN_MINUTES = 2;
+
+/**
+ * Someone left a tracked voice channel before the minimum and has never earned
+ * anything from Pomo: tell them once how voice tracking counts, instead of a
+ * silent nothing. Skips people passing through, regulars, servers that turned
+ * voice DMs off and members who turned notifications off.
+ */
+async function sendShortSessionHint(client, userId, guildId, totalMinutes, minMinutes, settings) {
+    if (totalMinutes < SHORT_HINT_MIN_MINUTES || !client?.users) return;
+    if (settings?.voice_summary_dm === 0) return;
+    const prefs = db.prepare('SELECT reminders_enabled FROM settings WHERE user_id = ?').get(userId);
+    if (prefs && prefs.reminders_enabled === 0) return;
+    if (db.prepare('SELECT 1 FROM activity_rewards WHERE user_id = ? LIMIT 1').get(userId)) return;
+    if (!require('./database').markOnboardingTipShown(userId, 'voice_short')) return;
+
+    const user = await client.users.fetch(userId).catch(() => null);
+    if (!user) return;
+    const language = getGuildLanguage(guildId);
+    await user.send(t(language, 'voiceShortSessionHint', { minutes: totalMinutes, min: minMinutes })).catch(() => {});
 }
 
 async function sendVoiceSummary(client, userId, result) {

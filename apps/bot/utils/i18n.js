@@ -14426,6 +14426,38 @@ Object.assign(Messages['ar'], {
     "welcomeFooter": "أزرار الإعداد تعمل للأعضاء الذين لديهم صلاحية إدارة الخادم. يحتاج Pomo إلى صلاحيات القنوات العادية فقط، وليس صلاحية المسؤول."
 });
 
+// Voice: one hint for a first visit that ended below the minimum (utils/voiceManager.js)
+Object.assign(Messages['en'], {
+    "voiceShortSessionHint": "👋 You were in a study voice channel for {minutes} min. Pomo counts voice study from **{min} minutes**: stay a little longer next time and you'll earn 💧 water and start a 🔥 streak.\nPrefer a timer? Type `/study 25`."
+});
+Object.assign(Messages['es'], {
+    "voiceShortSessionHint": "👋 Estuviste {minutes} min en un canal de voz de estudio. Pomo cuenta el estudio en voz desde **{min} minutos**: quédate un poco más la próxima vez y ganarás 💧 agua y empezarás una 🔥 racha.\n¿Prefieres un temporizador? Escribe `/study 25`."
+});
+Object.assign(Messages['fr'], {
+    "voiceShortSessionHint": "👋 Tu es resté {minutes} min dans un salon vocal d’étude. Pomo compte l’étude en vocal à partir de **{min} minutes** : reste un peu plus la prochaine fois et tu gagneras de l’💧 eau et commenceras une 🔥 série.\nTu préfères un minuteur ? Tape `/study 25`."
+});
+Object.assign(Messages['pt-BR'], {
+    "voiceShortSessionHint": "👋 Você ficou {minutes} min em um canal de voz de estudo. O Pomo conta o estudo em voz a partir de **{min} minutos**: fique um pouco mais da próxima vez e você ganha 💧 água e começa uma 🔥 sequência.\nPrefere um timer? Digite `/study 25`."
+});
+Object.assign(Messages['ru'], {
+    "voiceShortSessionHint": "👋 Ты был(а) в учебном голосовом канале {minutes} мин. Pomo засчитывает учёбу в голосовом канале от **{min} минут**: в следующий раз задержись чуть дольше — получишь 💧 воду и начнёшь 🔥 серию.\nХочешь таймер? Напиши `/study 25`."
+});
+Object.assign(Messages['tr'], {
+    "voiceShortSessionHint": "👋 Bir çalışma ses kanalında {minutes} dk kaldın. Pomo ses kanalında çalışmayı **{min} dakikadan** itibaren sayar: bir dahaki sefere biraz daha kal, 💧 su kazanır ve 🔥 seri başlatırsın.\nZamanlayıcı mı istersin? `/study 25` yaz."
+});
+Object.assign(Messages['az'], {
+    "voiceShortSessionHint": "👋 Study səsli kanalında {minutes} dəq qaldın. Pomo səsli oxumanı **{min} dəqiqədən** sayır: növbəti dəfə bir az çox qal, 💧 su qazanacaq və 🔥 seriyaya başlayacaqsan.\nTaymer istəyirsən? `/study 25` yaz."
+});
+Object.assign(Messages['ja'], {
+    "voiceShortSessionHint": "👋 勉強用ボイスチャンネルに{minutes}分いました。Pomoはボイスでの勉強を**{min}分から**カウントします。次はもう少し長くいれば💧水がもらえて🔥ストリークが始まります。\nタイマーがいい？ `/study 25` と入力してください。"
+});
+Object.assign(Messages['ko'], {
+    "voiceShortSessionHint": "👋 공부 음성 채널에 {minutes}분 있었어요. Pomo는 음성 공부를 **{min}분부터** 기록해요. 다음엔 조금만 더 머물면 💧 물을 받고 🔥 연속 기록을 시작할 수 있어요.\n타이머가 좋다면 `/study 25`를 입력하세요."
+});
+Object.assign(Messages['ar'], {
+    "voiceShortSessionHint": "👋 بقيت {minutes} دقيقة في قناة دراسة صوتية. يحتسب Pomo الدراسة الصوتية ابتداءً من **{min} دقائق**: ابقَ أطول قليلًا في المرة القادمة لتكسب 💧 الماء وتبدأ 🔥 سلسلة.\nتفضّل مؤقّتًا؟ اكتب `/study 25`."
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,

@@ -149,6 +149,35 @@ describe('voice focus tracking', () => {
             expect(second.send.mock.calls[0][0].embeds[0].data.description).not.toContain('New to Pomo');
         });
 
+        test('a first visit below the minimum gets one hint, never again', async () => {
+            createBackdatedVoiceSession('voice_short_new', '2026-06-06 10:00:00');
+            const first = fakeClient();
+            const result = await finishVoiceSession(first.client, 'voice_short_new', 'guild_voice', { endedAt: '2026-06-06 10:06:00' });
+
+            expect(result.discarded).toBe(true);
+            expect(first.send).toHaveBeenCalledTimes(1);
+            expect(first.send.mock.calls[0][0]).toContain('10 minutes');
+
+            createBackdatedVoiceSession('voice_short_new', '2026-06-07 10:00:00');
+            const again = fakeClient();
+            await finishVoiceSession(again.client, 'voice_short_new', 'guild_voice', { endedAt: '2026-06-07 10:06:00' });
+            expect(again.send).not.toHaveBeenCalled();
+        });
+
+        test('no hint for people passing through or people who already use Pomo', async () => {
+            createBackdatedVoiceSession('voice_pass_by', '2026-06-06 10:00:00');
+            const passing = fakeClient();
+            await finishVoiceSession(passing.client, 'voice_pass_by', 'guild_voice', { endedAt: '2026-06-06 10:01:00' });
+            expect(passing.send).not.toHaveBeenCalled();
+
+            createBackdatedVoiceSession('voice_regular', '2026-06-06 10:00:00');
+            await finishVoiceSession({}, 'voice_regular', 'guild_voice', { endedAt: '2026-06-06 10:50:00', notify: false });
+            createBackdatedVoiceSession('voice_regular', '2026-06-07 10:00:00');
+            const regular = fakeClient();
+            await finishVoiceSession(regular.client, 'voice_regular', 'guild_voice', { endedAt: '2026-06-07 10:06:00' });
+            expect(regular.send).not.toHaveBeenCalled();
+        });
+
         test('no DMs at all when the server turned them off, but the time still counts', async () => {
             updateGuildSettings('guild_voice', { voice_summary_dm: 0 });
             createBackdatedVoiceSession('voice_dm_off', '2026-06-06 10:00:00');
