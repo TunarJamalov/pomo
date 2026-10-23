@@ -103,21 +103,32 @@ async function processActivityCommands(client) {
                 guildId = 'web-dashboard';
             } else {
                 channel = await client.channels.fetch(cmd.channel_id).catch(() => null);
-                if (!channel) {
-                    markActivityCommandProcessed(cmd.id, 'failed_channel_not_found');
-                    continue;
-                }
-                guildId = channel.guildId ?? channel.guild?.id ?? null;
-                if (!guildId) {
-                    markActivityCommandProcessed(cmd.id, 'failed_channel_not_found');
-                    continue;
-                }
-                // channel_id comes from the web client: only act on channels the user can actually use
-                const member = await channel.guild.members.fetch(cmd.user_id).catch(() => null);
-                const perms = member ? channel.permissionsFor(member) : null;
-                if (!perms?.has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) {
-                    markActivityCommandProcessed(cmd.id, 'failed_no_channel_access');
-                    continue;
+                guildId = channel ? (channel.guildId ?? channel.guild?.id ?? null) : null;
+                if (!channel || !guildId) {
+                    // The Activity also runs in servers without Pomo and in DMs, where the bot
+                    // can't see the channel. Like /study from a user install, a solo timer then
+                    // runs in the user's DMs; Stop needs no channel; team sessions need a server.
+                    if (cmd.type === 'create_team' || cmd.type === 'join_team') {
+                        markActivityCommandProcessed(cmd.id, 'failed_channel_not_found');
+                        continue;
+                    }
+                    channel = null;
+                    guildId = null;
+                    if (cmd.type !== 'stop') {
+                        channel = await client.users.createDM(cmd.user_id).catch(() => null);
+                        if (!channel) {
+                            markActivityCommandProcessed(cmd.id, 'failed_dm_closed');
+                            continue;
+                        }
+                    }
+                } else {
+                    // channel_id comes from the web client: only act on channels the user can actually use
+                    const member = await channel.guild.members.fetch(cmd.user_id).catch(() => null);
+                    const perms = member ? channel.permissionsFor(member) : null;
+                    if (!perms?.has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) {
+                        markActivityCommandProcessed(cmd.id, 'failed_no_channel_access');
+                        continue;
+                    }
                 }
             }
             
@@ -197,7 +208,9 @@ async function processActivityCommands(client) {
                 }
                 embed.addFields({ name: 'Subject', value: subject.charAt(0).toUpperCase() + subject.slice(1), inline: true });
 
-                const sessionId = createSession(cmd.user_id, guildId, cmd.channel_id, null, minutes, sessionTitle, linkedTodo?.id || null, subject);
+                // channel is the DM channel when the bot couldn't see the Activity's channel
+                const sessionChannelId = channel ? channel.id : cmd.channel_id;
+                const sessionId = createSession(cmd.user_id, guildId, sessionChannelId, null, minutes, sessionTitle, linkedTodo?.id || null, subject);
                 
                 const row = new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
@@ -280,3 +293,5 @@ function updatePresence(client) {
         console.error('[PRESENCE] Error updating presence:', err.message);
     }
 }
+
+module.exports.processActivityCommands = processActivityCommands;
