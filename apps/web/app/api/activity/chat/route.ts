@@ -20,9 +20,12 @@ function getDb() {
   `);
 }
 
-// GET: fetch recent messages + online users leaderboard
-export async function GET() {
+// GET: fetch recent messages + online users leaderboard (only for someone inside the Activity)
+export async function GET(req: Request) {
   try {
+    if (!getActivityClaims(req)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const db = getDb();
 
     // Last 50 messages

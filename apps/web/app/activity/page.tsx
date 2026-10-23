@@ -829,8 +829,11 @@ export default function ActivityPage() {
   }, [activityToken, selectedTodoId]);
 
   const fetchChat = useCallback(async () => {
+    if (!activityToken) return;
     try {
-      const res = await fetch('/api/activity/chat');
+      const res = await fetch('/api/activity/chat', {
+        headers: { Authorization: `Bearer ${activityToken}` },
+      });
       const data = await res.json();
       if (res.ok) {
         const sysMsg = {
@@ -852,7 +855,7 @@ export default function ActivityPage() {
         }
       }
     } catch {/* silent */}
-  }, [scrollChatToBottom]);
+  }, [activityToken, scrollChatToBottom]);
 
 
   const fetchStatus = useCallback(async (token?: string | null) => {
