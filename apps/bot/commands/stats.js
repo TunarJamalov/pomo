@@ -6,6 +6,7 @@ const {
     SlashCommandBuilder,
     EmbedBuilder,
     AttachmentBuilder,
+    ActionRowBuilder,
 } = require('discord.js');
 const { Colors, xpForLevel } = require('../utils/constants');
 const { getOrCreateUser, db } = require('../utils/database');
@@ -13,6 +14,9 @@ const { hasFullPro } = require('../utils/premiumCheck');
 const { generateStatsDashboard } = require('../utils/canvas');
 const { getInteractionLanguage, t } = require('../utils/i18n');
 const { getInsights, buildInsightsEmbed } = require('../utils/insights');
+const { nextOccurrence } = require('../utils/assistant');
+const { buyButtons, checkoutConfigured } = require('../utils/billing');
+const { isProTrialAvailable, proTrialButton } = require('../utils/proTrial');
 
 module.exports = {
     cooldown: 3,
@@ -50,12 +54,13 @@ module.exports = {
             // Pro only (not in Plus)
             const premium = await hasFullPro(interaction.client, userId);
             if (!premium) {
+                const preview = bestHourLine(language, userId, 'statsBestHourPreview');
                 const embed = new EmbedBuilder()
                     .setColor(Colors.MARKET)
                     .setTitle(t(language, 'proFeatureTitle'))
-                    .setDescription(t(language, 'advancedStatsLockedBody'))
+                    .setDescription([preview, t(language, 'advancedStatsProBody')].filter(Boolean).join('\n\n'))
                     .setTimestamp();
-                return interaction.editReply({ embeds: [embed] });
+                return interaction.editReply({ embeds: [embed], components: proButtons(language, userId) });
             }
 
             return sendAdvancedStats(interaction, userId, user, periodDays, language);
@@ -86,7 +91,12 @@ async function sendBasicStats(interaction, userId, user, language = getInteracti
     try {
         const buffer = await generateStatsDashboard(interaction.user, user, statsData, false);
         const attachment = new AttachmentBuilder(buffer, { name: 'stats_basic.png' });
-        return interaction.editReply({ content: formatTopSubjects(userId), files: [attachment] });
+        // Once Pro can be bought, show free users one real insight from their own data
+        const teaser = checkoutConfigured() && !(await hasFullPro(interaction.client, userId))
+            ? bestHourLine(language, userId, 'statsBestHourTeaser')
+            : null;
+        const content = [formatTopSubjects(userId), teaser].filter(Boolean).join('\n\n');
+        return interaction.editReply({ content, files: [attachment] });
     } catch (error) {
         console.error('[STATS] Canvas error:', error);
         return interaction.editReply({ content: t(language, 'statsBasicFailedBody') });
@@ -265,6 +275,21 @@ function withSubjectPercents(rows, totalMinutes) {
         avgMinutes: Number(row.avgMinutes || 0),
         percent: total > 0 ? Math.round((Number(row.minutes || 0) / total) * 100) : 0,
     }));
+}
+
+/** The user's best study hour (last 30 days) as one line, or null with too few sessions. */
+function bestHourLine(language, userId, key) {
+    const { bestHour } = getInsights(userId, 30);
+    return bestHour ? t(language, key, { time: nextOccurrence(bestHour.hour), share: bestHour.share }) : null;
+}
+
+/** Trial and buy buttons under the locked advanced view, once sales are open. */
+function proButtons(language, userId) {
+    if (!checkoutConfigured()) return [];
+    const row = new ActionRowBuilder();
+    if (isProTrialAvailable(userId)) row.addComponents(proTrialButton(language));
+    row.addComponents(...buyButtons(language));
+    return [row];
 }
 
 function formatTopSubjects(userId, days = null) {

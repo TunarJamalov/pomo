@@ -14168,6 +14168,58 @@ Object.assign(Messages['ar'], {
     "upsellStreakRecoverBody": "انتهت **سلسلتك البالغة {streak} يومًا**، لكن ما زال بإمكانك استعادتها خلال **{hours} ساعة** القادمة:\n\n💧 `/streak repair`: ‏50 ماء (لديك {water})\n🚀 **Pomo Pro**: ‏`/streak recover` يعيدها مجانًا مرة في الشهر، و3 دروع للسلسلة تحمي الأيام التي تفوتك"
 });
 
+// /stats teaser: one real insight for free users, and the locked advanced view (commands/stats.js)
+Object.assign(Messages['en'], {
+    "statsBestHourTeaser": "🕐 You study most around {time} ({share}% of your focus time). Pomo Pro shows your whole week, your trend and your longest runs: `/stats view:Advanced`",
+    "statsBestHourPreview": "🕐 **From your own data:** you study most around {time} ({share}% of your focus time).",
+    "advancedStatsProBody": "**Pomo Pro** turns your study history into answers:\n🕐 The hour you study best\n📅 Your strongest and weakest weekday\n📈 This period vs the one before\n🔥 Your longest run and longest break\n📊 Charts for 7, 30 or 90 days\n📄 Your full history as CSV with `/dataexport`\n\nSee every perk with `/premium perks`."
+});
+Object.assign(Messages['es'], {
+    "statsBestHourTeaser": "🕐 Estudias más alrededor de las {time} ({share}% de tu tiempo de enfoque). Pomo Pro te muestra toda tu semana, tu tendencia y tus mejores rachas: `/stats view:Advanced`",
+    "statsBestHourPreview": "🕐 **Según tus propios datos:** estudias más alrededor de las {time} ({share}% de tu tiempo de enfoque).",
+    "advancedStatsProBody": "**Pomo Pro** convierte tu historial de estudio en respuestas:\n🕐 La hora en la que mejor estudias\n📅 Tu día de la semana más fuerte y más flojo\n📈 Este periodo frente al anterior\n🔥 Tu racha más larga y tu pausa más larga\n📊 Gráficos de 7, 30 o 90 días\n📄 Todo tu historial en CSV con `/dataexport`\n\nMira todas las ventajas con `/premium perks`."
+});
+Object.assign(Messages['fr'], {
+    "statsBestHourTeaser": "🕐 Tu étudies surtout vers {time} ({share} % de ton temps de concentration). Pomo Pro te montre toute ta semaine, ta tendance et tes plus longues séries : `/stats view:Advanced`",
+    "statsBestHourPreview": "🕐 **D’après tes propres données :** tu étudies surtout vers {time} ({share} % de ton temps de concentration).",
+    "advancedStatsProBody": "**Pomo Pro** transforme ton historique d’étude en réponses :\n🕐 L’heure où tu étudies le mieux\n📅 Ton jour le plus fort et le plus faible\n📈 Cette période comparée à la précédente\n🔥 Ta plus longue série et ta plus longue pause\n📊 Des graphiques sur 7, 30 ou 90 jours\n📄 Tout ton historique en CSV avec `/dataexport`\n\nVois tous les avantages avec `/premium perks`."
+});
+Object.assign(Messages['pt-BR'], {
+    "statsBestHourTeaser": "🕐 Você estuda mais por volta das {time} ({share}% do seu tempo de foco). O Pomo Pro mostra sua semana inteira, sua tendência e suas maiores sequências: `/stats view:Advanced`",
+    "statsBestHourPreview": "🕐 **Pelos seus próprios dados:** você estuda mais por volta das {time} ({share}% do seu tempo de foco).",
+    "advancedStatsProBody": "O **Pomo Pro** transforma seu histórico de estudo em respostas:\n🕐 O horário em que você estuda melhor\n📅 Seu dia da semana mais forte e o mais fraco\n📈 Este período comparado ao anterior\n🔥 Sua maior sequência e sua maior pausa\n📊 Gráficos de 7, 30 ou 90 dias\n📄 Todo o seu histórico em CSV com `/dataexport`\n\nVeja todas as vantagens com `/premium perks`."
+});
+Object.assign(Messages['ru'], {
+    "statsBestHourTeaser": "🕐 Чаще всего ты учишься около {time} ({share}% твоего фокус-времени). Pomo Pro покажет всю неделю, динамику и самые длинные серии: `/stats view:Advanced`",
+    "statsBestHourPreview": "🕐 **По твоим данным:** чаще всего ты учишься около {time} ({share}% твоего фокус-времени).",
+    "advancedStatsProBody": "**Pomo Pro** превращает историю учёбы в ответы:\n🕐 Час, когда ты учишься лучше всего\n📅 Самый сильный и самый слабый день недели\n📈 Этот период в сравнении с предыдущим\n🔥 Самая длинная серия и самый длинный перерыв\n📊 Графики за 7, 30 или 90 дней\n📄 Вся история в CSV через `/dataexport`\n\nВсе преимущества — в `/premium perks`."
+});
+Object.assign(Messages['tr'], {
+    "statsBestHourTeaser": "🕐 En çok {time} civarında çalışıyorsun (odak sürenin %{share}'i). Pomo Pro tüm haftanı, gidişatını ve en uzun serilerini gösterir: `/stats view:Advanced`",
+    "statsBestHourPreview": "🕐 **Kendi verilerinden:** en çok {time} civarında çalışıyorsun (odak sürenin %{share}'i).",
+    "advancedStatsProBody": "**Pomo Pro** çalışma geçmişini cevaplara dönüştürür:\n🕐 En iyi çalıştığın saat\n📅 En güçlü ve en zayıf günün\n📈 Bu dönem ile bir önceki dönem\n🔥 En uzun serin ve en uzun aran\n📊 7, 30 veya 90 günlük grafikler\n📄 `/dataexport` ile tüm geçmişin CSV olarak\n\nTüm avantajlar için `/premium perks`."
+});
+Object.assign(Messages['az'], {
+    "statsBestHourTeaser": "🕐 Ən çox {time} radələrində oxuyursan (fokus vaxtının {share}%-i). Pomo Pro bütün həftəni, gedişatını və ən uzun seriyalarını göstərir: `/stats view:Advanced`",
+    "statsBestHourPreview": "🕐 **Öz məlumatlarından:** ən çox {time} radələrində oxuyursan (fokus vaxtının {share}%-i).",
+    "advancedStatsProBody": "**Pomo Pro** oxuma tarixçəni cavablara çevirir:\n🕐 Ən yaxşı oxuduğun saat\n📅 Həftənin ən güclü və ən zəif günü\n📈 Bu dövr əvvəlki ilə müqayisədə\n🔥 Ən uzun seriyan və ən uzun fasilən\n📊 7, 30 və ya 90 günlük qrafiklər\n📄 `/dataexport` ilə bütün tarixçən CSV kimi\n\nBütün üstünlüklər üçün `/premium perks`."
+});
+Object.assign(Messages['ja'], {
+    "statsBestHourTeaser": "🕐 いちばん勉強しているのは {time} ごろです（集中時間の{share}%）。Pomo Proなら1週間の傾向、推移、最長の連続記録まで見られます：`/stats view:Advanced`",
+    "statsBestHourPreview": "🕐 **あなたのデータより：** いちばん勉強しているのは {time} ごろです（集中時間の{share}%）。",
+    "advancedStatsProBody": "**Pomo Pro** は勉強の記録を答えに変えます:\n🕐 いちばん集中できる時間帯\n📅 いちばん強い曜日と弱い曜日\n📈 前の期間との比較\n🔥 最長の連続日数と最長の休み\n📊 7・30・90日のグラフ\n📄 `/dataexport` で全履歴をCSVに\n\nすべての特典は `/premium perks` で確認できます。"
+});
+Object.assign(Messages['ko'], {
+    "statsBestHourTeaser": "🕐 주로 {time} 무렵에 공부해요 (집중 시간의 {share}%). Pomo Pro는 한 주 전체, 추세, 가장 긴 연속 기록까지 보여줘요: `/stats view:Advanced`",
+    "statsBestHourPreview": "🕐 **내 데이터 기준:** 주로 {time} 무렵에 공부해요 (집중 시간의 {share}%).",
+    "advancedStatsProBody": "**Pomo Pro**는 공부 기록을 답으로 바꿔줘요:\n🕐 가장 공부가 잘 되는 시간\n📅 가장 강한 요일과 약한 요일\n📈 지난 기간과의 비교\n🔥 가장 긴 연속 기록과 가장 긴 공백\n📊 7, 30, 90일 차트\n📄 `/dataexport`로 전체 기록을 CSV로\n\n모든 혜택은 `/premium perks`에서 확인하세요."
+});
+Object.assign(Messages['ar'], {
+    "statsBestHourTeaser": "🕐 تدرس أكثر حوالي {time} ({share}% من وقت تركيزك). يعرض لك Pomo Pro أسبوعك كاملًا واتجاهك وأطول سلاسلك: `/stats view:Advanced`",
+    "statsBestHourPreview": "🕐 **من بياناتك أنت:** تدرس أكثر حوالي {time} ({share}% من وقت تركيزك).",
+    "advancedStatsProBody": "يحوّل **Pomo Pro** سجل دراستك إلى إجابات:\n🕐 الساعة التي تدرس فيها بأفضل شكل\n📅 أقوى يوم في أسبوعك وأضعفه\n📈 هذه الفترة مقارنة بالسابقة\n🔥 أطول سلسلة وأطول انقطاع\n📊 رسوم بيانية لـ 7 أو 30 أو 90 يومًا\n📄 سجلك الكامل بصيغة CSV عبر `/dataexport`\n\nاطّلع على كل المزايا عبر `/premium perks`."
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,
