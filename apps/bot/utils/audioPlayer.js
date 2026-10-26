@@ -204,9 +204,67 @@ function isPlayingLofi(guildId) {
     return guildPlayers.has(guildId);
 }
 
+function createResourceFromFile(filePath) {
+    const { createAudioResource, StreamType } = voiceModule;
+    const ffmpegProcess = spawn(ffmpegBin, [
+        '-i', filePath, '-loglevel', 'error', '-f', 's16le', '-ar', '48000', '-ac', '2', 'pipe:1',
+    ], { stdio: ['ignore', 'pipe', 'ignore'] });
+    const resource = createAudioResource(ffmpegProcess.stdout, { inputType: StreamType.Raw });
+    resource._ffmpegProcess = ffmpegProcess;
+    return resource;
+}
+
+// Guilds where a chime is playing right now, so two phase ends can't overlap
+const chimesPlaying = new Set();
+
+/**
+ * Plays a short sound file in a voice channel (the pomodoro phase chime).
+ * Lofi in the same channel keeps streaming underneath and is heard again right
+ * after; if the bot is in another channel of the server, nothing is played,
+ * since it can only be in one channel per server.
+ */
+async function playChime(guild, channelId, filePath) {
+    if (!voiceModule || !hasOpus || !ffmpegBin) return { played: false, reason: 'unavailable' };
+    const existing = voiceModule.getVoiceConnection(guild.id);
+    if (existing && existing.joinConfig.channelId !== channelId) return { played: false, reason: 'busy_elsewhere' };
+    if (chimesPlaying.has(guild.id)) return { played: false, reason: 'busy' };
+    chimesPlaying.add(guild.id);
+
+    const connection = existing || voiceModule.joinVoiceChannel({
+        channelId,
+        guildId: guild.id,
+        adapterCreator: guild.voiceAdapterCreator,
+    });
+    const chimePlayer = voiceModule.createAudioPlayer();
+    let resource = null;
+    try {
+        await voiceModule.entersState(connection, voiceModule.VoiceConnectionStatus.Ready, 10_000);
+        resource = createResourceFromFile(filePath);
+        connection.subscribe(chimePlayer);
+        chimePlayer.play(resource);
+        await voiceModule.entersState(chimePlayer, voiceModule.AudioPlayerStatus.Playing, 5_000);
+        await voiceModule.entersState(chimePlayer, voiceModule.AudioPlayerStatus.Idle, 15_000);
+        return { played: true };
+    } catch (error) {
+        console.warn(`[AUDIO] Chime failed in ${guild.id}:`, error.message);
+        return { played: false, reason: 'error' };
+    } finally {
+        try { resource?._ffmpegProcess?.kill(); } catch (_) {}
+        try { chimePlayer.stop(true); } catch (_) {}
+        const lofi = guildPlayers.get(guild.id);
+        if (lofi && lofi.connection === connection) {
+            connection.subscribe(lofi.player);
+        } else if (!existing) {
+            try { connection.destroy(); } catch (_) {}
+        }
+        chimesPlaying.delete(guild.id);
+    }
+}
+
 module.exports = {
     playLofi,
     stopLofi,
     isPlayingLofi,
+    playChime,
     isAudioAvailable: () => !!(voiceModule && hasOpus && ffmpegBin),
 };

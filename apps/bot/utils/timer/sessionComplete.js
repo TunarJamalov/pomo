@@ -428,13 +428,18 @@ async function handleSessionComplete(client, session, deps) {
             // --- Pomodoro Auto-Transition: Work → Break ---
             if (session.pomodoro_data) {
                 const pomData = JSON.parse(session.pomodoro_data);
+                // /pomodoro sound: ring in the user's voice channel at the end of every work phase
+                if (pomData.sound) require('../phaseChime').ringPhaseChime(client, session.guild_id, [session.user_id]);
                 if (pomData.type === 'work' && pomData.cycle < pomData.maxCycles) {
                     const { createSession, updateSessionPomodoroData, getActiveSessionForUser } = require('../database');
-                    const newSessionId = createSession(session.user_id, session.guild_id, session.channel_id, session.message_id, pomData.break, '__break__');
+                    const { breakMinutesAfter, isLongBreakAfter } = require('../pomodoroCycles');
+                    const breakMinutes = breakMinutesAfter(pomData);
+                    const newSessionId = createSession(session.user_id, session.guild_id, session.channel_id, session.message_id, breakMinutes, '__break__');
                     updateSessionPomodoroData(newSessionId, { ...pomData, type: 'break' });
                     const newSession = getActiveSessionForUser(session.user_id);
 
-                    await channel.send(`🍅 <@${session.user_id}> ${t(language, 'sessionBonusPomodoroWorkComplete', { cycle: pomData.cycle, maxCycles: pomData.maxCycles, minutes: pomData.break })}`).catch(() => {});
+                    const longBreakTag = isLongBreakAfter(pomData) ? ` 🌴 ${t(language, 'pomodoroLongBreakTag')}` : '';
+                    await channel.send(`🍅 <@${session.user_id}> ${t(language, 'sessionBonusPomodoroWorkComplete', { cycle: pomData.cycle, maxCycles: pomData.maxCycles, minutes: breakMinutes })}${longBreakTag}`).catch(() => {});
                     if (newSession) {
                         startBreakTimer(client, newSession);
                     } else {

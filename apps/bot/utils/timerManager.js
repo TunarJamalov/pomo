@@ -365,6 +365,8 @@ async function handleBreakComplete(client, session) {
             // --- Pomodoro Auto-Transition: Break → Work ---
             if (session.pomodoro_data) {
                 const pomData = JSON.parse(session.pomodoro_data);
+                // /pomodoro sound: ring in the user's voice channel when the break is over
+                if (pomData.sound) require('./phaseChime').ringPhaseChime(client, session.guild_id, [session.user_id]);
                 if (pomData.type === 'break' && pomData.cycle < pomData.maxCycles) {
                     const nextCycle = pomData.cycle + 1;
                     const { createSession, updateSessionPomodoroData, getActiveSessionForUser } = require('./database');

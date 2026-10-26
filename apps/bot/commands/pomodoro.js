@@ -16,6 +16,7 @@ const {
 const { startStudyTimer, isTrialEligible, buildTrialButton } = require('../utils/timerManager');
 const { getInteractionLanguage, t } = require('../utils/i18n');
 const { needsDmTimer, botGuildId, openTimerDm, postDmTimerNotice } = require('../utils/interactionContext');
+const { LONG_BREAK_EVERY } = require('../utils/pomodoroCycles');
 
 module.exports = {
     cooldown: 5,
@@ -45,7 +46,17 @@ module.exports = {
                 .setDescription('Title for your Pomodoro session')
                 .setRequired(false)
                 .setMaxLength(100)
-                .setAutocomplete(true)),
+                .setAutocomplete(true))
+        .addIntegerOption(option =>
+            option.setName('long_break')
+                .setDescription('Long break after every 4th cycle, in minutes (10-30)')
+                .setRequired(false)
+                .setMinValue(10)
+                .setMaxValue(30))
+        .addBooleanOption(option =>
+            option.setName('sound')
+                .setDescription('Play a sound in your voice channel when work or a break ends')
+                .setRequired(false)),
 
     async execute(interaction) {
         const language = getInteractionLanguage(interaction);
@@ -53,6 +64,8 @@ module.exports = {
         const breakMin = interaction.options.getInteger('break') || 5;
         const cycles = interaction.options.getInteger('cycles') || 4;
         const title = interaction.options.getString('title') || t(language, 'pomodoroDefaultTitle');
+        const longBreak = interaction.options.getInteger('long_break') || null;
+        const sound = interaction.options.getBoolean('sound') === true;
         const userId = interaction.user.id;
 
         const MAX_WORK_MIN = 120;
@@ -106,7 +119,10 @@ module.exports = {
                 `**${t(language, 'elapsedLabel')}:** 0m\n` +
                 `**${t(language, 'remainingLabel')}:** ${formatTime(workMin)}\n\n` +
                 `${progressBar(0, workMin, 20)}\n\n` +
-                `*${t(language, 'pomodoroGoalLine', { cycles, work: workMin, break: breakMin })}*`
+                `*${t(language, 'pomodoroGoalLine', { cycles, work: workMin, break: breakMin })}*` +
+                // The long break only exists when there is a cycle after the 4th
+                (longBreak && cycles > LONG_BREAK_EVERY ? `\n🌴 ${t(language, 'pomodoroLongBreakLine', { minutes: longBreak, every: LONG_BREAK_EVERY })}` : '') +
+                (sound ? `\n🔔 ${t(language, 'pomodoroSoundLine')}` : '')
             )
             .setFooter({ text: t(language, 'startedBy', { username: interaction.user.username }) })
             .setTimestamp();
@@ -155,6 +171,8 @@ module.exports = {
             maxCycles: cycles,
             work: workMin,
             break: breakMin,
+            longBreak,
+            sound,
             originalTitle: title,
             type: 'work',
         };

@@ -1966,6 +1966,43 @@ Object.assign(JA, {
     'guide.panel': 'サーバー用のインタラクティブなウェルカムパネルを投稿する',
 });
 
+// /pomodoro long_break + sound, /team sound
+Object.assign(FR, {
+    'pomodoro.long_break': 'Longue pause après chaque 4e cycle, en minutes (10-30)',
+    'pomodoro.sound': 'Jouer un son dans ton salon vocal à la fin du travail ou de la pause',
+    'team.sound': 'Jouer un son dans ton salon vocal à la fin du travail ou de la pause',
+});
+
+Object.assign(ES, {
+    'pomodoro.long_break': 'Descanso largo tras cada 4.º ciclo, en minutos (10-30)',
+    'pomodoro.sound': 'Reproducir un sonido en tu canal de voz al terminar el trabajo o el descanso',
+    'team.sound': 'Reproducir un sonido en tu canal de voz al terminar el trabajo o el descanso',
+});
+
+Object.assign(PT_BR, {
+    'pomodoro.long_break': 'Pausa longa após cada 4º ciclo, em minutos (10-30)',
+    'pomodoro.sound': 'Tocar um som no seu canal de voz quando o trabalho ou a pausa terminar',
+    'team.sound': 'Tocar um som no seu canal de voz quando o trabalho ou a pausa terminar',
+});
+
+Object.assign(RU, {
+    'pomodoro.long_break': 'Длинный перерыв после каждого 4-го цикла, в минутах (10-30)',
+    'pomodoro.sound': 'Сигнал в голосовом канале, когда заканчивается работа или перерыв',
+    'team.sound': 'Сигнал в голосовом канале, когда заканчивается работа или перерыв',
+});
+
+Object.assign(TR, {
+    'pomodoro.long_break': 'Her 4. döngüden sonra uzun mola, dakika (10-30)',
+    'pomodoro.sound': 'Çalışma veya mola bitince ses kanalında ses çal',
+    'team.sound': 'Çalışma veya mola bitince ses kanalında ses çal',
+});
+
+Object.assign(JA, {
+    'pomodoro.long_break': '4サイクルごとの長い休憩（分、10〜30）',
+    'pomodoro.sound': '作業や休憩の終わりにボイスチャンネルで音を鳴らす',
+    'team.sound': '作業や休憩の終わりにボイスチャンネルで音を鳴らす',
+});
+
 for (const map of [FR, ES, PT_BR, RU, TR, JA]) {
     map.server = map.server || 'View shared server progression';
     map['server.progress'] = map['server.progress'] || 'View this server focus progress and level';

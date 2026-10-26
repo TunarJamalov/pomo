@@ -96,7 +96,7 @@ function buildProgressDescription(language, pomPrefix, duration, elapsed, remain
 function buildLocalizedLobbyEmbed(sessionId, hostName, members, limit, minutes, autoLaunch, language = 'en') {
     const memberList = members.map((id, i) => `${i === 0 ? '👑' : '👤'} <@${id}>`).join('\n');
 
-    const session = db.prepare('SELECT pomodoro_data FROM team_sessions WHERE id = ?').get(sessionId);
+    const session = db.prepare('SELECT pomodoro_data, sound_alert FROM team_sessions WHERE id = ?').get(sessionId);
     let pomText = '';
     if (session && session.pomodoro_data) {
         const pom = JSON.parse(session.pomodoro_data);
@@ -111,6 +111,7 @@ function buildLocalizedLobbyEmbed(sessionId, hostName, members, limit, minutes, 
             `**${t(language, 'teamRoomCode')}:** \`${sessionId}\` (${t(language, 'teamRoomCodeHint')})\n` +
             `**${t(language, 'durationLabel')}:** ${formatTime(minutes)}\n` +
             pomText +
+            (session?.sound_alert ? `🔔 ${t(language, 'pomodoroSoundLine')}\n` : '') +
             `**${t(language, 'teamPlayers')}:** ${members.length}/${limit}\n\n` +
             `**${t(language, 'teamMembers')}:**\n${memberList}\n\n` +
             `*${t(language, 'teamWaiting')}*\n` +
@@ -256,7 +257,11 @@ module.exports = {
                 .setDescription('Number of complete cycles (default: 4, max: 12)')
                 .setRequired(false)
                 .setMinValue(1)
-                .setMaxValue(12)),
+                .setMaxValue(12))
+        .addBooleanOption(option =>
+            option.setName('sound')
+                .setDescription('Play a sound in your voice channel when work or a break ends')
+                .setRequired(false)),
 
     async execute(interaction) {
         const language = getInteractionLanguage(interaction);
@@ -264,6 +269,7 @@ module.exports = {
         const limit = interaction.options.getInteger('limit') || 10;
         const breakMin = interaction.options.getInteger('break');
         const cycles = interaction.options.getInteger('cycles') || 4;
+        const sound = interaction.options.getBoolean('sound') === true;
         const hostId = interaction.user.id;
 
         // A team session belongs to a server channel; Discord still offers /team in the bot's DMs
@@ -326,9 +332,9 @@ module.exports = {
 
         // Create team session in DB
         const result = db.prepare(
-            `INSERT INTO team_sessions (guild_id, channel_id, host_id, duration, started_at, status)
-             VALUES (?, ?, ?, ?, datetime('now'), 'waiting')`
-        ).run(interaction.guildId, interaction.channelId, hostId, minutes);
+            `INSERT INTO team_sessions (guild_id, channel_id, host_id, duration, started_at, status, sound_alert)
+             VALUES (?, ?, ?, ?, datetime('now'), 'waiting', ?)`
+        ).run(interaction.guildId, interaction.channelId, hostId, minutes, sound ? 1 : 0);
 
         const sessionId = result.lastInsertRowid;
 
@@ -649,6 +655,10 @@ async function handleTeamComplete(client, sessionId) {
     db.prepare("UPDATE team_sessions SET status = 'completed' WHERE id = ?").run(sessionId);
 
     const members = db.prepare('SELECT * FROM team_members WHERE session_id = ?').all(sessionId);
+    // /team sound: ring in the voice channel the host (or a member) is in, at the end of every phase
+    if (session.sound_alert) {
+        require('../utils/phaseChime').ringPhaseChime(client, session.guild_id, [session.host_id, ...members.map(m => m.user_id)]);
+    }
     const teamData = activeTeamSessions.get(sessionId);
     const language = getTeamLanguage(session, teamData?.language || 'en');
     const minutes = session.duration;

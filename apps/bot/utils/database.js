@@ -985,6 +985,8 @@ function initDatabase() {
     try { db.exec("ALTER TABLE team_sessions ADD COLUMN paused_at TEXT DEFAULT NULL;"); } catch (_) {}
     try { db.exec("ALTER TABLE team_sessions ADD COLUMN paused_total_seconds INTEGER DEFAULT 0;"); } catch (_) {}
     try { db.exec("ALTER TABLE team_sessions ADD COLUMN pause_count INTEGER DEFAULT 0;"); } catch (_) {}
+    // /team sound: chime in voice when a phase ends (utils/phaseChime.js)
+    try { db.exec("ALTER TABLE team_sessions ADD COLUMN sound_alert INTEGER DEFAULT 0;"); } catch (_) {}
 
     try {
         db.exec("ALTER TABLE clans ADD COLUMN last_dm_at TEXT;");

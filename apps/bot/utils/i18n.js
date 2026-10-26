@@ -14510,6 +14510,58 @@ Object.assign(Messages['ar'], {
     "voiceNoRewardOff": "💧 أوقف هذا الخادم مكافأة الماء للدراسة الصوتية. هذه الدقائق تُحتسب مع ذلك لسلسلتك والترتيب."
 });
 
+// /pomodoro long break + voice chime (utils/pomodoroCycles.js, utils/phaseChime.js)
+Object.assign(Messages['en'], {
+    "pomodoroLongBreakTag": "Long break",
+    "pomodoroLongBreakLine": "Long break: {minutes} min after every {every} cycles",
+    "pomodoroSoundLine": "A sound will play in your voice channel when work or a break ends."
+});
+Object.assign(Messages['es'], {
+    "pomodoroLongBreakTag": "Descanso largo",
+    "pomodoroLongBreakLine": "Descanso largo: {minutes} min cada {every} ciclos",
+    "pomodoroSoundLine": "Sonará un aviso en tu canal de voz cuando termine el trabajo o el descanso."
+});
+Object.assign(Messages['fr'], {
+    "pomodoroLongBreakTag": "Longue pause",
+    "pomodoroLongBreakLine": "Longue pause : {minutes} min tous les {every} cycles",
+    "pomodoroSoundLine": "Un son sera joué dans ton salon vocal à la fin du travail ou de la pause."
+});
+Object.assign(Messages['pt-BR'], {
+    "pomodoroLongBreakTag": "Pausa longa",
+    "pomodoroLongBreakLine": "Pausa longa: {minutes} min a cada {every} ciclos",
+    "pomodoroSoundLine": "Um som vai tocar no seu canal de voz quando o trabalho ou a pausa terminar."
+});
+Object.assign(Messages['ru'], {
+    "pomodoroLongBreakTag": "Длинный перерыв",
+    "pomodoroLongBreakLine": "Длинный перерыв: {minutes} мин после каждых {every} циклов",
+    "pomodoroSoundLine": "Когда закончится работа или перерыв, в твоём голосовом канале прозвучит сигнал."
+});
+Object.assign(Messages['tr'], {
+    "pomodoroLongBreakTag": "Uzun mola",
+    "pomodoroLongBreakLine": "Uzun mola: her {every} döngüde bir {minutes} dk",
+    "pomodoroSoundLine": "Çalışma veya mola bittiğinde ses kanalında bir ses çalacak."
+});
+Object.assign(Messages['az'], {
+    "pomodoroLongBreakTag": "Uzun fasilə",
+    "pomodoroLongBreakLine": "Uzun fasilə: hər {every} dövrdən sonra {minutes} dəq",
+    "pomodoroSoundLine": "İş və ya fasilə bitəndə səsli kanalında siqnal səslənəcək."
+});
+Object.assign(Messages['ja'], {
+    "pomodoroLongBreakTag": "長い休憩",
+    "pomodoroLongBreakLine": "長い休憩：{every}サイクルごとに{minutes}分",
+    "pomodoroSoundLine": "作業や休憩が終わると、ボイスチャンネルで音が鳴ります。"
+});
+Object.assign(Messages['ko'], {
+    "pomodoroLongBreakTag": "긴 휴식",
+    "pomodoroLongBreakLine": "긴 휴식: {every}사이클마다 {minutes}분",
+    "pomodoroSoundLine": "작업이나 휴식이 끝나면 음성 채널에서 알림음이 울려요."
+});
+Object.assign(Messages['ar'], {
+    "pomodoroLongBreakTag": "استراحة طويلة",
+    "pomodoroLongBreakLine": "استراحة طويلة: {minutes} دقيقة بعد كل {every} دورات",
+    "pomodoroSoundLine": "سيُشغَّل صوت في قناتك الصوتية عند انتهاء العمل أو الاستراحة."
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,

@@ -47,6 +47,7 @@ describe('/pomodoro command', () => {
                     return null;
                 }),
                 getString: jest.fn(() => 'Test Pomo'),
+                getBoolean: jest.fn(() => null),
                 getFocused: jest.fn(() => 'Test'),
             },
             reply: jest.fn().mockResolvedValue({ id: 'msg_1' }),
@@ -75,7 +76,7 @@ describe('/pomodoro command', () => {
         expect(require('../../utils/database').sessionRepository.createSession).toHaveBeenCalledWith(expect.anything(), { userId: 'user_pomo_1', guildId: 'guild_1', channelId: 'channel_1', duration: 25, title: 'Test Pomo' });
 
         // Verify pomodoro data assignment
-        expect(require('../../utils/database').sessionRepository.updatePomodoroData).toHaveBeenCalledWith(expect.anything(), 123, { cycle: 1, maxCycles: 2, work: 25, break: 10, originalTitle: 'Test Pomo', type: 'work' });
+        expect(require('../../utils/database').sessionRepository.updatePomodoroData).toHaveBeenCalledWith(expect.anything(), 123, { cycle: 1, maxCycles: 2, work: 25, break: 10, longBreak: null, sound: false, originalTitle: 'Test Pomo', type: 'work' });
 
         // Verify timer started
         expect(require('../../utils/timerManager').startStudyTimer).toHaveBeenCalledWith(
@@ -83,6 +84,41 @@ describe('/pomodoro command', () => {
             expect.objectContaining({ id: 123, pomodoro_data: expect.any(String) }),
             true
         );
+    });
+
+    test('stores long_break and sound in pomodoro data and shows them on the card', async () => {
+        isUserInAnyActiveSession.mockReturnValueOnce(false);
+        interaction.options.getInteger.mockImplementation((opt) => {
+            if (opt === 'cycles') return 8;
+            if (opt === 'long_break') return 15;
+            return null;
+        });
+        interaction.options.getBoolean.mockImplementation((opt) => opt === 'sound' ? true : null);
+
+        await pomodoroCommand.execute(interaction);
+
+        expect(require('../../utils/database').sessionRepository.updatePomodoroData).toHaveBeenCalledWith(
+            expect.anything(), 123,
+            expect.objectContaining({ maxCycles: 8, work: 25, break: 5, longBreak: 15, sound: true }),
+        );
+        const description = interaction.reply.mock.calls[0][0].embeds[0].data.description;
+        expect(description).toContain('🌴 Long break: 15 min after every 4 cycles');
+        expect(description).toContain('🔔');
+    });
+
+    test('hides the long break line when there is no cycle after the 4th', async () => {
+        isUserInAnyActiveSession.mockReturnValueOnce(false);
+        interaction.options.getInteger.mockImplementation((opt) => {
+            if (opt === 'cycles') return 4;
+            if (opt === 'long_break') return 15;
+            return null;
+        });
+
+        await pomodoroCommand.execute(interaction);
+
+        const description = interaction.reply.mock.calls[0][0].embeds[0].data.description;
+        expect(description).not.toContain('🌴');
+        expect(description).not.toContain('🔔');
     });
 
     test('autocomplete returns matching titles', async () => {
