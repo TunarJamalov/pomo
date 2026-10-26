@@ -45,6 +45,15 @@ module.exports = {
                     .addChannelTypes(ChannelType.GuildVoice))),
 
     async execute(interaction) {
+        // DMs and user-installed use in servers Pomo isn't in: there is no guild to create rooms in
+        if (!interaction.guild) {
+            const language = getInteractionLanguage(interaction);
+            return interaction.reply({
+                embeds: [errorEmbed(t(language, 'serverOnlyTitle'), t(language, 'serverOnlyBody'))],
+                flags: 64,
+            });
+        }
+
         const subcommand = interaction.options.getSubcommand();
 
         if (subcommand === 'setup') {

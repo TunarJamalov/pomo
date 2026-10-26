@@ -65,7 +65,8 @@ const {
     handleSetupWizardChannel,
 } = require('../utils/setupWizard');
 const { maybeSendUserOnboardingTip } = require('../utils/userOnboarding');
-const { botGuildId } = require('../utils/interactionContext');
+const { botGuildId, isForeignGuild, USER_INSTALL_COMMANDS } = require('../utils/interactionContext');
+const { getBotInviteUrl } = require('../utils/invite');
 const { findWelcomeChannel } = require('./guildCreate');
 
 // In-memory cooldown tracking
@@ -119,6 +120,19 @@ module.exports = {
                 embeds: [errorEmbed(
                     t(language, 'interactionCommandUnavailableTitle'),
                     t(language, 'interactionCommandUnavailableBody')
+                )],
+                flags: 64,
+            }).catch(() => {});
+        }
+
+        // A server that added Pomo's commands but not the bot: server commands have no guild to work with
+        if (isForeignGuild(interaction) && !USER_INSTALL_COMMANDS.has(interaction.commandName)) {
+            const language = getInteractionLanguage(interaction);
+            const inviteUrl = getBotInviteUrl(interaction.client.application?.id || process.env.CLIENT_ID);
+            return interaction.reply({
+                embeds: [errorEmbed(
+                    t(language, 'foreignGuildTitle'),
+                    t(language, 'foreignGuildBody', { command: interaction.commandName, url: inviteUrl })
                 )],
                 flags: 64,
             }).catch(() => {});

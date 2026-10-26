@@ -14562,6 +14562,48 @@ Object.assign(Messages['ar'], {
     "pomodoroSoundLine": "سيُشغَّل صوت في قناتك الصوتية عند انتهاء العمل أو الاستراحة."
 });
 
+// Server commands used where only Pomo's commands were added (events/interactionCreate.js)
+Object.assign(Messages['en'], {
+    "foreignGuildTitle": "Pomo isn't in this server",
+    "foreignGuildBody": "Pomo's commands were added here, but the Pomo bot wasn't, so `/{command}` can't run in this server. A server admin can [add Pomo]({url}).\nPersonal commands like `/study` and `/pomodoro` still work."
+});
+Object.assign(Messages['es'], {
+    "foreignGuildTitle": "Pomo no está en este servidor",
+    "foreignGuildBody": "Se añadieron los comandos de Pomo, pero no el bot, así que `/{command}` no funciona en este servidor. Un admin puede [añadir Pomo]({url}).\nLos comandos personales como `/study` y `/pomodoro` siguen funcionando."
+});
+Object.assign(Messages['fr'], {
+    "foreignGuildTitle": "Pomo n’est pas sur ce serveur",
+    "foreignGuildBody": "Les commandes de Pomo ont été ajoutées ici, mais pas le bot, donc `/{command}` ne peut pas s’exécuter sur ce serveur. Un admin peut [ajouter Pomo]({url}).\nLes commandes perso comme `/study` et `/pomodoro` fonctionnent toujours."
+});
+Object.assign(Messages['pt-BR'], {
+    "foreignGuildTitle": "O Pomo não está neste servidor",
+    "foreignGuildBody": "Os comandos do Pomo foram adicionados aqui, mas o bot não, então `/{command}` não funciona neste servidor. Um admin pode [adicionar o Pomo]({url}).\nComandos pessoais como `/study` e `/pomodoro` continuam funcionando."
+});
+Object.assign(Messages['ru'], {
+    "foreignGuildTitle": "Pomo нет на этом сервере",
+    "foreignGuildBody": "Команды Pomo добавлены, но сам бот — нет, поэтому `/{command}` здесь не работает. Админ сервера может [добавить Pomo]({url}).\nЛичные команды вроде `/study` и `/pomodoro` работают как обычно."
+});
+Object.assign(Messages['tr'], {
+    "foreignGuildTitle": "Pomo bu sunucuda değil",
+    "foreignGuildBody": "Pomo'nun komutları eklenmiş ama botun kendisi eklenmemiş, bu yüzden `/{command}` bu sunucuda çalışmaz. Bir sunucu yöneticisi [Pomo'yu ekleyebilir]({url}).\n`/study` ve `/pomodoro` gibi kişisel komutlar çalışmaya devam eder."
+});
+Object.assign(Messages['az'], {
+    "foreignGuildTitle": "Pomo bu serverdə deyil",
+    "foreignGuildBody": "Pomo-nun komandaları əlavə olunub, amma botun özü yox, ona görə `/{command}` bu serverdə işləmir. Server admini [Pomo-nu əlavə edə bilər]({url}).\n`/study` və `/pomodoro` kimi şəxsi komandalar işləməyə davam edir."
+});
+Object.assign(Messages['ja'], {
+    "foreignGuildTitle": "Pomoはこのサーバーにいません",
+    "foreignGuildBody": "Pomoのコマンドは追加されていますが、ボット本体が追加されていないため、このサーバーでは `/{command}` を実行できません。サーバー管理者が[Pomoを追加]({url})できます。\n`/study` や `/pomodoro` などの個人コマンドは引き続き使えます。"
+});
+Object.assign(Messages['ko'], {
+    "foreignGuildTitle": "Pomo가 이 서버에 없어요",
+    "foreignGuildBody": "Pomo 명령어는 추가됐지만 봇은 추가되지 않아서 이 서버에서는 `/{command}`를 실행할 수 없어요. 서버 관리자가 [Pomo를 추가]({url})할 수 있어요.\n`/study`, `/pomodoro` 같은 개인 명령어는 계속 사용할 수 있어요."
+});
+Object.assign(Messages['ar'], {
+    "foreignGuildTitle": "Pomo غير موجود في هذا الخادم",
+    "foreignGuildBody": "أُضيفت أوامر Pomo هنا لكن البوت نفسه لم يُضف، لذا لا يعمل `/{command}` في هذا الخادم. يمكن لمشرف الخادم [إضافة Pomo]({url}).\nالأوامر الشخصية مثل `/study` و`/pomodoro` ما زالت تعمل."
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,

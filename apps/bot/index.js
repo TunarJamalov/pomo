@@ -101,10 +101,10 @@ async function loginWithRetry(maxAttempts = 5, baseDelayMs = 10000) {
             startBackgroundJobs();
             return; // Success
         } catch (err) {
-            const isNetworkError = err.message?.includes('ECONNRESET') ||
-                                   err.message?.includes('ETIMEDOUT') ||
-                                   err.message?.includes('ENOTFOUND') ||
-                                   err.code === 'ECONNRESET';
+            // undici reports a VDS network/DNS outage as "Connect Timeout Error" or EAI_AGAIN
+            const isNetworkError = ['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN', 'ECONNREFUSED', 'Connect Timeout Error', 'fetch failed']
+                .some(s => err.message?.includes(s)) ||
+                ['ECONNRESET', 'EAI_AGAIN', 'UND_ERR_CONNECT_TIMEOUT'].includes(err.code);
 
             if (isNetworkError && attempt < maxAttempts) {
                 const delay = baseDelayMs * Math.pow(2, attempt - 1); // 10s, 20s, 40s...
