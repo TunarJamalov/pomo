@@ -30,7 +30,7 @@ const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.GuildMembers,
+        // No GuildMembers (privileged): members are fetched by id, which needs no intent
         GatewayIntentBits.GuildVoiceStates,
         GatewayIntentBits.DirectMessages,
     ],
