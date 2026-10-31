@@ -126,6 +126,11 @@ function sanitizeTimerPayload(data, sessionId) {
   return { sessionId, status: data.status, startedAt, pausedAt, endsAt, pausedTotalSeconds };
 }
 
+// `next start` sets this; a custom server must too. Without it, a server action that
+// redirects prefetches the target at https://localhost (nginx sends
+// X-Forwarded-Proto: https) and fails the TLS handshake against this plain-http server.
+process.env.__NEXT_PRIVATE_ORIGIN ??= `http://${hostname}:${port}`;
+
 // Initialize Next.js
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
