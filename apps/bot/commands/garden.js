@@ -133,6 +133,11 @@ async function sendGardenView(interaction, userId, isUpdate, language = getInter
     const payload = { embeds: [embed], components: [row] };
 
     if (plots.length > 0) {
+        // Drawing the garden can outlast Discord's 3-second reply window, so acknowledge first
+        if (!interaction.deferred && !interaction.replied) {
+            if (isUpdate) await interaction.deferUpdate();
+            else await interaction.deferReply({ flags: 64 });
+        }
         try {
             const buffer = await generateGardenBuffer(plots);
             const attachment = new AttachmentBuilder(buffer, { name: 'garden.png' });
@@ -147,8 +152,11 @@ async function sendGardenView(interaction, userId, isUpdate, language = getInter
         embed.setImage(null);
     }
 
-    if (isUpdate) {
-        payload.attachments = []; // Clear existing attachments from previous message state
+    if (isUpdate) payload.attachments = []; // Clear existing attachments from previous message state
+
+    if (interaction.deferred) {
+        await interaction.editReply(payload);
+    } else if (isUpdate) {
         await interaction.update(payload);
     } else {
         payload.flags = 64; // Only visible to the user who ran /garden — prevents others from clicking your buttons
