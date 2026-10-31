@@ -4,6 +4,8 @@
  */
 
 require('dotenv').config();
+// Errors and warnings also go to the support server's error-log channel (ERROR_LOG_CHANNEL_ID)
+require('../../packages/shared/errorRelay').installErrorRelay({ source: 'bot', tokenEnv: 'TOKEN' });
 const fs = require('fs');
 const path = require('path');
 const { Client, Collection, GatewayIntentBits, Partials } = require('discord.js');

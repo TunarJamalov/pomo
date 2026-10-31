@@ -5,6 +5,9 @@ const crypto = require('crypto');
 const next = require('next');
 const { Server } = require('socket.io');
 
+// Errors and warnings also go to the support server's error-log channel (ERROR_LOG_CHANNEL_ID)
+require('../../packages/shared/errorRelay').installErrorRelay({ source: 'web', tokenEnv: 'DISCORD_BOT_TOKEN' });
+
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
 const port = process.env.PORT || 3000;
