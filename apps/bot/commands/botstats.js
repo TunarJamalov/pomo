@@ -137,7 +137,7 @@ function buildChurnRetentionEmbed() {
         `Welcome posted **${c('welcome:posted')}** · failed **${c('welcome:post_failed')}** · no channel **${c('welcome:no_channel')}**`,
         `Owner DM sent **${c('welcome:dm_sent')}** · failed **${c('welcome:dm_failed')}**`,
         `Quick Setup: clicked **${c('setup:quick_click')}** · done **${c('setup:quick_done')}** · failed **${c('setup:quick_failed')}** · not a manager **${c('setup:quick_no_permission')}** · already set up **${c('setup:quick_already_done')}**`,
-        `1-Click: clicked **${c('setup:auto_click')}** · no permission **${c('setup:auto_no_permission')}** · done **${c('setup:auto_done')}** · failed **${c('setup:auto_failed')}**`,
+        `1-Click: clicked **${c('setup:auto_click')}** · done **${c('setup:auto_done')}** · failed **${c('setup:auto_failed')}** · Pomo lacks permissions **${c('setup:auto_no_permission')}** · not a manager **${c('setup:auto_not_manager')}** · already set up **${c('setup:auto_already_done')}** · server not found **${c('setup:auto_guild_not_found')}**`,
         `Manual setup opened **${c('setup:wizard_open')}**`,
     ].join('\n');
     const retentionLine = (label, returned, cohort) =>

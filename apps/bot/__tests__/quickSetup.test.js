@@ -72,6 +72,24 @@ describe('Quick Setup button', () => {
     });
 });
 
+describe('1-Click Setup outcomes in /botstats', () => {
+    test('a member without Manage Server is counted as not a manager', async () => {
+        const interaction = buildButton({ customId: 'setup_auto', canManage: false });
+        interaction.guildId = 'auto_guild';
+        interaction.guild = { ...interaction.guild, id: 'auto_guild' };
+        await interactionCreate.execute(interaction);
+        expect(trackedTopics('auto_guild')).toEqual(['auto_click', 'auto_not_manager']);
+    });
+
+    test('a server that is already set up is counted as already set up', async () => {
+        const interaction = buildButton({ customId: 'setup_auto' });
+        interaction.guild.members.me = { permissions: { has: () => true } };
+        await interactionCreate.execute(interaction);
+        expect(trackedTopics('quick_guild')).toEqual(expect.arrayContaining(['auto_click', 'auto_already_done']));
+        expect(interaction.editReply.mock.calls[0][0].embeds[0].data.title).toContain('✅');
+    });
+});
+
 describe('voice tracking for all channels', () => {
     const channels = new Map([['study', { id: 'study' }], ['afk', { id: 'afk' }]]);
     const guild = { id: 'g', afkChannelId: 'afk', channels: { cache: channels } };

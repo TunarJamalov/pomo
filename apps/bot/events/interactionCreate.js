@@ -958,8 +958,12 @@ async function runAutoSetup(interaction, setupGuildId = null) {
     // Acknowledge first: the guild/member fetches below can take longer than
     // Discord's 3 second window, which used to fail with "Unknown interaction".
     await interaction.deferReply({ flags: 64 });
-    const { guild, error } = await resolveSetupGuild(interaction, setupGuildId, language);
-    if (error) return interaction.editReply(error);
+    const { guild, error, reason } = await resolveSetupGuild(interaction, setupGuildId, language);
+    if (error) {
+        // auto_no_permission already means Pomo lacks permissions, so the clicker's own is auto_not_manager
+        trackSetup(interaction, setupGuildId, reason === 'no_permission' ? 'auto_not_manager' : `auto_${reason}`);
+        return interaction.editReply(error);
+    }
     const botMember = guild.members.me || await guild.members.fetchMe().catch(() => null);
     if (!botMember?.permissions.has([PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageRoles])) {
         trackSetup(interaction, guild.id, 'auto_no_permission');
@@ -979,6 +983,7 @@ async function runAutoSetup(interaction, setupGuildId = null) {
     try {
         const existingSettings = getOrCreateGuildSettings(guild.id);
         if (existingSettings.setup_completed_at) {
+            trackSetup(interaction, guild.id, 'auto_already_done');
             return interaction.editReply({
                 embeds: [successEmbed(
                     `✅ ${t(language, 'interactionSetupAlreadyCompleteTitle')}`,
