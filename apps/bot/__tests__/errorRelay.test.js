@@ -49,7 +49,7 @@ describe('error relay', () => {
         console.warn('[TIMER] Failed to edit message for session 19285: timeout');
         console.warn('[TIMER] Failed to edit message for session 19281: timeout');
         console.warn('[TIMER] Failed to edit message for session 19286: timeout');
-        console.error('[GOAL] Completion announcement failed for guild 1: Missing Access');
+        console.error('[GOAL] Completion announcement failed for guild 1: Unknown Channel');
         await relay.flush();
 
         expect(fetchImpl).toHaveBeenCalledTimes(1);
@@ -91,6 +91,45 @@ describe('error relay', () => {
         fetchImpl.mockRejectedValue(new Error('fetch failed'));
         console.error('[FATAL] Failed to login');
         await expect(relay.flush()).resolves.toBeUndefined();
+    });
+
+    test('expected, already-handled lines stay out of the channel', async () => {
+        console.warn('[TIMER] Missing Access/Unknown Message on session 21076. Stopping interval.');
+        console.warn('[TIMER] Message 1567134954607878206 deleted for session 21298. Stopping interval.');
+        console.warn('[VOICE] Study room setup failed in guild 1552764398983188520: Missing Permissions');
+        console.error('[TEAM] Complete notification error:', 'Missing Access');
+        console.error('[GOAL] Completion announcement failed for guild 1206981951387467846: Missing Access');
+        await relay.flush();
+        expect(fetchImpl).not.toHaveBeenCalled();
+    });
+
+    test('real problems still go through next to the noise', async () => {
+        console.warn('[TIMER] Channel 1566687116237348925 inaccessible for session 21028. Stopping interval.');
+        console.error('[TIMER] Failed to edit message for session 21166: getaddrinfo EAI_AGAIN discord.com');
+        console.error('[TEAM] Complete notification error:', 'Unknown Channel');
+        await relay.flush();
+        const { content } = sent()[0];
+        expect(content).toContain('EAI_AGAIN');
+        expect(content).toContain('Unknown Channel');
+        expect(content).not.toContain('Stopping interval');
+    });
+
+    test('web noise patterns match the lines Next.js and next-auth print', () => {
+        const { NOISE } = require('../../../packages/shared/errorRelay');
+        const noisy = [
+            'Error: The Server Reference ID did not match the expected format. Received "e66bfb0e990e42180c3efd0d659e89efcc2726c4".',
+            '⨯ Error: Failed to find Server Action. This request might be from an older or newer deployment.',
+            '⨯ upstream image response failed for https://cdn.discordapp.com/avatars/1339568365274140674/4ad642ac6fd28e9053c3889363b9e07b.webp?size=64 404',
+            '[next-auth][error][OAUTH_CALLBACK_ERROR] \nhttps://next-auth.js.org/errors#oauth_callback_error state mismatch, expected a, got: b',
+            '[next-auth][error][OAUTH_CALLBACK_ERROR] \nhttps://next-auth.js.org/errors#oauth_callback_error State cookie was missing.',
+        ];
+        for (const line of noisy) expect(NOISE.web.some(re => re.test(line))).toBe(true);
+        const real = [
+            'failed to get redirect response TypeError: fetch failed',
+            '[next-auth][error][OAUTH_CALLBACK_ERROR] \nhttps://next-auth.js.org/errors#oauth_callback_error invalid_client',
+            '⨯ upstream image response failed for https://cdn.discordapp.com/avatars/1/2.webp?size=64 500',
+        ];
+        for (const line of real) expect(NOISE.web.some(re => re.test(line))).toBe(false);
     });
 
     test('a rejected post warns once with the reason', async () => {

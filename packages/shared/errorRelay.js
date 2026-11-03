@@ -18,6 +18,22 @@ const MESSAGE_LIMIT = 1950;
 
 const SECRET_ENV = /(TOKEN|SECRET|KEY|PASSWORD|DATABASE_URL)/i;
 
+// Expected, already-handled lines: they stay in the PM2 log but don't go to the channel
+const NOISE = {
+    bot: [
+        /^\[TIMER\] .*Stopping interval\./, // card deleted or channel lost; the session still completes
+        /^\[VOICE\] Study room setup failed in guild \d+: Missing Permissions/, // the member gets a DM
+        /^\[GOAL\] Completion announcement failed for guild \d+: Missing Access/,
+        /^\[TEAM\] Complete notification error: Missing Access/,
+    ],
+    web: [
+        /Server Reference ID did not match the expected format/, // scanners probing server actions
+        /Failed to find Server Action/, // a page open from before the last deploy
+        /upstream image response failed for https:\/\/cdn\.discordapp\.com\/\S+ 404/, // avatar changed
+        /OAUTH_CALLBACK_ERROR[\s\S]*(state mismatch|State cookie was missing)/, // login in two tabs or Back
+    ],
+};
+
 function redact(text) {
     let out = text
         // Interaction and webhook tokens sit in Discord API URLs
@@ -43,7 +59,7 @@ function formatGroup(source, group) {
     return `${icon} **${source}** ${group.level}${count}\n\`\`\`\n${sample.replace(/```/g, "'''")}\n\`\`\``;
 }
 
-function installErrorRelay({ source, tokenEnv, fetchImpl = (...args) => fetch(...args) }) {
+function installErrorRelay({ source, tokenEnv, ignore = NOISE[source] || [], fetchImpl = (...args) => fetch(...args) }) {
     const original = { error: console.error, warn: console.warn };
     const groups = new Map();
     let heldBack = 0;
@@ -60,7 +76,7 @@ function installErrorRelay({ source, tokenEnv, fetchImpl = (...args) => fetch(..
         } catch (_) {
             return;
         }
-        if (!text) return;
+        if (!text || ignore.some(pattern => pattern.test(text))) return;
         const key = groupKey(level, text);
         const group = groups.get(key);
         if (group) group.count++;
@@ -148,4 +164,4 @@ function installErrorRelay({ source, tokenEnv, fetchImpl = (...args) => fetch(..
     };
 }
 
-module.exports = { installErrorRelay, redact, groupKey };
+module.exports = { installErrorRelay, redact, groupKey, NOISE };
