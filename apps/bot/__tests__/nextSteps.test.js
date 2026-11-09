@@ -70,6 +70,41 @@ describe('session-complete next steps', () => {
     });
 });
 
+describe('user-install offer after an Activity timer in DMs', () => {
+    const { takeActivityInstallOffer } = require('../utils/nextSteps');
+    const started = '2026-11-09 10:00:00';
+    const activityStart = (userId, createdAt = '2026-11-09 09:59:40') => db.prepare(`
+        INSERT INTO activity_commands (user_id, channel_id, minutes, type, status, created_at)
+        VALUES (?, '999', 25, 'study', 'processed', ?)
+    `).run(userId, createdAt);
+
+    beforeEach(() => {
+        db.prepare("DELETE FROM activity_commands WHERE user_id LIKE '3300%'").run();
+        db.prepare("DELETE FROM user_onboarding WHERE user_id LIKE '3300%' AND tip_key = 'activity_install'").run();
+    });
+
+    test('the first finished Activity timer that ran in DMs gets the offer, once', () => {
+        activityStart(OWNER);
+        const session = { user_id: OWNER, guild_id: null, started_at: started };
+
+        const offer = takeActivityInstallOffer(session, 'en', '123');
+        expect(offer.line).toContain('Add Pomo to your account');
+        expect(offer.button.data.url).toContain('integration_type=1');
+        expect(offer.button.data.url).toContain('client_id=123');
+        expect(takeActivityInstallOffer(session, 'en', '123')).toBeNull();
+    });
+
+    test('no offer in a server with Pomo, or for a DM timer that did not come from the Activity', () => {
+        activityStart(OWNER);
+        expect(takeActivityInstallOffer({ user_id: OWNER, guild_id: '555', started_at: started }, 'en', '123')).toBeNull();
+        // /study from a user install also runs in DMs, but those users already have Pomo on their account
+        expect(takeActivityInstallOffer({ user_id: OTHER, guild_id: null, started_at: started }, 'en', '123')).toBeNull();
+        // An Activity start from another day doesn't count
+        activityStart(REMINDED, '2026-11-08 09:59:40');
+        expect(takeActivityInstallOffer({ user_id: REMINDED, guild_id: null, started_at: started }, 'en', '123')).toBeNull();
+    });
+});
+
 describe('comeback reminder timing', () => {
     const studied = (userId, at, streak = 1) =>
         db.prepare('UPDATE users SET last_session_at = ?, streak = ? WHERE discord_id = ?').run(at, streak, userId);

@@ -14604,6 +14604,48 @@ Object.assign(Messages['ar'], {
     "foreignGuildBody": "أُضيفت أوامر Pomo هنا لكن البوت نفسه لم يُضف، لذا لا يعمل `/{command}` في هذا الخادم. يمكن لمشرف الخادم [إضافة Pomo]({url}).\nالأوامر الشخصية مثل `/study` و`/pomodoro` ما زالت تعمل."
 });
 
+// Activity timer that ran in DMs: one-time user-install offer (utils/nextSteps.js)
+Object.assign(Messages['en'], {
+    "activityInstallTip": "💡 Pomo isn't in that server, so your timer ran here in DMs. Add Pomo to your account to use `/study` and `/pomodoro` in any server or DM and keep your streak going.",
+    "activityInstallButton": "Add to my account"
+});
+Object.assign(Messages['es'], {
+    "activityInstallTip": "💡 Pomo no está en ese servidor, así que tu temporizador funcionó aquí en MD. Añade Pomo a tu cuenta para usar `/study` y `/pomodoro` en cualquier servidor o MD y mantener tu racha.",
+    "activityInstallButton": "Añadir a mi cuenta"
+});
+Object.assign(Messages['fr'], {
+    "activityInstallTip": "💡 Pomo n’est pas sur ce serveur, ton minuteur a donc tourné ici en MP. Ajoute Pomo à ton compte pour utiliser `/study` et `/pomodoro` sur n’importe quel serveur ou en MP et garder ta série.",
+    "activityInstallButton": "Ajouter à mon compte"
+});
+Object.assign(Messages['pt-BR'], {
+    "activityInstallTip": "💡 O Pomo não está naquele servidor, então seu timer rodou aqui na DM. Adicione o Pomo à sua conta para usar `/study` e `/pomodoro` em qualquer servidor ou DM e manter sua sequência.",
+    "activityInstallButton": "Adicionar à minha conta"
+});
+Object.assign(Messages['ru'], {
+    "activityInstallTip": "💡 Pomo нет на том сервере, поэтому таймер работал здесь, в ЛС. Добавь Pomo в свой аккаунт, чтобы пользоваться `/study` и `/pomodoro` на любом сервере или в ЛС и не терять серию.",
+    "activityInstallButton": "Добавить в аккаунт"
+});
+Object.assign(Messages['tr'], {
+    "activityInstallTip": "💡 Pomo o sunucuda değil, bu yüzden zamanlayıcın burada DM'de çalıştı. Pomo'yu hesabına ekle; `/study` ve `/pomodoro`'yu her sunucuda veya DM'de kullan, serini koru.",
+    "activityInstallButton": "Hesabıma ekle"
+});
+Object.assign(Messages['az'], {
+    "activityInstallTip": "💡 Pomo o serverdə yoxdur, ona görə taymerin burada, DM-də işlədi. Pomo-nu hesabına əlavə et ki, `/study` və `/pomodoro`-nu istənilən serverdə və ya DM-də işlədəsən və seriyanı davam etdirəsən.",
+    "activityInstallButton": "Hesabıma əlavə et"
+});
+Object.assign(Messages['ja'], {
+    "activityInstallTip": "💡 Pomoはそのサーバーにいないため、タイマーはこのDMで動きました。Pomoをアカウントに追加すると、どのサーバーやDMでも `/study` と `/pomodoro` が使え、ストリークを続けられます。",
+    "activityInstallButton": "アカウントに追加"
+});
+Object.assign(Messages['ko'], {
+    "activityInstallTip": "💡 Pomo가 그 서버에 없어서 타이머가 여기 DM에서 실행됐어요. Pomo를 계정에 추가하면 어느 서버나 DM에서든 `/study`와 `/pomodoro`를 쓰고 연속 기록을 이어갈 수 있어요.",
+    "activityInstallButton": "내 계정에 추가"
+});
+Object.assign(Messages['ar'], {
+    "activityInstallTip": "💡 Pomo غير موجود في ذلك الخادم، لذا عمل مؤقّتك هنا في الرسائل الخاصة. أضف Pomo إلى حسابك لتستخدم `/study` و`/pomodoro` في أي خادم أو رسائل خاصة وتحافظ على سلسلتك.",
+    "activityInstallButton": "أضف إلى حسابي"
+});
+
 module.exports = {
     SupportedLanguages,
     normalizeLanguage,

@@ -6,8 +6,9 @@
  */
 const cron = require('node-cron');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { db, getOrCreateSettings } = require('./database');
+const { db, getOrCreateSettings, markOnboardingTipShown } = require('./database');
 const { t, getInteractionLanguage, getUserLanguage } = require('./i18n');
+const { getUserInstallUrl } = require('./invite');
 
 const AGAIN_PREFIX = 'next_again_';
 
@@ -39,6 +40,35 @@ function buildNextStepsRow(session, language, { again = true } = {}) {
             .setLabel(t(language, 'nextRemindButton')));
     }
     return row;
+}
+
+/** Was this session started by pressing Start in the Discord Activity? */
+function startedFromActivity(session) {
+    return Boolean(db.prepare(`
+        SELECT 1 FROM activity_commands
+        WHERE user_id = ? AND type = 'study' AND status = 'processed'
+          AND created_at BETWEEN datetime(?, '-5 minutes') AND datetime(?, '+1 minute')
+        LIMIT 1
+    `).get(session.user_id, session.started_at, session.started_at));
+}
+
+/**
+ * When Pomo isn't in the server, an Activity timer runs in the user's DMs and
+ * those users rarely come back, while user-install users do. Their first such
+ * finished timer gets a one-time "add Pomo to your account" line and link.
+ * Returns { line, button } or null.
+ */
+function takeActivityInstallOffer(session, language, clientId) {
+    if (session.guild_id || !session.started_at || !startedFromActivity(session)) return null;
+    if (!markOnboardingTipShown(session.user_id, 'activity_install')) return null;
+    return {
+        line: t(language, 'activityInstallTip'),
+        button: new ButtonBuilder()
+            .setStyle(ButtonStyle.Link)
+            .setURL(getUserInstallUrl(clientId))
+            .setEmoji('➕')
+            .setLabel(t(language, 'activityInstallButton')),
+    };
 }
 
 function setComebackReminder(userId, enabled) {
@@ -138,6 +168,7 @@ function startComebackReminderJob(client) {
 module.exports = {
     buildNextStepsRow,
     handleNextStepButton,
+    takeActivityInstallOffer,
     setComebackReminder,
     takeDueComebackReminders,
     startComebackReminderJob,

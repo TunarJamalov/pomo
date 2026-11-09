@@ -362,6 +362,10 @@ async function handleSessionComplete(client, session, deps) {
         const pomodoroState = session.pomodoro_data ? JSON.parse(session.pomodoro_data) : null;
         const sessionOver = !pomodoroState || (pomodoroState.type === 'work' && pomodoroState.cycle >= pomodoroState.maxCycles);
         const nextSteps = sessionOver ? [require('../nextSteps').buildNextStepsRow(session, language)] : [];
+        // An Activity timer that ran in DMs (Pomo isn't in that server): offer the user install once
+        const installOffer = sessionOver ? require('../nextSteps').takeActivityInstallOffer(session, language, client.application?.id) : null;
+        if (installOffer) nextSteps[0].addComponents(installOffer.button);
+        const cardMention = `<@${session.user_id}>${installOffer ? `\n${installOffer.line}` : ''}`;
 
         // Send completion message
         const channel = await client.channels.fetch(session.channel_id).catch(() => null);
@@ -372,7 +376,7 @@ async function handleSessionComplete(client, session, deps) {
 
             if (cardStyle === 'text') {
                 // Detailed text embed (classic style)
-                await channel.send({ content: `<@${session.user_id}>`, embeds: [embed], components: nextSteps }).catch(() => {});
+                await channel.send({ content: cardMention, embeds: [embed], components: nextSteps }).catch(() => {});
             } else {
                 // Generate and send the visual Session End Card (default)
                 try {
@@ -394,7 +398,7 @@ async function handleSessionComplete(client, session, deps) {
                         theme: isFullPro(session.user_id) ? getOrCreateProProfileSettings(session.user_id).card_theme : 'classic',
                     });
                     const attachment = new AttachmentBuilder(cardBuffer, { name: 'session-complete.png' });
-                    const payload = { content: `<@${session.user_id}>`, files: [attachment], components: nextSteps };
+                    const payload = { content: cardMention, files: [attachment], components: nextSteps };
                     if (cardExtras) {
                         payload.embeds = [new EmbedBuilder()
                             .setColor(Colors.SUCCESS)
@@ -404,7 +408,7 @@ async function handleSessionComplete(client, session, deps) {
                     await channel.send(payload).catch(() => {});
                 } catch (cardErr) {
                     console.error('[TIMER] Session end card failed:', cardErr.message);
-                    await channel.send({ content: `<@${session.user_id}>`, embeds: [embed], components: nextSteps }).catch(() => {});
+                    await channel.send({ content: cardMention, embeds: [embed], components: nextSteps }).catch(() => {});
                 }
             }
 
