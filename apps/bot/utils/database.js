@@ -2418,6 +2418,8 @@ function deductWaterAtomic(discordId, amount) {
 function getOrCreateSettings(discordId) {
     let settings = db.prepare('SELECT * FROM settings WHERE user_id = ?').get(discordId);
     if (!settings) {
+        // settings.user_id references users; buttons on public cards can be pressed by someone with no row yet
+        db.prepare('INSERT OR IGNORE INTO users (discord_id) VALUES (?)').run(discordId);
         db.prepare('INSERT INTO settings (user_id) VALUES (?)').run(discordId);
         settings = db.prepare('SELECT * FROM settings WHERE user_id = ?').get(discordId);
     }

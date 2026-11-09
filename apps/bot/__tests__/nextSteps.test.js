@@ -53,6 +53,15 @@ describe('session-complete next steps', () => {
         start.mockRestore();
     });
 
+    test('someone who never used Pomo can press the reminder on a public card', async () => {
+        const stranger = '330000000000000099';
+        db.prepare('DELETE FROM settings WHERE user_id = ?').run(stranger);
+        db.prepare('DELETE FROM users WHERE discord_id = ?').run(stranger);
+
+        await expect(handleNextStepButton(button(stranger, 'next_remind'))).resolves.not.toThrow();
+        expect(getOrCreateSettings(stranger).comeback_reminder).toBe(1);
+    });
+
     test('the reminder button turns reminders on, the DM button turns them off', async () => {
         await handleNextStepButton(button(OWNER, 'next_remind'));
         expect(getOrCreateSettings(OWNER).comeback_reminder).toBe(1);
