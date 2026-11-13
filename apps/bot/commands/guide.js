@@ -203,6 +203,8 @@ async function handleGuidePanelPostButton(interaction) {
         });
     }
 
+    // Posting the panel can outlast Discord's 3-second reply window, so acknowledge first
+    await interaction.deferReply({ flags: 64 });
     const message = await interaction.channel.send({
         embeds: [buildGuidePanelEmbed(language)],
         components: buildGuidePanelRows(language, interaction.client),
@@ -210,17 +212,11 @@ async function handleGuidePanelPostButton(interaction) {
     }).catch(() => null);
 
     if (!message) {
-        return interaction.reply({
-            content: t(language, 'guidePanelPostFailedBody'),
-            flags: 64,
-        });
+        return interaction.editReply({ content: t(language, 'guidePanelPostFailedBody') });
     }
 
     safeRecordOnboardingEvent(interaction.guildId, interaction.user?.id, 'panel_posted', null);
-    return interaction.reply({
-        content: t(language, 'guidePanelPostedBody'),
-        flags: 64,
-    });
+    return interaction.editReply({ content: t(language, 'guidePanelPostedBody') });
 }
 
 function safeRecordOnboardingEvent(guildId, userId, eventType, topic = null) {

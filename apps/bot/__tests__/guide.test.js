@@ -70,19 +70,21 @@ describe('/guide onboarding panel', () => {
                 send,
             },
             reply: jest.fn().mockResolvedValue({}),
+            deferReply: jest.fn().mockResolvedValue({}),
+            editReply: jest.fn().mockResolvedValue({}),
         };
 
         await guide.handleGuidePanelPostButton(interaction);
 
+        // Acknowledged before posting, so a slow send can't expire the button
+        expect(interaction.deferReply).toHaveBeenCalledWith({ flags: 64 });
+        expect(interaction.deferReply.mock.invocationCallOrder[0]).toBeLessThan(send.mock.invocationCallOrder[0]);
         expect(send).toHaveBeenCalledWith(expect.objectContaining({
             embeds: expect.any(Array),
             components: expect.any(Array),
             allowedMentions: { parse: [] },
         }));
-        expect(interaction.reply).toHaveBeenCalledWith(expect.objectContaining({
-            flags: 64,
-            content: expect.any(String),
-        }));
+        expect(interaction.editReply).toHaveBeenCalledWith({ content: expect.any(String) });
     });
 });
 

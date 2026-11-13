@@ -31,6 +31,7 @@ const NOISE = {
         /Failed to find Server Action/, // a page open from before the last deploy
         /upstream image response failed for https:\/\/cdn\.discordapp\.com\/\S+ 404/, // avatar changed
         /OAUTH_CALLBACK_ERROR[\s\S]*(state mismatch|State cookie was missing)/, // login in two tabs or Back
+        /OAUTH_CALLBACK(_HANDLER)?_ERROR[\s\S]*access_denied/, // Cancel pressed on Discord's login screen
     ],
 };
 

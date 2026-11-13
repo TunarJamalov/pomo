@@ -122,6 +122,8 @@ describe('error relay', () => {
             '⨯ upstream image response failed for https://cdn.discordapp.com/avatars/1339568365274140674/4ad642ac6fd28e9053c3889363b9e07b.webp?size=64 404',
             '[next-auth][error][OAUTH_CALLBACK_ERROR] \nhttps://next-auth.js.org/errors#oauth_callback_error state mismatch, expected a, got: b',
             '[next-auth][error][OAUTH_CALLBACK_ERROR] \nhttps://next-auth.js.org/errors#oauth_callback_error State cookie was missing.',
+            '[next-auth][error][OAUTH_CALLBACK_HANDLER_ERROR] \nhttps://next-auth.js.org/errors#oauth_callback_handler_error access_denied {',
+            '[next-auth][error][OAUTH_CALLBACK_ERROR] \nhttps://next-auth.js.org/errors#oauth_callback_error access_denied {',
         ];
         for (const line of noisy) expect(NOISE.web.some(re => re.test(line))).toBe(true);
         const real = [
